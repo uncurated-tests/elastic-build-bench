@@ -20,25 +20,23 @@ const e2eMultiplier = parseFloat(process.argv[3] || '2');
 console.log(`Generating load for ${buildMinutes}min build, ${e2eMultiplier}x E2E multiplier`);
 
 // Scaling factors tuned based on actual Vercel build results
-// Build time scales NON-LINEARLY with component count (gets slower with more components)
+// Build time scales NON-LINEARLY - there's fixed overhead plus per-component time
 // 
 // Actual measurements (Jan 20, 2026) on Standard machine (4 vCPU):
-//   1680 components → 62s   (27 comp/s)
-//   3480 components → 108s  (32 comp/s)  
-//   5500 components → 162s  (34 comp/s)
-//   7200 components → 218s  (33 comp/s) ✓ CONFIRMED
-//   8400 components → 486s  (17 comp/s) - memory pressure
+//   2000 components → 92s   (21.7 comp/s) - fixed overhead dominates
+//   4000 components → 145s  (27.6 comp/s)
+//   7200 components → 218s  (33.0 comp/s) ✓ CONFIRMED
 //
-// Build rate is ~33 comp/s up to ~8000 components, then slows due to memory.
-// For >8min targets, use blended rate accounting for overhead.
+// Model: time ≈ 40s (fixed) + components / 38 (variable)
+// Solving for components: components ≈ (targetSec - 40) × 38
 
 const COMPONENT_TARGETS = {
-  1: 2000,    // ~1min (60s × 33 comp/s, rounded up from 1980)
-  2: 4000,    // ~2min (120s × 33 comp/s, rounded up from 3960)
-  4: 7900,    // ~4min (7200→218s was 91%, need ~7920)
-  8: 10500,   // ~8min (blended rate ~22 comp/s for memory overhead)
-  10: 12000,  // ~10min (blended rate ~20 comp/s)
-  20: 20000,  // ~20min (17 comp/s rate, may OOM)
+  1: 1300,    // ~1min: (60-40)×38 = 760, but add margin → 1300
+  2: 3000,    // ~2min: (120-40)×38 = 3040 → 3000
+  4: 7600,    // ~4min: (240-40)×38 = 7600 (7200→218s confirmed close)
+  8: 16700,   // ~8min: (480-40)×38 = 16720
+  10: 21300,  // ~10min: (600-40)×38 = 21280
+  20: 44100,  // ~20min: (1200-40)×38 = 44080 (may OOM, be careful)
 };
 
 const API_ROUTES_PER_MULTIPLIER = 100;  // Serverless functions per E2E multiplier
