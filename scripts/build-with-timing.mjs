@@ -16,6 +16,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, '..');
+const configPath = join(projectRoot, 'build-config.json');
 
 // Get build target from environment variable
 const buildMinutes = parseInt(process.env.BUILD_MINUTES || '0', 10);
@@ -36,7 +37,6 @@ if (buildMinutes > 0) {
 }
 
 // Load build config (may have been updated by generateSyntheticLoad)
-const configPath = join(projectRoot, 'build-config.json');
 const config = JSON.parse(readFileSync(configPath, 'utf-8'));
 
 /**
@@ -164,32 +164,32 @@ function generateStaticPage(index, componentCount, totalPages) {
   const components = [];
   
   for (let i = startComponent; i < endComponent; i++) {
-    imports.push(\`import Component\${i} from '@/generated/components/Component\${i}';\`);
-    components.push(\`Component\${i}\`);
+    imports.push(`import Component${i} from '@/generated/components/Component${i}';`);
+    components.push(`Component${i}`);
   }
   
-  return \`\${imports.join('\\n')}
+  return `${imports.join('\n')}
 
 const sampleData = {
-  id: 'page-\${index}',
-  name: 'Benchmark Page \${index}',
+  id: 'page-${index}',
+  name: 'Benchmark Page ${index}',
   values: [1, 2, 3, 4, 5],
-  nested: { level1: { level2: { level3: { value: 'deep-\${index}' } } } },
+  nested: { level1: { level2: { level3: { value: 'deep-${index}' } } } },
 };
 
-export default function BenchPage\${index}() {
+export default function BenchPage${index}() {
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Benchmark Page \${index}</h1>
+      <h1 className="text-2xl font-bold mb-4">Benchmark Page ${index}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {[\${components.join(', ')}].map((Component, idx) => (
+        {[${components.join(', ')}].map((Component, idx) => (
           <Component key={idx} data={sampleData} />
         ))}
       </div>
     </div>
   );
 }
-\`;
+`;
 }
 
 // Detect machine type from Vercel project name
