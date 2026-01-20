@@ -238,10 +238,13 @@ export async function GET(request: Request) {
       }
     }
     
-    const selectedBlobs = Array.from(runIdMap.values());
+    // Sort blobs by uploadedAt (most recent first) and take top 50
+    const selectedBlobs = Array.from(runIdMap.values())
+      .sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime())
+      .slice(0, 50);
     
     const timingRecords = await Promise.all(
-      selectedBlobs.slice(0, 20).map(async (blob) => {
+      selectedBlobs.map(async (blob) => {
         try {
           const response = await fetch(blob.url);
           return await response.json();
