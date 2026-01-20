@@ -17,6 +17,28 @@ const projectRoot = join(__dirname, '..');
 const configPath = join(projectRoot, 'build-config.json');
 const config = JSON.parse(readFileSync(configPath, 'utf-8'));
 
+// Detect machine type from Vercel project name
+function detectMachineType() {
+  // VERCEL_PROJECT_PRODUCTION_URL contains the project name
+  // e.g., "elastic-build-bench.vercel.app", "elastic-build-bench-enhanced.vercel.app"
+  const projectUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL || '';
+  const projectName = process.env.VERCEL_PROJECT || '';
+  
+  console.log(`[TIMING] Detecting machine type from project: ${projectUrl || projectName}`);
+  
+  if (projectUrl.includes('-turbo') || projectName.includes('-turbo')) {
+    return 'Turbo';
+  } else if (projectUrl.includes('-enhanced') || projectName.includes('-enhanced')) {
+    return 'Enhanced';
+  } else {
+    return 'Standard';
+  }
+}
+
+// Override machine type based on Vercel project
+const machineType = detectMachineType();
+config.MachineType = machineType;
+
 // Build run metadata
 const runId = `build-${Date.now()}`;
 const gitCommit = getGitCommit();
