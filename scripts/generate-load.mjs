@@ -52,6 +52,7 @@ const COMPONENT_TARGETS = {
 // Target BUILD time (not E2E time) - this is what the branch name refers to
 const targetBuildSeconds = buildMinutes * 60;
 const targetE2EMinutes = buildMinutes * e2eMultiplier;  // For config display only
+const targetE2ESeconds = targetE2EMinutes * 60;
 
 // Calculate components needed for target BUILD time
 // Using the formula: time = 17 + components/55.6
@@ -67,7 +68,7 @@ const numApiRoutes = 5;
 console.log(`Will generate:`);
 console.log(`  - ${numComponents} React components`);
 console.log(`  - ${numApiRoutes} API routes`);
-console.log(`  - Target E2E: ${targetE2EMinutes}min (${targetE2ESeconds}s)`);
+console.log(`  - Target Build: ${buildMinutes}min (${targetBuildSeconds}s)`);
 
 // Clean up previous generated files
 const generatedDir = join(projectRoot, 'src', 'generated');
