@@ -34,6 +34,8 @@ const COMPONENT_TARGETS = {
   1: 1680,    // ~1min build time (28 comp/s)
   2: 3480,    // ~2min build time (29 comp/s)
   4: 8400,    // ~4min build time (35 comp/s)
+  8: 16800,   // ~8min build time (35 comp/s)
+  10: 21000,  // ~10min build time (35 comp/s)
 };
 
 const API_ROUTES_PER_MULTIPLIER = 100;  // Serverless functions per E2E multiplier
