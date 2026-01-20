@@ -107,10 +107,26 @@ export default async function Home() {
   const buildsByConfig = await getLatestBuildsByConfig();
   const records = Array.from(buildsByConfig.values());
   
-  // Sort by build time (most recent first)
+  // Sort by column 1 (Target Build Time), then column 2 (Target Total Time), then column 3 (Machine Type)
+  // Parse time strings like "1min", "2min", "4min" to numbers for sorting
+  const parseTime = (timeStr: string): number => {
+    const match = timeStr.match(/(\d+)/);
+    return match ? parseInt(match[1], 10) : 0;
+  };
+  
   records.sort((a, b) => {
-    if (!a.timestamps.buildStarted || !b.timestamps.buildStarted) return 0;
-    return new Date(b.timestamps.buildStarted).getTime() - new Date(a.timestamps.buildStarted).getTime();
+    // Column 1: Target Build Time (ascending)
+    const buildTimeA = parseTime(a.config.BuildTimeOnStandard);
+    const buildTimeB = parseTime(b.config.BuildTimeOnStandard);
+    if (buildTimeA !== buildTimeB) return buildTimeA - buildTimeB;
+    
+    // Column 2: Target Total Time (ascending)
+    const totalTimeA = parseTime(a.config.FullTimeOnStandard);
+    const totalTimeB = parseTime(b.config.FullTimeOnStandard);
+    if (totalTimeA !== totalTimeB) return totalTimeA - totalTimeB;
+    
+    // Column 3: Machine Type (alphabetical ascending)
+    return a.config.MachineType.localeCompare(b.config.MachineType);
   });
 
   return (
