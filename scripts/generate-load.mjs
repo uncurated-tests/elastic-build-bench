@@ -25,26 +25,24 @@ console.log(`Generating load for ${buildMinutes}min build, ${e2eMultiplier}x E2E
 // Actual measurements (Jan 20, 2026) on Standard machine (4 vCPU):
 //   1680 components → 62s   (27 comp/s)
 //   3480 components → 108s  (32 comp/s)  
+//   5500 components → 162s  (34 comp/s)
 //   8400 components → 486s  (17 comp/s) - slower due to memory/TypeScript overhead
 //
-// The relationship is approximately: build_time = components^1.35 / 45
-// Or inversely: components = (build_time_seconds * 45)^(1/1.35)
-//
-// Calibrated targets (Standard machine):
-//   1min  (60s):   1700 components
-//   2min  (120s):  3500 components
-//   4min  (240s):  5500 components (measured 8400 gave 8min)
-//   8min  (480s):  8400 components (measured)
-//   10min (600s):  9800 components
-//   20min (1200s): 15000 components (extrapolated, may OOM)
+// Revised calibration based on all measurements:
+//   1min  (60s):   1680 components (measured exactly)
+//   2min  (120s):  3480 components (measured exactly)
+//   4min  (240s):  7200 components (extrapolated: 5500→162s, need 1.48x more)
+//   8min  (480s):  8400 components (measured: 486s)
+//   10min (600s):  9000 components (extrapolated carefully)
+//   20min (1200s): 12000 components (conservative, avoid OOM)
 
 const COMPONENT_TARGETS = {
-  1: 1700,    // ~1min build time (measured: 62s with 1680)
-  2: 3500,    // ~2min build time (measured: 108s with 3480)
-  4: 5500,    // ~4min build time (adjusted down from 8400)
-  8: 8400,    // ~8min build time (measured: 486s with 8400)
-  10: 9800,   // ~10min build time (extrapolated)
-  20: 15000,  // ~20min build time (may OOM on Standard)
+  1: 1680,    // ~1min build time (measured: 62s)
+  2: 3480,    // ~2min build time (measured: 108s)
+  4: 7200,    // ~4min build time (5500→162s, scaled up)
+  8: 8400,    // ~8min build time (measured: 486s)
+  10: 9000,   // ~10min build time (conservative)
+  20: 12000,  // ~20min build time (conservative, avoid OOM)
 };
 
 const API_ROUTES_PER_MULTIPLIER = 100;  // Serverless functions per E2E multiplier
