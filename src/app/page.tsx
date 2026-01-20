@@ -61,15 +61,30 @@ async function getLatestBuildsByConfig(): Promise<Map<string, TimingRecord>> {
       }
     }
     
-    // Group by config key and keep the latest for each
+    // Group by config key and keep the latest COMPLETE record for each
+    // A complete record has totalMs (build time) populated
     for (const record of records) {
       const configKey = `${record.config.MachineType}-${record.config.BuildTimeOnStandard}-${record.config.FullTimeOnStandard}`;
       const existing = configMap.get(configKey);
       
-      if (!existing || (record.timestamps.buildStarted && existing.timestamps.buildStarted && 
-          new Date(record.timestamps.buildStarted) > new Date(existing.timestamps.buildStarted))) {
+      // Skip records without build time data
+      const hasCompleteData = record.durations.totalMs != null && record.durations.totalMs > 0;
+      const existingHasCompleteData = existing?.durations.totalMs != null && existing.durations.totalMs > 0;
+      
+      if (!existing) {
+        // No existing record, use this one
         configMap.set(configKey, record);
+      } else if (hasCompleteData && !existingHasCompleteData) {
+        // This record has data, existing doesn't - prefer this one
+        configMap.set(configKey, record);
+      } else if (hasCompleteData && existingHasCompleteData) {
+        // Both have data - prefer the most recent one
+        if (record.timestamps.buildStarted && existing.timestamps.buildStarted && 
+            new Date(record.timestamps.buildStarted) > new Date(existing.timestamps.buildStarted)) {
+          configMap.set(configKey, record);
+        }
       }
+      // If neither has complete data, keep the existing one (first found)
     }
   } catch (error) {
     console.error('Failed to fetch timing data:', error);
@@ -120,13 +135,13 @@ export default async function Home() {
               <thead>
                 <tr className="bg-zinc-100 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700">
                   <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                    Machine Type
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                     Target Build Time (Std)
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                     Target Total Time (Std)
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                    Machine Type
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                     Actual Build Time
@@ -147,14 +162,14 @@ export default async function Home() {
                       index % 2 === 0 ? 'bg-white dark:bg-zinc-900' : 'bg-zinc-50 dark:bg-zinc-900/50'
                     } hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors`}
                   >
-                    <td className="px-6 py-4 text-sm text-zinc-900 dark:text-zinc-100 font-medium">
-                      {record.config.MachineType}
-                    </td>
                     <td className="px-6 py-4 text-sm text-zinc-600 dark:text-zinc-400">
                       {record.config.BuildTimeOnStandard}
                     </td>
                     <td className="px-6 py-4 text-sm text-zinc-600 dark:text-zinc-400">
                       {record.config.FullTimeOnStandard}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-zinc-900 dark:text-zinc-100 font-medium">
+                      {record.config.MachineType}
                     </td>
                     <td className="px-6 py-4 text-sm font-mono">
                       <span className={`px-2 py-1 rounded ${
