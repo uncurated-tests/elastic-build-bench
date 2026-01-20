@@ -77,10 +77,19 @@ function getGitCommit() {
 }
 
 function getGitBranch() {
+  // Prefer Vercel's environment variable (more reliable in CI)
+  if (process.env.VERCEL_GIT_COMMIT_REF) {
+    return process.env.VERCEL_GIT_COMMIT_REF;
+  }
   try {
-    return execSync('git rev-parse --abbrev-ref HEAD', { cwd: projectRoot, encoding: 'utf-8' }).trim();
+    const branch = execSync('git rev-parse --abbrev-ref HEAD', { cwd: projectRoot, encoding: 'utf-8' }).trim();
+    // In detached HEAD state, this returns "HEAD"
+    if (branch === 'HEAD') {
+      return 'unknown';
+    }
+    return branch;
   } catch {
-    return process.env.VERCEL_GIT_COMMIT_REF || 'unknown';
+    return 'unknown';
   }
 }
 
