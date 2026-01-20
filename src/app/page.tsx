@@ -64,9 +64,21 @@ async function getLatestBuildsByConfig(): Promise<Map<string, TimingRecord>> {
     
     // Group by config key and keep the latest COMPLETE record for each
     // A complete record has totalMs (build time) populated
+    const MAX_REASONABLE_E2E_MS = 10 * 60 * 1000; // 10 minutes max for E2E
+    
     for (const record of records) {
       // Skip baseline records (main branch with no synthetic load)
       if (record.config.BuildTimeOnStandard === 'baseline') {
+        continue;
+      }
+      
+      // Skip records with unreasonably high E2E times (likely data errors)
+      if (record.durations.totalWithDeploymentMs && record.durations.totalWithDeploymentMs > MAX_REASONABLE_E2E_MS) {
+        continue;
+      }
+      
+      // Skip records with unknown commits (incomplete data)
+      if (record.gitCommit === 'unknown') {
         continue;
       }
       
