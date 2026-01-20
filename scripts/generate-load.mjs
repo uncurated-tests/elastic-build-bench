@@ -51,28 +51,29 @@ const targetE2EMinutes = buildMinutes * e2eMultiplier;
 const targetE2ESeconds = targetE2EMinutes * 60;
 
 // Calculate components needed for target E2E time
-// Using the formula: time = 40 + components/38
-// So: components = (time - 40) * 38
-const calculatedComponents = Math.max(100, Math.floor((targetE2ESeconds - 40) * 38));
+// Using the formula: time = 17 + components/55.6
+// So: components = (time - 17) * 55.6
+const calculatedComponents = Math.max(100, Math.floor((targetE2ESeconds - 17) * 55.6));
 
 // Use predefined targets for common cases, or calculated value
 const E2E_COMPONENT_TARGETS = {
   // Format: "buildMin-multiplier": components
-  "1-1": 760,      // 1min E2E
-  "1-1.5": 1520,   // 1.5min E2E  
-  "1-2": 3040,     // 2min E2E
-  "2-1": 3040,     // 2min E2E
-  "2-1.5": 5320,   // 3min E2E
-  "2-2": 7600,     // 4min E2E
-  "4-1": 7600,     // 4min E2E
-  "4-1.5": 13300,  // 6min E2E
-  "4-2": 19000,    // 8min E2E
-  "8-1": 16720,    // 8min E2E
-  "8-1.5": 26600,  // 12min E2E
-  "8-2": 36480,    // 16min E2E
-  "10-1": 21280,   // 10min E2E
-  "10-1.5": 33440, // 15min E2E
-  "10-2": 45600,   // 20min E2E
+  // Model: components = (targetSec - 17) × 55.6
+  "1-1": 2400,     // 1min E2E: (60-17)×55.6 = 2391
+  "1-1.5": 4060,   // 1.5min E2E: (90-17)×55.6 = 4059  
+  "1-2": 5730,     // 2min E2E: (120-17)×55.6 = 5727
+  "2-1": 5730,     // 2min E2E
+  "2-1.5": 9070,   // 3min E2E: (180-17)×55.6 = 9063
+  "2-2": 12400,    // 4min E2E: (240-17)×55.6 = 12399
+  "4-1": 12400,    // 4min E2E
+  "4-1.5": 19070,  // 6min E2E: (360-17)×55.6 = 19071
+  "4-2": 25750,    // 8min E2E: (480-17)×55.6 = 25747
+  "8-1": 25750,    // 8min E2E
+  "8-1.5": 39090,  // 12min E2E: (720-17)×55.6 = 39087
+  "8-2": 52430,    // 16min E2E: (960-17)×55.6 = 52431
+  "10-1": 32420,   // 10min E2E: (600-17)×55.6 = 32417
+  "10-1.5": 49100, // 15min E2E: (900-17)×55.6 = 49095
+  "10-2": 65820,   // 20min E2E: (1200-17)×55.6 = 65815
 };
 
 const targetKey = `${buildMinutes}-${e2eMultiplier}`;
