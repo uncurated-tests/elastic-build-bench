@@ -2,20 +2,195 @@
 /**
  * Build script with timing instrumentation
  * Logs timestamps to Vercel Blob storage for build performance tracking
+ * 
+ * Environment variables:
+ *   BUILD_MINUTES - Target build time in minutes (e.g., "1", "2", "4")
+ *   E2E_MULTIPLIER - E2E time multiplier (default: 2)
  */
 
 import { put } from '@vercel/blob';
 import { execSync } from 'child_process';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, '..');
 
-// Load build config
+// Get build target from environment variable
+const buildMinutes = parseInt(process.env.BUILD_MINUTES || '0', 10);
+const e2eMultiplier = parseInt(process.env.E2E_MULTIPLIER || '2', 10);
+
+// Component counts based on measured build rates
+// ~28-35 components/second on Vercel Standard machine
+const COMPONENT_TARGETS = {
+  1: 1680,    // ~1min build time (28 comp/s)
+  2: 3480,    // ~2min build time (29 comp/s)
+  4: 8400,    // ~4min build time (35 comp/s)
+};
+
+// Generate synthetic load if BUILD_MINUTES is set
+if (buildMinutes > 0) {
+  console.log(`[LOAD] Generating synthetic load for ${buildMinutes}min build target...`);
+  generateSyntheticLoad(buildMinutes, e2eMultiplier);
+}
+
+// Load build config (may have been updated by generateSyntheticLoad)
 const configPath = join(projectRoot, 'build-config.json');
 const config = JSON.parse(readFileSync(configPath, 'utf-8'));
+
+/**
+ * Generate synthetic components for build load testing
+ */
+function generateSyntheticLoad(minutes, multiplier) {
+  const numComponents = COMPONENT_TARGETS[minutes] || Math.floor(minutes * 1680);
+  const numApiRoutes = Math.floor((multiplier - 1) * 100);
+  const numStaticPages = Math.floor((multiplier - 1) * 80);
+  
+  console.log(`[LOAD] Will generate:`);
+  console.log(`[LOAD]   - ${numComponents} React components`);
+  console.log(`[LOAD]   - ${numApiRoutes} API routes`);
+  console.log(`[LOAD]   - ${numStaticPages} static pages`);
+  
+  // Clean up and create directories
+  const generatedDir = join(projectRoot, 'src', 'generated');
+  if (existsSync(generatedDir)) {
+    rmSync(generatedDir, { recursive: true });
+  }
+  mkdirSync(join(generatedDir, 'components'), { recursive: true });
+  
+  // Generate components
+  console.log('[LOAD] Generating components...');
+  const componentExports = [];
+  for (let i = 0; i < numComponents; i++) {
+    const componentPath = join(generatedDir, 'components', `Component${i}.tsx`);
+    writeFileSync(componentPath, generateComponent(i));
+    componentExports.push(`export { default as Component${i} } from './components/Component${i}';`);
+    
+    if ((i + 1) % 500 === 0) {
+      console.log(`[LOAD]   Generated ${i + 1}/${numComponents} components`);
+    }
+  }
+  
+  // Write index file
+  writeFileSync(join(generatedDir, 'index.ts'), componentExports.join('\n'));
+  
+  // Generate static pages that import components
+  const pagesDir = join(projectRoot, 'src', 'app', 'bench');
+  if (existsSync(pagesDir)) {
+    rmSync(pagesDir, { recursive: true });
+  }
+  
+  if (numStaticPages > 0) {
+    console.log('[LOAD] Generating static pages...');
+    for (let i = 0; i < numStaticPages; i++) {
+      const pageDir = join(pagesDir, `page${i}`);
+      mkdirSync(pageDir, { recursive: true });
+      writeFileSync(join(pageDir, 'page.tsx'), generateStaticPage(i, numComponents, numStaticPages));
+    }
+  }
+  
+  // Update build config
+  const newConfig = {
+    BuildTimeOnStandard: `${minutes}min`,
+    FullTimeOnStandard: `${minutes * multiplier}min`,
+    MachineType: 'Standard',
+    components: numComponents,
+    apiRoutes: numApiRoutes,
+    staticPages: numStaticPages
+  };
+  writeFileSync(configPath, JSON.stringify(newConfig, null, 2) + '\n');
+  
+  console.log(`[LOAD] Generation complete!`);
+}
+
+function generateComponent(index) {
+  return `'use client';
+import React, { useState, useEffect, useMemo, useCallback, useRef, memo } from 'react';
+
+interface Props${index} {
+  data: { id: string; name: string; values: number[]; nested: { level1: { level2: { level3: { value: string } } } } };
+  onUpdate?: (data: Props${index}['data']) => void;
+}
+
+function useComputation${index}(input: number[]): number {
+  return useMemo(() => {
+    let result = 0;
+    for (let i = 0; i < input.length; i++) {
+      for (let j = 0; j < 10; j++) {
+        result += Math.sin(input[i] + j) * Math.cos(input[i] - j) * Math.tan((input[i] + j) * 0.1 + 0.01);
+      }
+    }
+    return result;
+  }, [input]);
+}
+
+const Component${index} = memo(function Component${index}({ data, onUpdate }: Props${index}) {
+  const [state, setState] = useState({ loading: false, computed: 0 });
+  const ref = useRef<HTMLDivElement>(null);
+  const computation = useComputation${index}(data.values);
+  
+  const handleClick = useCallback(() => {
+    if (onUpdate) onUpdate({ ...data, values: data.values.map(v => v * 2) });
+  }, [data, onUpdate]);
+
+  useEffect(() => {
+    setState(prev => ({ ...prev, computed: computation }));
+  }, [computation]);
+
+  return (
+    <div ref={ref} onClick={handleClick} className="p-4 border rounded-lg hover:shadow-md">
+      <h3 className="font-semibold">Component ${index}</h3>
+      <div className="mt-2 text-sm space-y-1">
+        <p>Computation: {computation.toFixed(4)}</p>
+        <p>ID: {data.id}</p>
+        <p>Nested: {data.nested.level1.level2.level3.value}</p>
+      </div>
+    </div>
+  );
+});
+
+Component${index}.displayName = 'Component${index}';
+export default Component${index};
+`;
+}
+
+function generateStaticPage(index, componentCount, totalPages) {
+  const batchSize = Math.ceil(componentCount / Math.max(1, totalPages));
+  const startComponent = index * batchSize;
+  const endComponent = Math.min(startComponent + batchSize, componentCount);
+  
+  const imports = [];
+  const components = [];
+  
+  for (let i = startComponent; i < endComponent; i++) {
+    imports.push(\`import Component\${i} from '@/generated/components/Component\${i}';\`);
+    components.push(\`Component\${i}\`);
+  }
+  
+  return \`\${imports.join('\\n')}
+
+const sampleData = {
+  id: 'page-\${index}',
+  name: 'Benchmark Page \${index}',
+  values: [1, 2, 3, 4, 5],
+  nested: { level1: { level2: { level3: { value: 'deep-\${index}' } } } },
+};
+
+export default function BenchPage\${index}() {
+  return (
+    <div className="p-8">
+      <h1 className="text-2xl font-bold mb-4">Benchmark Page \${index}</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {[\${components.join(', ')}].map((Component, idx) => (
+          <Component key={idx} data={sampleData} />
+        ))}
+      </div>
+    </div>
+  );
+}
+\`;
+}
 
 // Detect machine type from Vercel project name
 function detectMachineType() {
