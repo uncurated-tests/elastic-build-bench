@@ -1,8 +1,8 @@
 {
-  "BuildTimeOnStandard": "20min",
-  "FullTimeOnStandard": "40min",
+  "BuildTimeOnStandard": "0.5min",
+  "FullTimeOnStandard": "1min",
   "MachineType": "Standard",
-  "components": 34000,
+  "components": 850,
   "apiRoutes": 100,
   "staticPages": 80
 }
