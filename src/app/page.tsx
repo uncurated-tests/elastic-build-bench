@@ -138,6 +138,38 @@ export default async function Home() {
     return machineOrderA - machineOrderB;
   });
 
+  // Build a lookup map for Standard E2E times by (BuildTimeOnStandard, FullTimeOnStandard)
+  const standardE2EMap = new Map<string, number>();
+  for (const record of records) {
+    if (record.config.MachineType === 'Standard' && record.durations.totalWithDeploymentMs) {
+      const key = `${record.config.BuildTimeOnStandard}-${record.config.FullTimeOnStandard}`;
+      standardE2EMap.set(key, record.durations.totalWithDeploymentMs);
+    }
+  }
+
+  // Helper function to calculate build time reduction percentage
+  const getBuildTimeReduction = (record: TimingRecord): string => {
+    if (record.config.MachineType === 'Standard') {
+      return '-'; // Baseline, no reduction to show
+    }
+    
+    const key = `${record.config.BuildTimeOnStandard}-${record.config.FullTimeOnStandard}`;
+    const standardE2E = standardE2EMap.get(key);
+    const currentE2E = record.durations.totalWithDeploymentMs;
+    
+    if (!standardE2E || !currentE2E) {
+      return '-';
+    }
+    
+    const reduction = ((standardE2E - currentE2E) / standardE2E) * 100;
+    if (reduction > 0) {
+      return `-${reduction.toFixed(0)}%`;
+    } else if (reduction < 0) {
+      return `+${Math.abs(reduction).toFixed(0)}%`;
+    }
+    return '0%';
+  };
+
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-8">
       <main className="max-w-6xl mx-auto">
@@ -173,6 +205,9 @@ export default async function Home() {
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                     Actual E2E Time
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                    Build Time Reduction
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                     Branch
@@ -213,6 +248,24 @@ export default async function Home() {
                       }`}>
                         {formatDuration(record.durations.totalWithDeploymentMs)}
                       </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm font-mono">
+                      {(() => {
+                        const reduction = getBuildTimeReduction(record);
+                        if (reduction === '-') {
+                          return <span className="text-zinc-400">-</span>;
+                        }
+                        const isReduction = reduction.startsWith('-');
+                        return (
+                          <span className={`px-2 py-1 rounded font-medium ${
+                            isReduction
+                              ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                              : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                          }`}>
+                            {reduction}
+                          </span>
+                        );
+                      })()}
                     </td>
                     <td className="px-6 py-4 text-sm text-zinc-500 dark:text-zinc-500 font-mono">
                       {record.gitBranch}
