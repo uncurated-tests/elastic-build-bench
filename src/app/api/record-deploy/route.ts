@@ -168,8 +168,15 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const autoComplete = url.searchParams.get('autoComplete') === 'true';
     
-    // List all timing records
-    const { blobs } = await list({ prefix: 'timing/' });
+    // List all timing records with pagination to get all blobs
+    let blobs: Awaited<ReturnType<typeof list>>['blobs'] = [];
+    let cursor: string | undefined;
+    
+    do {
+      const result = await list({ prefix: 'timing/', cursor, limit: 1000 });
+      blobs = blobs.concat(result.blobs);
+      cursor = result.cursor;
+    } while (cursor);
     
     // Group blobs by runId and get the most complete version for each
     const runIdMap = new Map<string, typeof blobs[0]>();
@@ -217,7 +224,15 @@ export async function GET(request: Request) {
       
       // Re-fetch blobs after auto-completing
       if (autoCompletedCount > 0) {
-        const { blobs: updatedBlobs } = await list({ prefix: 'timing/' });
+        blobs = [];
+        cursor = undefined;
+        do {
+          const result = await list({ prefix: 'timing/', cursor, limit: 1000 });
+          blobs = blobs.concat(result.blobs);
+          cursor = result.cursor;
+        } while (cursor);
+        
+        const updatedBlobs = blobs;
         runIdMap.clear();
         
         for (const blob of updatedBlobs) {
