@@ -1,9 +1,80 @@
 'use client';
 import React, { useState, useEffect, useMemo, useCallback, useRef, memo } from 'react';
 
+// Complex nested types for this component
+interface DataLevel3_69 {
+  value: string;
+  computed: number;
+  metadata: Record<string, unknown>;
+}
+
+interface DataLevel2_69 {
+  level3: DataLevel3_69;
+  items: Array<{ id: number; name: string }>;
+}
+
+interface DataLevel1_69 {
+  level2: DataLevel2_69;
+  config: { enabled: boolean; threshold: number };
+}
+
 interface Props69 {
-  data: { id: string; name: string; values: number[]; nested: { level1: { level2: { level3: { value: string } } } } };
+  data: {
+    id: string;
+    name: string;
+    values: number[];
+    nested: {
+      level1: DataLevel1_69;
+    };
+  };
   onUpdate?: (data: Props69['data']) => void;
+  config?: Partial<{
+    enabled: boolean;
+    threshold: number;
+    options: Array<{ key: string; value: unknown }>;
+    callbacks: {
+      onStart?: () => void;
+      onComplete?: (result: unknown) => void;
+      onError?: (error: Error) => void;
+    };
+  }>;
+}
+
+type State69 = {
+  loading: boolean;
+  error: Error | null;
+  result: Props69['data'] | null;
+  history: Props69['data'][];
+  computed: number;
+};
+
+type Action69 = 
+  | { type: 'LOADING' }
+  | { type: 'SUCCESS'; payload: Props69['data'] }
+  | { type: 'ERROR'; error: Error }
+  | { type: 'COMPUTE'; value: number }
+  | { type: 'RESET' };
+
+function reducer69(state: State69, action: Action69): State69 {
+  switch (action.type) {
+    case 'LOADING':
+      return { ...state, loading: true, error: null };
+    case 'SUCCESS':
+      return { 
+        ...state, 
+        loading: false, 
+        result: action.payload,
+        history: [...state.history, action.payload].slice(-10)
+      };
+    case 'ERROR':
+      return { ...state, loading: false, error: action.error };
+    case 'COMPUTE':
+      return { ...state, computed: action.value };
+    case 'RESET':
+      return { loading: false, error: null, result: null, history: [], computed: 0 };
+    default:
+      return state;
+  }
 }
 
 function useComputation69(input: number[]): number {
@@ -18,30 +89,106 @@ function useComputation69(input: number[]): number {
   }, [input]);
 }
 
-const Component69 = memo(function Component69({ data, onUpdate }: Props69) {
-  const [state, setState] = useState({ loading: false, computed: 0 });
+function useDeepMemo69<T>(value: T, deps: React.DependencyList): T {
+  const ref = useRef<T>(value);
+  const depsRef = useRef<React.DependencyList>(deps);
+  
+  if (JSON.stringify(deps) !== JSON.stringify(depsRef.current)) {
+    ref.current = value;
+    depsRef.current = deps;
+  }
+  
+  return ref.current;
+}
+
+const Component69 = memo(function Component69({ data, onUpdate, config }: Props69) {
+  const [state, setState] = useState<State69>({
+    loading: false,
+    error: null,
+    result: null,
+    history: [],
+    computed: 0,
+  });
+  
   const ref = useRef<HTMLDivElement>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
   const computation = useComputation69(data.values);
   
+  const memoizedData = useDeepMemo69(data, [data.id, data.name, ...data.values]);
+  
   const handleClick = useCallback(() => {
-    if (onUpdate) onUpdate({ ...data, values: data.values.map(v => v * 2) });
-  }, [data, onUpdate]);
+    if (onUpdate && config?.enabled) {
+      config?.callbacks?.onStart?.();
+      onUpdate({
+        ...data,
+        values: data.values.map(v => v * (config.threshold || 1)),
+      });
+      config?.callbacks?.onComplete?.(data);
+    }
+  }, [data, onUpdate, config]);
+
+  const processData = useCallback(async () => {
+    setState(prev => ({ ...prev, loading: true }));
+    try {
+      await new Promise(resolve => setTimeout(resolve, 10));
+      setState(prev => ({ 
+        ...prev, 
+        loading: false, 
+        result: memoizedData,
+        history: [...prev.history, memoizedData].slice(-5),
+        computed: computation
+      }));
+    } catch (error) {
+      setState(prev => ({ ...prev, loading: false, error: error as Error }));
+      config?.callbacks?.onError?.(error as Error);
+    }
+  }, [memoizedData, computation, config?.callbacks]);
 
   useEffect(() => {
-    setState(prev => ({ ...prev, computed: computation }));
-  }, [computation]);
+    processData();
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [processData]);
+
+  if (state.loading) {
+    return <div ref={ref} className="animate-pulse p-4">Loading 69...</div>;
+  }
+
+  if (state.error) {
+    return <div ref={ref} className="text-red-500 p-4">Error: {state.error.message}</div>;
+  }
 
   return (
-    <div ref={ref} onClick={handleClick} className="p-4 border rounded-lg hover:shadow-md">
-      <h3 className="font-semibold">Component 69</h3>
-      <div className="mt-2 text-sm space-y-1">
+    <div 
+      ref={ref} 
+      onClick={handleClick} 
+      className="p-4 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:shadow-md transition-shadow"
+    >
+      <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">Component 69</h3>
+      <div className="mt-2 text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
         <p>Computation: {computation.toFixed(4)}</p>
         <p>ID: {data.id}</p>
         <p>Nested: {data.nested.level1.level2.level3.value}</p>
+        <p>History: {state.history.length} items</p>
+        <p>State computed: {state.computed.toFixed(2)}</p>
       </div>
+      {config?.options && (
+        <div className="mt-2 flex flex-wrap gap-1">
+          {config.options.map((opt, i) => (
+            <span key={i} className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded text-xs">
+              {opt.key}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 });
 
 Component69.displayName = 'Component69';
+
 export default Component69;
+export type { Props69, State69, Action69 };

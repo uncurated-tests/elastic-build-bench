@@ -1,9 +1,80 @@
 'use client';
 import React, { useState, useEffect, useMemo, useCallback, useRef, memo } from 'react';
 
+// Complex nested types for this component
+interface DataLevel3_264 {
+  value: string;
+  computed: number;
+  metadata: Record<string, unknown>;
+}
+
+interface DataLevel2_264 {
+  level3: DataLevel3_264;
+  items: Array<{ id: number; name: string }>;
+}
+
+interface DataLevel1_264 {
+  level2: DataLevel2_264;
+  config: { enabled: boolean; threshold: number };
+}
+
 interface Props264 {
-  data: { id: string; name: string; values: number[]; nested: { level1: { level2: { level3: { value: string } } } } };
+  data: {
+    id: string;
+    name: string;
+    values: number[];
+    nested: {
+      level1: DataLevel1_264;
+    };
+  };
   onUpdate?: (data: Props264['data']) => void;
+  config?: Partial<{
+    enabled: boolean;
+    threshold: number;
+    options: Array<{ key: string; value: unknown }>;
+    callbacks: {
+      onStart?: () => void;
+      onComplete?: (result: unknown) => void;
+      onError?: (error: Error) => void;
+    };
+  }>;
+}
+
+type State264 = {
+  loading: boolean;
+  error: Error | null;
+  result: Props264['data'] | null;
+  history: Props264['data'][];
+  computed: number;
+};
+
+type Action264 = 
+  | { type: 'LOADING' }
+  | { type: 'SUCCESS'; payload: Props264['data'] }
+  | { type: 'ERROR'; error: Error }
+  | { type: 'COMPUTE'; value: number }
+  | { type: 'RESET' };
+
+function reducer264(state: State264, action: Action264): State264 {
+  switch (action.type) {
+    case 'LOADING':
+      return { ...state, loading: true, error: null };
+    case 'SUCCESS':
+      return { 
+        ...state, 
+        loading: false, 
+        result: action.payload,
+        history: [...state.history, action.payload].slice(-10)
+      };
+    case 'ERROR':
+      return { ...state, loading: false, error: action.error };
+    case 'COMPUTE':
+      return { ...state, computed: action.value };
+    case 'RESET':
+      return { loading: false, error: null, result: null, history: [], computed: 0 };
+    default:
+      return state;
+  }
 }
 
 function useComputation264(input: number[]): number {
@@ -18,30 +89,106 @@ function useComputation264(input: number[]): number {
   }, [input]);
 }
 
-const Component264 = memo(function Component264({ data, onUpdate }: Props264) {
-  const [state, setState] = useState({ loading: false, computed: 0 });
+function useDeepMemo264<T>(value: T, deps: React.DependencyList): T {
+  const ref = useRef<T>(value);
+  const depsRef = useRef<React.DependencyList>(deps);
+  
+  if (JSON.stringify(deps) !== JSON.stringify(depsRef.current)) {
+    ref.current = value;
+    depsRef.current = deps;
+  }
+  
+  return ref.current;
+}
+
+const Component264 = memo(function Component264({ data, onUpdate, config }: Props264) {
+  const [state, setState] = useState<State264>({
+    loading: false,
+    error: null,
+    result: null,
+    history: [],
+    computed: 0,
+  });
+  
   const ref = useRef<HTMLDivElement>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
   const computation = useComputation264(data.values);
   
+  const memoizedData = useDeepMemo264(data, [data.id, data.name, ...data.values]);
+  
   const handleClick = useCallback(() => {
-    if (onUpdate) onUpdate({ ...data, values: data.values.map(v => v * 2) });
-  }, [data, onUpdate]);
+    if (onUpdate && config?.enabled) {
+      config?.callbacks?.onStart?.();
+      onUpdate({
+        ...data,
+        values: data.values.map(v => v * (config.threshold || 1)),
+      });
+      config?.callbacks?.onComplete?.(data);
+    }
+  }, [data, onUpdate, config]);
+
+  const processData = useCallback(async () => {
+    setState(prev => ({ ...prev, loading: true }));
+    try {
+      await new Promise(resolve => setTimeout(resolve, 10));
+      setState(prev => ({ 
+        ...prev, 
+        loading: false, 
+        result: memoizedData,
+        history: [...prev.history, memoizedData].slice(-5),
+        computed: computation
+      }));
+    } catch (error) {
+      setState(prev => ({ ...prev, loading: false, error: error as Error }));
+      config?.callbacks?.onError?.(error as Error);
+    }
+  }, [memoizedData, computation, config?.callbacks]);
 
   useEffect(() => {
-    setState(prev => ({ ...prev, computed: computation }));
-  }, [computation]);
+    processData();
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [processData]);
+
+  if (state.loading) {
+    return <div ref={ref} className="animate-pulse p-4">Loading 264...</div>;
+  }
+
+  if (state.error) {
+    return <div ref={ref} className="text-red-500 p-4">Error: {state.error.message}</div>;
+  }
 
   return (
-    <div ref={ref} onClick={handleClick} className="p-4 border rounded-lg hover:shadow-md">
-      <h3 className="font-semibold">Component 264</h3>
-      <div className="mt-2 text-sm space-y-1">
+    <div 
+      ref={ref} 
+      onClick={handleClick} 
+      className="p-4 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:shadow-md transition-shadow"
+    >
+      <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">Component 264</h3>
+      <div className="mt-2 text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
         <p>Computation: {computation.toFixed(4)}</p>
         <p>ID: {data.id}</p>
         <p>Nested: {data.nested.level1.level2.level3.value}</p>
+        <p>History: {state.history.length} items</p>
+        <p>State computed: {state.computed.toFixed(2)}</p>
       </div>
+      {config?.options && (
+        <div className="mt-2 flex flex-wrap gap-1">
+          {config.options.map((opt, i) => (
+            <span key={i} className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded text-xs">
+              {opt.key}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 });
 
 Component264.displayName = 'Component264';
+
 export default Component264;
+export type { Props264, State264, Action264 };
