@@ -364,6 +364,52 @@ export default async function Home() {
           </>
         )}
 
+        {/* Methodology Section */}
+        <div className="mt-12 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-4">
+            Methodology
+          </h2>
+          <div className="text-sm text-zinc-600 dark:text-zinc-400 space-y-3">
+            <p>
+              This benchmark measures Vercel build performance across different machine types by using 
+              synthetically generated Next.js applications with controlled complexity levels.
+            </p>
+            <ul className="list-disc list-inside space-y-2 ml-2">
+              <li>
+                <strong>Build Time Control:</strong> Each branch contains a specific number of React components 
+                (~28-35 components per second of target build time on Standard machines). Components include 
+                complex TypeScript types, React hooks, and state management to stress the compiler.
+              </li>
+              <li>
+                <strong>E2E Multiplier:</strong> The &quot;2x&quot; and &quot;3x&quot; variants add additional API routes and 
+                static pages to extend the total deployment time beyond just compilation.
+              </li>
+              <li>
+                <strong>Timing Instrumentation:</strong> A custom build script records timestamps at each phase 
+                (dependency install, compilation, deployment) and uploads them to Vercel Blob storage.
+              </li>
+              <li>
+                <strong>Machine Detection:</strong> The same codebase is deployed to three Vercel projects 
+                configured with different machine types (Standard, Enhanced, Turbo), allowing direct comparison.
+              </li>
+              <li>
+                <strong>Build Time Reduction:</strong> Shows the percentage improvement in E2E time compared to 
+                the Standard machine baseline for the same workload configuration.
+              </li>
+            </ul>
+            <p className="text-xs text-zinc-500 dark:text-zinc-500 mt-4">
+              Source code: <a 
+                href="https://github.com/uncurated-tests/elastic-build-bench" 
+                className="text-blue-600 dark:text-blue-400 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                github.com/uncurated-tests/elastic-build-bench
+              </a>
+            </p>
+          </div>
+        </div>
+
         <div className="mt-8 text-sm text-zinc-500 dark:text-zinc-500">
           <p>Last updated: {new Date().toISOString()}</p>
           <p className="mt-1">
