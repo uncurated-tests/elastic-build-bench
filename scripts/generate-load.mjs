@@ -20,22 +20,27 @@ const e2eMultiplier = parseFloat(process.argv[3] || '2');
 console.log(`Generating load for ${buildMinutes}min build, ${e2eMultiplier}x E2E multiplier`);
 
 // Scaling factors tuned based on actual Vercel build results
-// Measurements show ~28-35 components/second on Vercel Standard machine
+// Build time scales NON-LINEARLY with component count (gets slower)
 // Actual measurements (Jan 20, 2026):
-//   1200 components → 43s (28 comp/s)
-//   2400 components → 83s (29 comp/s)
-//   4800 components → 139s (35 comp/s)
-// Calculated targets using measured rates:
-//   1min (60s):  60 * 28 = 1680 components
-//   2min (120s): 120 * 29 = 3480 components  
-//   4min (240s): 240 * 35 = 8400 components
+//   1680 components → 62s  (27 comp/s)
+//   3480 components → 108s (32 comp/s)  
+//   8400 components → 486s (17 comp/s) - slower due to memory/compilation overhead
+// 
+// Revised targets based on actual measurements:
+//   1min:  ~1700 components
+//   2min:  ~3500 components
+//   4min:  ~4200 components (NOT 8400 - that gives 8min!)
+//   8min:  ~8400 components (based on actual measurement)
+//   10min: ~10500 components (extrapolated)
+//   20min: ~21000 components (extrapolated)
 
 const COMPONENT_TARGETS = {
-  1: 1680,    // ~1min build time (28 comp/s)
-  2: 3480,    // ~2min build time (29 comp/s)
-  4: 8400,    // ~4min build time (35 comp/s)
-  8: 16800,   // ~8min build time (35 comp/s)
-  10: 21000,  // ~10min build time (35 comp/s)
+  1: 1700,    // ~1min build time
+  2: 3500,    // ~2min build time
+  4: 4200,    // ~4min build time
+  8: 8400,    // ~8min build time (measured)
+  10: 10500,  // ~10min build time (extrapolated)
+  20: 21000,  // ~20min build time (extrapolated)
 };
 
 const API_ROUTES_PER_MULTIPLIER = 100;  // Serverless functions per E2E multiplier

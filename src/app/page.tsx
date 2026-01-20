@@ -129,7 +129,7 @@ async function getLatestBuildsByConfig(): Promise<Map<string, TimingRecord>> {
     
     // Group by config key and keep the latest COMPLETE record for each
     // A complete record has totalMs (build time) populated
-    const MAX_REASONABLE_E2E_MS = 10 * 60 * 1000; // 10 minutes max for E2E
+    const MAX_REASONABLE_E2E_MS = 120 * 60 * 1000; // 120 minutes max for E2E (allow long builds)
     
     for (const record of records) {
       // Skip baseline records (main branch with no synthetic load)
