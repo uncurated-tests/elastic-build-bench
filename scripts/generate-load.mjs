@@ -39,20 +39,37 @@ const COMPONENT_TARGETS = {
   20: 44100,  // ~20min: (1200-40)×38 = 44080 (may OOM, be careful)
 };
 
-const API_ROUTES_PER_MULTIPLIER = 100;  // Serverless functions per E2E multiplier
-const STATIC_PAGES_PER_MULTIPLIER = 80;  // Static pages to pre-render
+// E2E time extension strategy using SSG (Static Site Generation):
+// - We use generateStaticParams to create many static routes
+// - Each route does server-side computation during build
+// - Estimated ~0.3-0.5s per static page on Standard machine
+//
+// E2E formula:
+//   E2E = BuildTime + SSGTime + DeploymentOverhead
+//   TargetE2E = buildMinutes * e2eMultiplier
+//   ExtraTime = TargetE2E - BuildTime = BuildTime * (e2eMultiplier - 1)
+//   PagesNeeded = ExtraTime / timePerPage
+
+const SECONDS_PER_SSG_PAGE = 0.4;  // ~0.4s per page with heavy computation
 
 // Use predefined targets if available, otherwise estimate linearly
 const numComponents = COMPONENT_TARGETS[buildMinutes] || Math.floor(buildMinutes * 1700);
-const numApiRoutes = Math.floor((e2eMultiplier - 1) * API_ROUTES_PER_MULTIPLIER);
-// Cap static pages to ensure each page has at least some components
-const rawStaticPages = Math.floor((e2eMultiplier - 1) * STATIC_PAGES_PER_MULTIPLIER);
-const numStaticPages = Math.min(rawStaticPages, numComponents); // Ensure at least 1 component per page
+
+// Calculate extra E2E time needed beyond build time
+const buildTimeSeconds = buildMinutes * 60;
+const extraE2ESeconds = buildTimeSeconds * (e2eMultiplier - 1);
+
+// Calculate SSG pages needed to fill that extra time
+const numSSGPages = Math.max(0, Math.ceil(extraE2ESeconds / SECONDS_PER_SSG_PAGE));
+
+// Minimal API routes (not for timing, just for realism)
+const numApiRoutes = e2eMultiplier > 1 ? 5 : 0;
 
 console.log(`Will generate:`);
-console.log(`  - ${numComponents} React components`);
+console.log(`  - ${numComponents} React components (for ${buildMinutes}min build)`);
+console.log(`  - ${numSSGPages} SSG pages (for ${extraE2ESeconds}s extra E2E time)`);
 console.log(`  - ${numApiRoutes} API routes`);
-console.log(`  - ${numStaticPages} static pages`);
+console.log(`  - Target E2E: ${buildMinutes * e2eMultiplier}min`);
 
 // Clean up previous generated files
 const generatedDir = join(projectRoot, 'src', 'generated');
@@ -381,63 +398,73 @@ export async function POST(request: Request): Promise<NextResponse<ResponseData>
 `;
 }
 
-// Generate static page that imports generated components
-function generateStaticPage(index, componentCount) {
-  // Each page imports a batch of components
-  const batchSize = Math.ceil(componentCount / Math.max(1, numStaticPages));
-  const startComponent = index * batchSize;
-  const endComponent = Math.min(startComponent + batchSize, componentCount);
+// Generate SSG dynamic route with generateStaticParams
+// This creates a single [slug]/page.tsx that pre-renders many pages at build time
+function generateSSGRoute(totalPages) {
+  return `// SSG route - pre-renders ${totalPages} pages at build time
+// Each page does heavy server-side computation to extend E2E time
+
+// Generate static params for all pages
+export function generateStaticParams() {
+  const params = [];
+  for (let i = 0; i < ${totalPages}; i++) {
+    params.push({ slug: \`page-\${i}\` });
+  }
+  return params;
+}
+
+// Heavy computation function that runs during SSG
+function heavyComputation(seed: number, iterations: number = 50000): number {
+  let result = seed;
+  for (let i = 0; i < iterations; i++) {
+    result = Math.sin(result + i * 0.001) * Math.cos(result - i * 0.001) + Math.sqrt(Math.abs(result));
+    result = (result * 1000000) % 1000;
+  }
+  return result;
+}
+
+// Simulate data fetching with computation
+async function getPageData(slug: string) {
+  const pageNum = parseInt(slug.replace('page-', ''), 10) || 0;
   
-  const imports = [];
-  const components = [];
-  
-  for (let i = startComponent; i < endComponent; i++) {
-    imports.push(`import Component${i} from '@/generated/components/Component${i}';`);
-    components.push(`Component${i}`);
+  // Heavy computation during SSG - this is what adds time
+  const computations = [];
+  for (let i = 0; i < 10; i++) {
+    computations.push(heavyComputation(pageNum * 1000 + i));
   }
   
-  // If no components for this page (edge case), import at least one component
-  // to avoid TypeScript errors with empty arrays
-  if (components.length === 0) {
-    const fallbackComponent = index % componentCount;
-    imports.push(`import Component${fallbackComponent} from '@/generated/components/Component${fallbackComponent}';`);
-    components.push(`Component${fallbackComponent}`);
-  }
+  return {
+    slug,
+    pageNum,
+    computations,
+    generatedAt: new Date().toISOString(),
+    checksum: computations.reduce((a, b) => a + b, 0),
+  };
+}
+
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export default async function SSGPage({ params }: PageProps) {
+  const { slug } = await params;
+  const data = await getPageData(slug);
   
-  return `${imports.join('\n')}
-
-const sampleData = {
-  id: 'page-${index}',
-  name: 'Benchmark Page ${index}',
-  values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-  nested: {
-    level1: {
-      level2: {
-        level3: {
-          value: 'deep-value-${index}',
-          computed: ${index * 1.5},
-          metadata: { page: ${index} },
-        },
-        items: [{ id: 1, name: 'item1' }, { id: 2, name: 'item2' }],
-      },
-      config: { enabled: true, threshold: ${1 + index * 0.1} },
-    },
-  },
-};
-
-export default function BenchPage${index}() {
   return (
     <div className="p-8 min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <h1 className="text-2xl font-bold mb-4 text-zinc-900 dark:text-zinc-100">
-        Benchmark Page ${index}
+        SSG Page {data.pageNum}
       </h1>
-      <p className="mb-6 text-zinc-600 dark:text-zinc-400">
-        This page imports ${endComponent - startComponent} components for build testing.
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {[${components.join(', ')}].map((Component, idx) => (
-          <Component key={idx} data={sampleData} />
-        ))}
+      <div className="space-y-4 text-zinc-600 dark:text-zinc-400">
+        <p>Generated at: {data.generatedAt}</p>
+        <p>Checksum: {data.checksum.toFixed(4)}</p>
+        <div className="grid grid-cols-5 gap-2">
+          {data.computations.map((val, i) => (
+            <div key={i} className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded text-xs">
+              {val.toFixed(2)}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -452,8 +479,8 @@ function updateBuildConfig() {
     FullTimeOnStandard: `${buildMinutes * e2eMultiplier}min`,
     MachineType: "Standard",
     components: numComponents,
-    apiRoutes: numApiRoutes,
-    staticPages: numStaticPages
+    ssgPages: numSSGPages,
+    apiRoutes: numApiRoutes
   };
   writeFileSync(
     join(projectRoot, 'build-config.json'),
@@ -503,20 +530,13 @@ if (numApiRoutes > 0) {
   }
 }
 
-// Generate static pages that import components
-if (numStaticPages > 0) {
-  console.log('Generating static pages (with component imports)...');
-  mkdirSync(pagesGeneratedDir, { recursive: true });
-  
-  for (let i = 0; i < numStaticPages; i++) {
-    const pageDir = join(pagesGeneratedDir, `page${i}`);
-    mkdirSync(pageDir, { recursive: true });
-    writeFileSync(join(pageDir, 'page.tsx'), generateStaticPage(i, numComponents));
-    
-    if ((i + 1) % 10 === 0) {
-      console.log(`  Generated ${i + 1}/${numStaticPages} static pages`);
-    }
-  }
+// Generate SSG dynamic route if we need extra E2E time
+if (numSSGPages > 0) {
+  console.log(`Generating SSG route with ${numSSGPages} static pages...`);
+  const ssgRouteDir = join(pagesGeneratedDir, '[slug]');
+  mkdirSync(ssgRouteDir, { recursive: true });
+  writeFileSync(join(ssgRouteDir, 'page.tsx'), generateSSGRoute(numSSGPages));
+  console.log(`  Created dynamic SSG route at /bench/[slug]`);
 }
 
 // Update build config
@@ -524,6 +544,9 @@ updateBuildConfig();
 
 console.log('\nGeneration complete!');
 console.log(`Total files generated:`);
-console.log(`  - ${numComponents} components (imported by pages)`);
+console.log(`  - ${numComponents} components`);
+console.log(`  - ${numSSGPages} SSG pages (via generateStaticParams)`);
 console.log(`  - ${numApiRoutes} API routes`);
-console.log(`  - ${numStaticPages} static pages`);
+console.log(`Expected timings on Standard machine:`);
+console.log(`  - Build: ~${buildMinutes}min`);
+console.log(`  - E2E: ~${buildMinutes * e2eMultiplier}min`);
