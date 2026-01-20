@@ -1,4 +1,5 @@
 import { list } from '@vercel/blob';
+import BenchmarkTable from './components/BenchmarkTable';
 
 interface TimingRecord {
   runId: string;
