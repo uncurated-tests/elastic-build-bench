@@ -15,16 +15,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'runId is required' }, { status: 400 });
     }
 
-    // Find the existing timing file
+    // Find the build_complete timing file (contains full data)
     const { blobs } = await list({ prefix: `timing/${runId}` });
     
-    if (blobs.length === 0) {
-      return NextResponse.json({ error: 'Timing data not found for runId' }, { status: 404 });
+    // Look for the build_complete file which has all the timing data
+    const completeBlob = blobs.find(blob => blob.pathname.includes('build_complete'));
+    
+    if (!completeBlob) {
+      return NextResponse.json({ 
+        error: 'Timing data not found for runId', 
+        availableBlobs: blobs.map(b => b.pathname) 
+      }, { status: 404 });
     }
 
     // Fetch existing timing data
-    const existingBlob = blobs[0];
-    const response = await fetch(existingBlob.url);
+    const response = await fetch(completeBlob.url);
     const timingData = await response.json();
 
     // Update with deployment completion
@@ -68,11 +73,14 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    // List all timing records
+    // List all timing records - get only the build_complete files which have full data
     const { blobs } = await list({ prefix: 'timing/' });
     
+    // Filter to only get the build_complete files (they contain the full timing data)
+    const completeBlobs = blobs.filter(blob => blob.pathname.includes('build_complete'));
+    
     const timingRecords = await Promise.all(
-      blobs.slice(0, 20).map(async (blob) => {
+      completeBlobs.slice(0, 20).map(async (blob) => {
         try {
           const response = await fetch(blob.url);
           return await response.json();
@@ -83,7 +91,8 @@ export async function GET() {
     );
 
     return NextResponse.json({
-      count: blobs.length,
+      count: completeBlobs.length,
+      totalBlobs: blobs.length,
       records: timingRecords,
     });
   } catch (error) {

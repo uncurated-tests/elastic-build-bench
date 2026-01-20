@@ -73,7 +73,9 @@ async function uploadTimingData(phase) {
   }
 
   try {
-    const filename = `timing/${runId}.json`;
+    // Use phase-specific filename to avoid overwrite issues
+    // Final file will contain all data
+    const filename = `timing/${runId}-${phase}.json`;
     const blob = await put(filename, JSON.stringify(timingData, null, 2), {
       access: 'public',
       addRandomSuffix: false,
