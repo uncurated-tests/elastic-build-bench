@@ -39,7 +39,25 @@ if (buildMinutes > 0) {
 }
 
 // Load build config (may have been updated by generateSyntheticLoad)
-const config = JSON.parse(readFileSync(configPath, 'utf-8'));
+console.log('[DEBUG] Reading config from:', configPath);
+const configRaw = readFileSync(configPath, 'utf-8');
+console.log('[DEBUG] Raw config content:', configRaw);
+const config = JSON.parse(configRaw);
+console.log('[DEBUG] Parsed config:', JSON.stringify(config, null, 2));
+
+// Also log the directory contents for debugging
+try {
+  const { readdirSync } = await import('fs');
+  const srcGenerated = join(projectRoot, 'src', 'generated', 'components');
+  if (existsSync(srcGenerated)) {
+    const files = readdirSync(srcGenerated);
+    console.log(`[DEBUG] Component count in src/generated/components: ${files.length}`);
+  } else {
+    console.log('[DEBUG] src/generated/components does not exist');
+  }
+} catch (e) {
+  console.log('[DEBUG] Error listing components:', e.message);
+}
 
 /**
  * Generate synthetic components for build load testing
