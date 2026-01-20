@@ -92,6 +92,31 @@ const srcGenerated = join(projectRoot, 'src', 'generated', 'components');
 if (existsSync(srcGenerated)) {
   const files = readdirSync(srcGenerated);
   console.log(`[DEBUG] Component count in src/generated/components: ${files.length}`);
+  
+  // Inject unique build timestamp into each component to bust the cache
+  // This forces recompilation of all components on every build
+  const buildTimestamp = Date.now();
+  console.log(`[CACHE-BUST] Injecting build timestamp ${buildTimestamp} into ${files.length} components...`);
+  
+  let modified = 0;
+  for (const file of files) {
+    if (file.endsWith('.tsx')) {
+      const filePath = join(srcGenerated, file);
+      let content = readFileSync(filePath, 'utf-8');
+      
+      // Check if timestamp already exists and update it, or add it
+      if (content.includes('// BUILD_TIMESTAMP:')) {
+        content = content.replace(/\/\/ BUILD_TIMESTAMP: \d+/, `// BUILD_TIMESTAMP: ${buildTimestamp}`);
+      } else {
+        // Add timestamp as first line after 'use client'
+        content = content.replace("'use client';", `'use client';\n// BUILD_TIMESTAMP: ${buildTimestamp}`);
+      }
+      
+      writeFileSync(filePath, content);
+      modified++;
+    }
+  }
+  console.log(`[CACHE-BUST] Modified ${modified} component files`);
 } else {
   console.log('[DEBUG] src/generated/components does not exist');
 }
