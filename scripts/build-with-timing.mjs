@@ -273,7 +273,11 @@ function timestamp() {
 }
 
 async function uploadTimingData(phase) {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  console.log(`[TIMING] Attempting blob upload for phase '${phase}'...`);
+  console.log(`[TIMING] BLOB_READ_WRITE_TOKEN present: ${token ? 'yes (' + token.substring(0, 20) + '...)' : 'NO'}`);
+  
+  if (!token) {
     console.log(`[TIMING] Skipping blob upload - no BLOB_READ_WRITE_TOKEN (phase: ${phase})`);
     return;
   }
@@ -282,13 +286,19 @@ async function uploadTimingData(phase) {
     // Use phase-specific filename to avoid overwrite issues
     // Final file will contain all data
     const filename = `timing/${runId}-${phase}.json`;
+    console.log(`[TIMING] Uploading to: ${filename}`);
+    console.log(`[TIMING] Data: ${JSON.stringify(timingData, null, 2).substring(0, 200)}...`);
+    
     const blob = await put(filename, JSON.stringify(timingData, null, 2), {
       access: 'public',
       addRandomSuffix: false,
     });
-    console.log(`[TIMING] Uploaded timing data for phase '${phase}': ${blob.url}`);
+    console.log(`[TIMING] SUCCESS! Uploaded timing data for phase '${phase}': ${blob.url}`);
   } catch (error) {
-    console.error(`[TIMING] Failed to upload timing data:`, error.message);
+    console.error(`[TIMING] FAILED to upload timing data for phase '${phase}'`);
+    console.error(`[TIMING] Error name: ${error.name}`);
+    console.error(`[TIMING] Error message: ${error.message}`);
+    console.error(`[TIMING] Error stack: ${error.stack}`);
   }
 }
 
