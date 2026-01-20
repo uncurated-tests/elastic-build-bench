@@ -20,23 +20,26 @@ const e2eMultiplier = parseFloat(process.argv[3] || '2');
 console.log(`Generating load for ${buildMinutes}min build, ${e2eMultiplier}x E2E multiplier`);
 
 // Scaling factors tuned based on actual Vercel build results
-// Build time scales NON-LINEARLY - there's fixed overhead plus per-component time
+// Build time scales linearly with component count after fixed overhead
 // 
-// Actual measurements (Jan 20, 2026) on Standard machine (4 vCPU):
-//   2000 components → 92s   (21.7 comp/s) - fixed overhead dominates
-//   4000 components → 145s  (27.6 comp/s)
-//   7200 components → 218s  (33.0 comp/s) ✓ CONFIRMED
+// RECALIBRATED (Jan 20, 2026) on Standard machine (4 vCPU):
+//   3040 components → 72s
+//   7600 components → 154s
 //
-// Model: time ≈ 40s (fixed) + components / 38 (variable)
-// Solving for components: components ≈ (targetSec - 40) × 38
+// Linear regression:
+//   Δcomponents = 4560, Δtime = 82s → 55.6 components/second
+//   Overhead = 72 - (3040/55.6) = 17s
+//
+// Model: time ≈ 17s (fixed) + components / 55.6 (variable)
+// Solving for components: components ≈ (targetSec - 17) × 55.6
 
 const COMPONENT_TARGETS = {
-  1: 1300,    // ~1min: (60-40)×38 = 760, but add margin → 1300
-  2: 3000,    // ~2min: (120-40)×38 = 3040 → 3000
-  4: 7600,    // ~4min: (240-40)×38 = 7600 (7200→218s confirmed close)
-  8: 16700,   // ~8min: (480-40)×38 = 16720
-  10: 21300,  // ~10min: (600-40)×38 = 21280
-  20: 44100,  // ~20min: (1200-40)×38 = 44080 (may OOM, be careful)
+  1: 2400,    // ~1min: (60-17)×55.6 = 2391
+  2: 5730,    // ~2min: (120-17)×55.6 = 5727
+  4: 12400,   // ~4min: (240-17)×55.6 = 12399
+  8: 25750,   // ~8min: (480-17)×55.6 = 25747
+  10: 32420,  // ~10min: (600-17)×55.6 = 32417
+  20: 65820,  // ~20min: (1200-17)×55.6 = 65815 (may OOM, be careful)
 };
 
 // Simplified approach: E2E ≈ Build time in Next.js
@@ -44,35 +47,36 @@ const COMPONENT_TARGETS = {
 // E2E = buildMinutes * e2eMultiplier
 // We calculate components needed to achieve that E2E time
 //
-// Model from measurements: time ≈ 40s (fixed) + components / 38 (variable)
-// Solving: components = (targetSeconds - 40) * 38
+// Model from measurements: time ≈ 17s (fixed) + components / 55.6 (variable)
+// Solving: components = (targetSeconds - 17) * 55.6
 
 const targetE2EMinutes = buildMinutes * e2eMultiplier;
 const targetE2ESeconds = targetE2EMinutes * 60;
 
 // Calculate components needed for target E2E time
-// Using the formula: time = 40 + components/38
-// So: components = (time - 40) * 38
-const calculatedComponents = Math.max(100, Math.floor((targetE2ESeconds - 40) * 38));
+// Using the formula: time = 17 + components/55.6
+// So: components = (time - 17) * 55.6
+const calculatedComponents = Math.max(100, Math.floor((targetE2ESeconds - 17) * 55.6));
 
 // Use predefined targets for common cases, or calculated value
 const E2E_COMPONENT_TARGETS = {
   // Format: "buildMin-multiplier": components
-  "1-1": 760,      // 1min E2E
-  "1-1.5": 1520,   // 1.5min E2E  
-  "1-2": 3040,     // 2min E2E
-  "2-1": 3040,     // 2min E2E
-  "2-1.5": 5320,   // 3min E2E
-  "2-2": 7600,     // 4min E2E
-  "4-1": 7600,     // 4min E2E
-  "4-1.5": 13300,  // 6min E2E
-  "4-2": 19000,    // 8min E2E
-  "8-1": 16720,    // 8min E2E
-  "8-1.5": 26600,  // 12min E2E
-  "8-2": 36480,    // 16min E2E
-  "10-1": 21280,   // 10min E2E
-  "10-1.5": 33440, // 15min E2E
-  "10-2": 45600,   // 20min E2E
+  // Model: components = (targetSec - 17) × 55.6
+  "1-1": 2400,     // 1min E2E: (60-17)×55.6 = 2391
+  "1-1.5": 4060,   // 1.5min E2E: (90-17)×55.6 = 4059  
+  "1-2": 5730,     // 2min E2E: (120-17)×55.6 = 5727
+  "2-1": 5730,     // 2min E2E
+  "2-1.5": 9070,   // 3min E2E: (180-17)×55.6 = 9063
+  "2-2": 12400,    // 4min E2E: (240-17)×55.6 = 12399
+  "4-1": 12400,    // 4min E2E
+  "4-1.5": 19070,  // 6min E2E: (360-17)×55.6 = 19071
+  "4-2": 25750,    // 8min E2E: (480-17)×55.6 = 25747
+  "8-1": 25750,    // 8min E2E
+  "8-1.5": 39090,  // 12min E2E: (720-17)×55.6 = 39087
+  "8-2": 52430,    // 16min E2E: (960-17)×55.6 = 52431
+  "10-1": 32420,   // 10min E2E: (600-17)×55.6 = 32417
+  "10-1.5": 49100, // 15min E2E: (900-17)×55.6 = 49095
+  "10-2": 65820,   // 20min E2E: (1200-17)×55.6 = 65815
 };
 
 const targetKey = `${buildMinutes}-${e2eMultiplier}`;
