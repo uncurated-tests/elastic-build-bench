@@ -114,6 +114,13 @@ export default async function Home() {
     return match ? parseInt(match[1], 10) : 0;
   };
   
+  // Machine type order: Standard -> Enhanced -> Turbo
+  const machineTypeOrder: Record<string, number> = {
+    'Standard': 0,
+    'Enhanced': 1,
+    'Turbo': 2,
+  };
+  
   records.sort((a, b) => {
     // Column 1: Target Build Time (ascending)
     const buildTimeA = parseTime(a.config.BuildTimeOnStandard);
@@ -125,8 +132,10 @@ export default async function Home() {
     const totalTimeB = parseTime(b.config.FullTimeOnStandard);
     if (totalTimeA !== totalTimeB) return totalTimeA - totalTimeB;
     
-    // Column 3: Machine Type (alphabetical ascending)
-    return a.config.MachineType.localeCompare(b.config.MachineType);
+    // Column 3: Machine Type (Standard -> Enhanced -> Turbo)
+    const machineOrderA = machineTypeOrder[a.config.MachineType] ?? 99;
+    const machineOrderB = machineTypeOrder[b.config.MachineType] ?? 99;
+    return machineOrderA - machineOrderB;
   });
 
   return (
