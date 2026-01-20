@@ -73,14 +73,35 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    // List all timing records - get only the build_complete files which have full data
+    // List all timing records
     const { blobs } = await list({ prefix: 'timing/' });
     
-    // Filter to only get the build_complete files (they contain the full timing data)
-    const completeBlobs = blobs.filter(blob => blob.pathname.includes('build_complete'));
+    // Group blobs by runId and get the most complete version for each
+    const runIdMap = new Map<string, typeof blobs[0]>();
+    
+    for (const blob of blobs) {
+      // Extract runId from pathname (e.g., "timing/build-123456789-build_complete.json" -> "build-123456789")
+      const match = blob.pathname.match(/timing\/(build-\d+)/);
+      if (!match) continue;
+      
+      const runId = match[1];
+      const existing = runIdMap.get(runId);
+      
+      // Prefer final deployment file (no phase suffix), then build_complete
+      if (!existing) {
+        runIdMap.set(runId, blob);
+      } else if (blob.pathname === `timing/${runId}.json`) {
+        // This is the final file with deployment data
+        runIdMap.set(runId, blob);
+      } else if (blob.pathname.includes('build_complete') && !existing.pathname.endsWith(`${runId}.json`)) {
+        runIdMap.set(runId, blob);
+      }
+    }
+    
+    const selectedBlobs = Array.from(runIdMap.values());
     
     const timingRecords = await Promise.all(
-      completeBlobs.slice(0, 20).map(async (blob) => {
+      selectedBlobs.slice(0, 20).map(async (blob) => {
         try {
           const response = await fetch(blob.url);
           return await response.json();
@@ -91,7 +112,7 @@ export async function GET() {
     );
 
     return NextResponse.json({
-      count: completeBlobs.length,
+      count: selectedBlobs.length,
       totalBlobs: blobs.length,
       records: timingRecords,
     });
