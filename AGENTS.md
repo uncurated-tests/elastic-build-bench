@@ -39,11 +39,13 @@ vercel --prod --scope uncurated-tests
 
 ## Vercel Projects
 
-| Project | Machine Type | Scope |
-|---------|--------------|-------|
-| elastic-build-bench | Standard | uncurated-tests |
-| elastic-build-bench-enhanced | Enhanced | uncurated-tests |
-| elastic-build-bench-turbo | Turbo | uncurated-tests |
+| Project | Machine Type | Project ID | Scope |
+|---------|--------------|------------|-------|
+| elastic-build-bench | Standard (4 vCPU) | prj_O7dSIpzeQW5Y2T4prlpOI6gpWLyw | uncurated-tests |
+| elastic-build-bench-enhanced | Enhanced (8 vCPU) | prj_EL1OkL9hSDmNQxQ18THqzAky4wVF | uncurated-tests |
+| elastic-build-bench-turbo | Turbo (30 vCPU) | prj_peO4ut8pu8n8PV1Z93DcgYPt2Ny6 | uncurated-tests |
+
+Team ID: `team_MtLD9hKuWAvoDd3KmiHs9zUg`
 
 ## Key Files
 
