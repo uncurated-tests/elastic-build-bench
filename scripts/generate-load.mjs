@@ -39,37 +39,55 @@ const COMPONENT_TARGETS = {
   20: 44100,  // ~20min: (1200-40)×38 = 44080 (may OOM, be careful)
 };
 
-// E2E time extension strategy using SSG (Static Site Generation):
-// - We use generateStaticParams to create many static routes
-// - Each route does server-side computation during build
-// - Estimated ~0.3-0.5s per static page on Standard machine
+// Simplified approach: E2E ≈ Build time in Next.js
+// The e2eMultiplier now controls the TARGET E2E time directly
+// E2E = buildMinutes * e2eMultiplier
+// We calculate components needed to achieve that E2E time
 //
-// E2E formula:
-//   E2E = BuildTime + SSGTime + DeploymentOverhead
-//   TargetE2E = buildMinutes * e2eMultiplier
-//   ExtraTime = TargetE2E - BuildTime = BuildTime * (e2eMultiplier - 1)
-//   PagesNeeded = ExtraTime / timePerPage
+// Model from measurements: time ≈ 40s (fixed) + components / 38 (variable)
+// Solving: components = (targetSeconds - 40) * 38
 
-const SECONDS_PER_SSG_PAGE = 0.4;  // ~0.4s per page with heavy computation
+const targetE2EMinutes = buildMinutes * e2eMultiplier;
+const targetE2ESeconds = targetE2EMinutes * 60;
 
-// Use predefined targets if available, otherwise estimate linearly
-const numComponents = COMPONENT_TARGETS[buildMinutes] || Math.floor(buildMinutes * 1700);
+// Calculate components needed for target E2E time
+// Using the formula: time = 40 + components/38
+// So: components = (time - 40) * 38
+const calculatedComponents = Math.max(100, Math.floor((targetE2ESeconds - 40) * 38));
 
-// Calculate extra E2E time needed beyond build time
-const buildTimeSeconds = buildMinutes * 60;
-const extraE2ESeconds = buildTimeSeconds * (e2eMultiplier - 1);
+// Use predefined targets for common cases, or calculated value
+const E2E_COMPONENT_TARGETS = {
+  // Format: "buildMin-multiplier": components
+  "1-1": 760,      // 1min E2E
+  "1-1.5": 1520,   // 1.5min E2E  
+  "1-2": 3040,     // 2min E2E
+  "2-1": 3040,     // 2min E2E
+  "2-1.5": 5320,   // 3min E2E
+  "2-2": 7600,     // 4min E2E
+  "4-1": 7600,     // 4min E2E
+  "4-1.5": 13300,  // 6min E2E
+  "4-2": 19000,    // 8min E2E
+  "8-1": 16720,    // 8min E2E
+  "8-1.5": 26600,  // 12min E2E
+  "8-2": 36480,    // 16min E2E
+  "10-1": 21280,   // 10min E2E
+  "10-1.5": 33440, // 15min E2E
+  "10-2": 45600,   // 20min E2E
+};
 
-// Calculate SSG pages needed to fill that extra time
-const numSSGPages = Math.max(0, Math.ceil(extraE2ESeconds / SECONDS_PER_SSG_PAGE));
+const targetKey = `${buildMinutes}-${e2eMultiplier}`;
+const numComponents = E2E_COMPONENT_TARGETS[targetKey] || calculatedComponents;
+
+// No SSG pages needed - component count controls timing
+const numSSGPages = 0;
 
 // Minimal API routes (not for timing, just for realism)
-const numApiRoutes = e2eMultiplier > 1 ? 5 : 0;
+const numApiRoutes = 5;
 
 console.log(`Will generate:`);
-console.log(`  - ${numComponents} React components (for ${buildMinutes}min build)`);
-console.log(`  - ${numSSGPages} SSG pages (for ${extraE2ESeconds}s extra E2E time)`);
+console.log(`  - ${numComponents} React components`);
 console.log(`  - ${numApiRoutes} API routes`);
-console.log(`  - Target E2E: ${buildMinutes * e2eMultiplier}min`);
+console.log(`  - Target E2E: ${targetE2EMinutes}min (${targetE2ESeconds}s)`);
 
 // Clean up previous generated files
 const generatedDir = join(projectRoot, 'src', 'generated');
@@ -475,11 +493,10 @@ export default async function SSGPage({ params }: PageProps) {
 // Update build-config.json
 function updateBuildConfig() {
   const config = {
-    BuildTimeOnStandard: `${buildMinutes}min`,
-    FullTimeOnStandard: `${buildMinutes * e2eMultiplier}min`,
+    BuildTimeOnStandard: `${targetE2EMinutes}min`,
+    FullTimeOnStandard: `${targetE2EMinutes}min`,
     MachineType: "Standard",
     components: numComponents,
-    ssgPages: numSSGPages,
     apiRoutes: numApiRoutes
   };
   writeFileSync(
@@ -530,14 +547,7 @@ if (numApiRoutes > 0) {
   }
 }
 
-// Generate SSG dynamic route if we need extra E2E time
-if (numSSGPages > 0) {
-  console.log(`Generating SSG route with ${numSSGPages} static pages...`);
-  const ssgRouteDir = join(pagesGeneratedDir, '[slug]');
-  mkdirSync(ssgRouteDir, { recursive: true });
-  writeFileSync(join(ssgRouteDir, 'page.tsx'), generateSSGRoute(numSSGPages));
-  console.log(`  Created dynamic SSG route at /bench/[slug]`);
-}
+// SSG pages removed - component count now controls E2E time directly
 
 // Update build config
 updateBuildConfig();
@@ -545,8 +555,5 @@ updateBuildConfig();
 console.log('\nGeneration complete!');
 console.log(`Total files generated:`);
 console.log(`  - ${numComponents} components`);
-console.log(`  - ${numSSGPages} SSG pages (via generateStaticParams)`);
 console.log(`  - ${numApiRoutes} API routes`);
-console.log(`Expected timings on Standard machine:`);
-console.log(`  - Build: ~${buildMinutes}min`);
-console.log(`  - E2E: ~${buildMinutes * e2eMultiplier}min`);
+console.log(`Expected E2E on Standard: ~${targetE2EMinutes}min`);
