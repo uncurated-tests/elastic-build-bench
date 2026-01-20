@@ -1,5 +1,5 @@
 {
-  "BuildTimeOnStandard": "1min",
-  "FullTimeOnStandard": "2min",
+  "BuildTimeOnStandard": "baseline",
+  "FullTimeOnStandard": "baseline",
   "MachineType": "Standard"
 }
