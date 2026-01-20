@@ -20,20 +20,20 @@ const e2eMultiplier = parseFloat(process.argv[3] || '2');
 console.log(`Generating load for ${buildMinutes}min build, ${e2eMultiplier}x E2E multiplier`);
 
 // Scaling factors tuned based on actual Vercel build results
-// The relationship is non-linear due to Turbopack parallelization
+// Measurements show ~28-35 components/second on Vercel Standard machine
 // Actual measurements (Jan 20, 2026):
-//   1200 components → 43s (target 60s)
-//   2400 components → 31s (target 120s) - parallelization kicks in
-//   4800 components → 57s (target 240s)
-// New calculated targets:
-//   1min (60s):  1200 * (60/43)  = 1674 components
-//   2min (120s): 2400 * (120/31) = 9290 components  
-//   4min (240s): 4800 * (240/57) = 20210 components
+//   1200 components → 43s (28 comp/s)
+//   2400 components → 83s (29 comp/s)
+//   4800 components → 139s (35 comp/s)
+// Calculated targets using measured rates:
+//   1min (60s):  60 * 28 = 1680 components
+//   2min (120s): 120 * 29 = 3480 components  
+//   4min (240s): 240 * 35 = 8400 components
 
 const COMPONENT_TARGETS = {
-  1: 1700,    // ~1min build time
-  2: 9300,    // ~2min build time
-  4: 20200,   // ~4min build time
+  1: 1680,    // ~1min build time (28 comp/s)
+  2: 3480,    // ~2min build time (29 comp/s)
+  4: 8400,    // ~4min build time (35 comp/s)
 };
 
 const API_ROUTES_PER_MULTIPLIER = 100;  // Serverless functions per E2E multiplier
@@ -437,7 +437,10 @@ function updateBuildConfig() {
   const config = {
     BuildTimeOnStandard: `${buildMinutes}min`,
     FullTimeOnStandard: `${buildMinutes * e2eMultiplier}min`,
-    MachineType: "Standard"
+    MachineType: "Standard",
+    components: numComponents,
+    apiRoutes: numApiRoutes,
+    staticPages: numStaticPages
   };
   writeFileSync(
     join(projectRoot, 'build-config.json'),
