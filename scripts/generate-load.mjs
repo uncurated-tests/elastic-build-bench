@@ -42,45 +42,21 @@ const COMPONENT_TARGETS = {
   20: 65820,  // ~20min: (1200-17)×55.6 = 65815 (may OOM, be careful)
 };
 
-// Simplified approach: E2E ≈ Build time in Next.js
-// The e2eMultiplier now controls the TARGET E2E time directly
-// E2E = buildMinutes * e2eMultiplier
-// We calculate components needed to achieve that E2E time
+// Key insight: E2E time ≈ Build time in Next.js (components dominate)
+// The e2eMultiplier is kept for naming convention but doesn't change component count
+// Branch name format: build-Xmin-Yxtotal where X = BUILD time target
 //
 // Model from measurements: time ≈ 17s (fixed) + components / 55.6 (variable)
 // Solving: components = (targetSeconds - 17) * 55.6
 
-const targetE2EMinutes = buildMinutes * e2eMultiplier;
-const targetE2ESeconds = targetE2EMinutes * 60;
+// Target BUILD time (not E2E time) - this is what the branch name refers to
+const targetBuildSeconds = buildMinutes * 60;
+const targetE2EMinutes = buildMinutes * e2eMultiplier;  // For config display only
 
-// Calculate components needed for target E2E time
+// Calculate components needed for target BUILD time
 // Using the formula: time = 17 + components/55.6
 // So: components = (time - 17) * 55.6
-const calculatedComponents = Math.max(100, Math.floor((targetE2ESeconds - 17) * 55.6));
-
-// Use predefined targets for common cases, or calculated value
-const E2E_COMPONENT_TARGETS = {
-  // Format: "buildMin-multiplier": components
-  // Model: components = (targetSec - 17) × 55.6
-  "1-1": 2400,     // 1min E2E: (60-17)×55.6 = 2391
-  "1-1.5": 4060,   // 1.5min E2E: (90-17)×55.6 = 4059  
-  "1-2": 5730,     // 2min E2E: (120-17)×55.6 = 5727
-  "2-1": 5730,     // 2min E2E
-  "2-1.5": 9070,   // 3min E2E: (180-17)×55.6 = 9063
-  "2-2": 12400,    // 4min E2E: (240-17)×55.6 = 12399
-  "4-1": 12400,    // 4min E2E
-  "4-1.5": 19070,  // 6min E2E: (360-17)×55.6 = 19071
-  "4-2": 25750,    // 8min E2E: (480-17)×55.6 = 25747
-  "8-1": 25750,    // 8min E2E
-  "8-1.5": 39090,  // 12min E2E: (720-17)×55.6 = 39087
-  "8-2": 52430,    // 16min E2E: (960-17)×55.6 = 52431
-  "10-1": 32420,   // 10min E2E: (600-17)×55.6 = 32417
-  "10-1.5": 49100, // 15min E2E: (900-17)×55.6 = 49095
-  "10-2": 65820,   // 20min E2E: (1200-17)×55.6 = 65815
-};
-
-const targetKey = `${buildMinutes}-${e2eMultiplier}`;
-const numComponents = E2E_COMPONENT_TARGETS[targetKey] || calculatedComponents;
+const numComponents = Math.max(100, Math.floor((targetBuildSeconds - 17) * 55.6));
 
 // No SSG pages needed - component count controls timing
 const numSSGPages = 0;
@@ -497,7 +473,7 @@ export default async function SSGPage({ params }: PageProps) {
 // Update build-config.json
 function updateBuildConfig() {
   const config = {
-    BuildTimeOnStandard: `${targetE2EMinutes}min`,
+    BuildTimeOnStandard: `${buildMinutes}min`,
     FullTimeOnStandard: `${targetE2EMinutes}min`,
     MachineType: "Standard",
     components: numComponents,
