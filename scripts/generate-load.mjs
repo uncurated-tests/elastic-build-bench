@@ -44,7 +44,9 @@ const STATIC_PAGES_PER_MULTIPLIER = 80;  // Static pages to pre-render
 // Use predefined targets if available, otherwise estimate linearly
 const numComponents = COMPONENT_TARGETS[buildMinutes] || Math.floor(buildMinutes * 1700);
 const numApiRoutes = Math.floor((e2eMultiplier - 1) * API_ROUTES_PER_MULTIPLIER);
-const numStaticPages = Math.floor((e2eMultiplier - 1) * STATIC_PAGES_PER_MULTIPLIER);
+// Cap static pages to ensure each page has at least some components
+const rawStaticPages = Math.floor((e2eMultiplier - 1) * STATIC_PAGES_PER_MULTIPLIER);
+const numStaticPages = Math.min(rawStaticPages, numComponents); // Ensure at least 1 component per page
 
 console.log(`Will generate:`);
 console.log(`  - ${numComponents} React components`);
@@ -391,6 +393,14 @@ function generateStaticPage(index, componentCount) {
   for (let i = startComponent; i < endComponent; i++) {
     imports.push(`import Component${i} from '@/generated/components/Component${i}';`);
     components.push(`Component${i}`);
+  }
+  
+  // If no components for this page (edge case), import at least one component
+  // to avoid TypeScript errors with empty arrays
+  if (components.length === 0) {
+    const fallbackComponent = index % componentCount;
+    imports.push(`import Component${fallbackComponent} from '@/generated/components/Component${fallbackComponent}';`);
+    components.push(`Component${fallbackComponent}`);
   }
   
   return `${imports.join('\n')}
