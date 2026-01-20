@@ -38,15 +38,54 @@ if (buildMinutes > 0) {
   generateSyntheticLoad(buildMinutes, e2eMultiplier);
 }
 
-// Load build config (may have been updated by generateSyntheticLoad)
-console.log('[DEBUG] __dirname:', __dirname);
-console.log('[DEBUG] projectRoot:', projectRoot);
+// Get git branch early to parse config from branch name
+function getGitBranchEarly() {
+  if (process.env.VERCEL_GIT_COMMIT_REF) {
+    return process.env.VERCEL_GIT_COMMIT_REF;
+  }
+  try {
+    const branch = execSync('git rev-parse --abbrev-ref HEAD', { cwd: projectRoot, encoding: 'utf-8' }).trim();
+    return branch === 'HEAD' ? 'main' : branch;
+  } catch {
+    return 'main';
+  }
+}
+
+// Parse config from branch name (e.g., "build-8min-3xtotal" -> { buildMinutes: 8, multiplier: 3 })
+function parseConfigFromBranch(branchName) {
+  const match = branchName.match(/build-(\d+)min-(\d+)xtotal/);
+  if (match) {
+    return {
+      buildMinutes: parseInt(match[1], 10),
+      multiplier: parseInt(match[2], 10)
+    };
+  }
+  return null;
+}
+
+const gitBranchForConfig = getGitBranchEarly();
+const parsedConfig = parseConfigFromBranch(gitBranchForConfig);
+
+console.log('[CONFIG] Git branch:', gitBranchForConfig);
+console.log('[CONFIG] Parsed from branch:', parsedConfig);
+
+// Load build config from file as fallback
 console.log('[DEBUG] configPath:', configPath);
 console.log('[DEBUG] configPath exists:', existsSync(configPath));
 const configRaw = readFileSync(configPath, 'utf-8');
-console.log('[DEBUG] Raw config content:');
+console.log('[DEBUG] Raw config content from file:');
 console.log(configRaw);
-const config = JSON.parse(configRaw);
+const configFromFile = JSON.parse(configRaw);
+
+// Build final config - prefer branch-parsed values, fallback to file
+const config = {
+  BuildTimeOnStandard: parsedConfig ? `${parsedConfig.buildMinutes}min` : configFromFile.BuildTimeOnStandard,
+  FullTimeOnStandard: parsedConfig ? `${parsedConfig.buildMinutes * parsedConfig.multiplier}min` : configFromFile.FullTimeOnStandard,
+  MachineType: configFromFile.MachineType || 'Standard',
+  components: configFromFile.components,
+};
+
+console.log('[CONFIG] Final config:', JSON.stringify(config, null, 2));
 
 // Also log the directory contents for debugging
 const srcGenerated = join(projectRoot, 'src', 'generated', 'components');
