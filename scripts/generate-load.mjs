@@ -26,23 +26,19 @@ console.log(`Generating load for ${buildMinutes}min build, ${e2eMultiplier}x E2E
 //   1680 components → 62s   (27 comp/s)
 //   3480 components → 108s  (32 comp/s)  
 //   5500 components → 162s  (34 comp/s)
-//   8400 components → 486s  (17 comp/s) - slower due to memory/TypeScript overhead
+//   7200 components → 218s  (33 comp/s) ✓ CONFIRMED
+//   8400 components → 486s  (17 comp/s) - memory pressure
 //
-// Revised calibration based on all measurements:
-//   1min  (60s):   1680 components (measured exactly)
-//   2min  (120s):  3480 components (measured exactly)
-//   4min  (240s):  7200 components (extrapolated: 5500→162s, need 1.48x more)
-//   8min  (480s):  8400 components (measured: 486s)
-//   10min (600s):  9000 components (extrapolated carefully)
-//   20min (1200s): 12000 components (conservative, avoid OOM)
+// Build rate is ~33 comp/s up to ~8000 components, then slows due to memory.
+// For >8min targets, use blended rate accounting for overhead.
 
 const COMPONENT_TARGETS = {
-  1: 1680,    // ~1min build time (measured: 62s)
-  2: 3480,    // ~2min build time (measured: 108s)
-  4: 7200,    // ~4min build time (5500→162s, scaled up)
-  8: 8400,    // ~8min build time (measured: 486s)
-  10: 9000,   // ~10min build time (conservative)
-  20: 12000,  // ~20min build time (conservative, avoid OOM)
+  1: 2000,    // ~1min (60s × 33 comp/s, rounded up from 1980)
+  2: 4000,    // ~2min (120s × 33 comp/s, rounded up from 3960)
+  4: 7900,    // ~4min (7200→218s was 91%, need ~7920)
+  8: 10500,   // ~8min (blended rate ~22 comp/s for memory overhead)
+  10: 12000,  // ~10min (blended rate ~20 comp/s)
+  20: 20000,  // ~20min (17 comp/s rate, may OOM)
 };
 
 const API_ROUTES_PER_MULTIPLIER = 100;  // Serverless functions per E2E multiplier
