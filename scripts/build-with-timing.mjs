@@ -10,7 +10,7 @@
 
 import { put } from '@vercel/blob';
 import { execSync } from 'child_process';
-import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync, readdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -39,24 +39,22 @@ if (buildMinutes > 0) {
 }
 
 // Load build config (may have been updated by generateSyntheticLoad)
-console.log('[DEBUG] Reading config from:', configPath);
+console.log('[DEBUG] __dirname:', __dirname);
+console.log('[DEBUG] projectRoot:', projectRoot);
+console.log('[DEBUG] configPath:', configPath);
+console.log('[DEBUG] configPath exists:', existsSync(configPath));
 const configRaw = readFileSync(configPath, 'utf-8');
-console.log('[DEBUG] Raw config content:', configRaw);
+console.log('[DEBUG] Raw config content:');
+console.log(configRaw);
 const config = JSON.parse(configRaw);
-console.log('[DEBUG] Parsed config:', JSON.stringify(config, null, 2));
 
 // Also log the directory contents for debugging
-try {
-  const { readdirSync } = await import('fs');
-  const srcGenerated = join(projectRoot, 'src', 'generated', 'components');
-  if (existsSync(srcGenerated)) {
-    const files = readdirSync(srcGenerated);
-    console.log(`[DEBUG] Component count in src/generated/components: ${files.length}`);
-  } else {
-    console.log('[DEBUG] src/generated/components does not exist');
-  }
-} catch (e) {
-  console.log('[DEBUG] Error listing components:', e.message);
+const srcGenerated = join(projectRoot, 'src', 'generated', 'components');
+if (existsSync(srcGenerated)) {
+  const files = readdirSync(srcGenerated);
+  console.log(`[DEBUG] Component count in src/generated/components: ${files.length}`);
+} else {
+  console.log('[DEBUG] src/generated/components does not exist');
 }
 
 /**
