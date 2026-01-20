@@ -20,27 +20,31 @@ const e2eMultiplier = parseFloat(process.argv[3] || '2');
 console.log(`Generating load for ${buildMinutes}min build, ${e2eMultiplier}x E2E multiplier`);
 
 // Scaling factors tuned based on actual Vercel build results
-// Build time scales NON-LINEARLY with component count (gets slower)
-// Actual measurements (Jan 20, 2026):
-//   1680 components → 62s  (27 comp/s)
-//   3480 components → 108s (32 comp/s)  
-//   8400 components → 486s (17 comp/s) - slower due to memory/compilation overhead
+// Build time scales NON-LINEARLY with component count (gets slower with more components)
 // 
-// Revised targets based on actual measurements:
-//   1min:  ~1700 components
-//   2min:  ~3500 components
-//   4min:  ~4200 components (NOT 8400 - that gives 8min!)
-//   8min:  ~8400 components (based on actual measurement)
-//   10min: ~10500 components (extrapolated)
-//   20min: ~21000 components (extrapolated)
+// Actual measurements (Jan 20, 2026) on Standard machine (4 vCPU):
+//   1680 components → 62s   (27 comp/s)
+//   3480 components → 108s  (32 comp/s)  
+//   8400 components → 486s  (17 comp/s) - slower due to memory/TypeScript overhead
+//
+// The relationship is approximately: build_time = components^1.35 / 45
+// Or inversely: components = (build_time_seconds * 45)^(1/1.35)
+//
+// Calibrated targets (Standard machine):
+//   1min  (60s):   1700 components
+//   2min  (120s):  3500 components
+//   4min  (240s):  5500 components (measured 8400 gave 8min)
+//   8min  (480s):  8400 components (measured)
+//   10min (600s):  9800 components
+//   20min (1200s): 15000 components (extrapolated, may OOM)
 
 const COMPONENT_TARGETS = {
-  1: 1700,    // ~1min build time
-  2: 3500,    // ~2min build time
-  4: 4200,    // ~4min build time
-  8: 8400,    // ~8min build time (measured)
-  10: 10500,  // ~10min build time (extrapolated)
-  20: 21000,  // ~20min build time (extrapolated)
+  1: 1700,    // ~1min build time (measured: 62s with 1680)
+  2: 3500,    // ~2min build time (measured: 108s with 3480)
+  4: 5500,    // ~4min build time (adjusted down from 8400)
+  8: 8400,    // ~8min build time (measured: 486s with 8400)
+  10: 9800,   // ~10min build time (extrapolated)
+  20: 15000,  // ~20min build time (may OOM on Standard)
 };
 
 const API_ROUTES_PER_MULTIPLIER = 100;  // Serverless functions per E2E multiplier
