@@ -171,11 +171,12 @@ export async function GET(request: Request) {
     // List all timing records with pagination to get all blobs
     let blobs: Awaited<ReturnType<typeof list>>['blobs'] = [];
     let cursor: string | undefined;
+    let listResult: Awaited<ReturnType<typeof list>>;
     
     do {
-      const result = await list({ prefix: 'timing/', cursor, limit: 1000 });
-      blobs = blobs.concat(result.blobs);
-      cursor = result.cursor;
+      listResult = await list({ prefix: 'timing/', cursor, limit: 1000 });
+      blobs = blobs.concat(listResult.blobs);
+      cursor = listResult.cursor;
     } while (cursor);
     
     // Group blobs by runId and get the most complete version for each
@@ -226,10 +227,11 @@ export async function GET(request: Request) {
       if (autoCompletedCount > 0) {
         blobs = [];
         cursor = undefined;
+        let listResult: Awaited<ReturnType<typeof list>>;
         do {
-          const result = await list({ prefix: 'timing/', cursor, limit: 1000 });
-          blobs = blobs.concat(result.blobs);
-          cursor = result.cursor;
+          listResult = await list({ prefix: 'timing/', cursor, limit: 1000 });
+          blobs = blobs.concat(listResult.blobs);
+          cursor = listResult.cursor;
         } while (cursor);
         
         const updatedBlobs = blobs;
