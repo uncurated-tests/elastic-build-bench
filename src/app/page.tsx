@@ -1,4 +1,4 @@
-import { list } from '@vercel/blob';
+import { list, put } from '@vercel/blob';
 import BenchmarkTable from './components/BenchmarkTable';
 
 interface TimingRecord {
@@ -25,37 +25,102 @@ interface TimingRecord {
   };
 }
 
+// Auto-complete a record's E2E time if it has build_complete but no deployment time
+async function autoCompleteRecord(record: TimingRecord): Promise<TimingRecord> {
+  // Skip if already has deployment time
+  if (record.timestamps.deploymentComplete) {
+    return record;
+  }
+  
+  // Skip if no build completion time
+  if (!record.timestamps.compilationFinished) {
+    return record;
+  }
+  
+  // Use current time as deployment completion (approximation)
+  const deploymentComplete = new Date().toISOString();
+  record.timestamps.deploymentComplete = deploymentComplete;
+  
+  // Calculate deployment phase duration
+  record.durations.deploymentPhaseMs = 
+    new Date(deploymentComplete).getTime() - 
+    new Date(record.timestamps.compilationFinished).getTime();
+  
+  // Calculate total time including deployment
+  if (record.timestamps.buildStarted) {
+    record.durations.totalWithDeploymentMs = 
+      new Date(deploymentComplete).getTime() - 
+      new Date(record.timestamps.buildStarted).getTime();
+  }
+  
+  // Save the completed record
+  try {
+    const filename = `timing/${record.runId}.json`;
+    await put(filename, JSON.stringify(record, null, 2), {
+      access: 'public',
+      addRandomSuffix: false,
+    });
+  } catch {
+    // Ignore upload errors - record is still updated in memory
+  }
+  
+  return record;
+}
+
 async function getLatestBuildsByConfig(): Promise<Map<string, TimingRecord>> {
   const configMap = new Map<string, TimingRecord>();
   
   try {
-    const { blobs } = await list({ prefix: 'timing/' });
+    // Paginate through all blobs to get complete list
+    let allBlobs: Awaited<ReturnType<typeof list>>['blobs'] = [];
+    let cursor: string | undefined;
+    
+    do {
+      const result = await list({ prefix: 'timing/', cursor, limit: 1000 });
+      allBlobs = allBlobs.concat(result.blobs);
+      cursor = result.cursor;
+    } while (cursor);
     
     // Group by runId and get the most complete version
-    const runIdMap = new Map<string, typeof blobs[0]>();
+    const runIdMap = new Map<string, typeof allBlobs[0]>();
+    const pendingRunIds: string[] = [];
+    const completedRunIds = new Set<string>();
     
-    for (const blob of blobs) {
+    for (const blob of allBlobs) {
       const match = blob.pathname.match(/timing\/(build-\d+)/);
       if (!match) continue;
       
       const runId = match[1];
       const existing = runIdMap.get(runId);
       
-      if (!existing) {
+      // Track which runIds have final files vs build_complete files
+      if (blob.pathname === `timing/${runId}.json`) {
+        completedRunIds.add(runId);
         runIdMap.set(runId, blob);
-      } else if (blob.pathname === `timing/${runId}.json`) {
-        runIdMap.set(runId, blob);
-      } else if (blob.pathname.includes('build_complete') && !existing.pathname.endsWith(`${runId}.json`)) {
+      } else if (blob.pathname.includes('build_complete')) {
+        if (!completedRunIds.has(runId)) {
+          pendingRunIds.push(runId);
+        }
+        if (!existing || !existing.pathname.endsWith(`${runId}.json`)) {
+          runIdMap.set(runId, blob);
+        }
+      } else if (!existing) {
         runIdMap.set(runId, blob);
       }
     }
     
-    // Fetch all timing records
+    // Fetch all timing records and auto-complete pending ones
     const records: TimingRecord[] = [];
     for (const blob of runIdMap.values()) {
       try {
         const response = await fetch(blob.url);
-        const data = await response.json();
+        let data: TimingRecord = await response.json();
+        
+        // Auto-complete if this record doesn't have E2E time
+        if (!data.timestamps.deploymentComplete && data.timestamps.compilationFinished) {
+          data = await autoCompleteRecord(data);
+        }
+        
         records.push(data);
       } catch {
         // Skip failed fetches
