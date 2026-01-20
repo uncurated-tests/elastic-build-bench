@@ -1,63 +1,196 @@
-import Image from "next/image";
+import { list } from '@vercel/blob';
 
-export default function Home() {
+interface TimingRecord {
+  runId: string;
+  gitCommit: string;
+  gitBranch: string;
+  config: {
+    BuildTimeOnStandard: string;
+    FullTimeOnStandard: string;
+    MachineType: string;
+  };
+  timestamps: {
+    buildStarted: string | null;
+    dependenciesReady: string | null;
+    compilationFinished: string | null;
+    deploymentComplete: string | null;
+  };
+  durations: {
+    dependencyPhaseMs: number | null;
+    compilationPhaseMs: number | null;
+    deploymentPhaseMs: number | null;
+    totalMs: number | null;
+    totalWithDeploymentMs?: number | null;
+  };
+}
+
+async function getLatestBuildsByConfig(): Promise<Map<string, TimingRecord>> {
+  const configMap = new Map<string, TimingRecord>();
+  
+  try {
+    const { blobs } = await list({ prefix: 'timing/' });
+    
+    // Group by runId and get the most complete version
+    const runIdMap = new Map<string, typeof blobs[0]>();
+    
+    for (const blob of blobs) {
+      const match = blob.pathname.match(/timing\/(build-\d+)/);
+      if (!match) continue;
+      
+      const runId = match[1];
+      const existing = runIdMap.get(runId);
+      
+      if (!existing) {
+        runIdMap.set(runId, blob);
+      } else if (blob.pathname === `timing/${runId}.json`) {
+        runIdMap.set(runId, blob);
+      } else if (blob.pathname.includes('build_complete') && !existing.pathname.endsWith(`${runId}.json`)) {
+        runIdMap.set(runId, blob);
+      }
+    }
+    
+    // Fetch all timing records
+    const records: TimingRecord[] = [];
+    for (const blob of runIdMap.values()) {
+      try {
+        const response = await fetch(blob.url);
+        const data = await response.json();
+        records.push(data);
+      } catch {
+        // Skip failed fetches
+      }
+    }
+    
+    // Group by config key and keep the latest for each
+    for (const record of records) {
+      const configKey = `${record.config.MachineType}-${record.config.BuildTimeOnStandard}-${record.config.FullTimeOnStandard}`;
+      const existing = configMap.get(configKey);
+      
+      if (!existing || (record.timestamps.buildStarted && existing.timestamps.buildStarted && 
+          new Date(record.timestamps.buildStarted) > new Date(existing.timestamps.buildStarted))) {
+        configMap.set(configKey, record);
+      }
+    }
+  } catch (error) {
+    console.error('Failed to fetch timing data:', error);
+  }
+  
+  return configMap;
+}
+
+function formatDuration(ms: number | null | undefined): string {
+  if (ms === null || ms === undefined) return '-';
+  if (ms < 1000) return `${ms}ms`;
+  const seconds = ms / 1000;
+  if (seconds < 60) return `${seconds.toFixed(1)}s`;
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = (seconds % 60).toFixed(0);
+  return `${minutes}m ${remainingSeconds}s`;
+}
+
+export default async function Home() {
+  const buildsByConfig = await getLatestBuildsByConfig();
+  const records = Array.from(buildsByConfig.values());
+  
+  // Sort by build time (most recent first)
+  records.sort((a, b) => {
+    if (!a.timestamps.buildStarted || !b.timestamps.buildStarted) return 0;
+    return new Date(b.timestamps.buildStarted).getTime() - new Date(a.timestamps.buildStarted).getTime();
+  });
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-8">
+      <main className="max-w-6xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
+            Elastic Build Benchmark
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-zinc-600 dark:text-zinc-400">
+            Build timing data for different configurations
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {records.length === 0 ? (
+          <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-8 text-center">
+            <p className="text-zinc-500 dark:text-zinc-400">No build timing data available yet.</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+              <thead>
+                <tr className="bg-zinc-100 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                    Machine Type
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                    Target Build Time (Std)
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                    Target Total Time (Std)
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                    Actual Build Time
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                    Actual E2E Time
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                    Branch
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {records.map((record, index) => (
+                  <tr 
+                    key={record.runId}
+                    className={`border-b border-zinc-100 dark:border-zinc-800 ${
+                      index % 2 === 0 ? 'bg-white dark:bg-zinc-900' : 'bg-zinc-50 dark:bg-zinc-900/50'
+                    } hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors`}
+                  >
+                    <td className="px-6 py-4 text-sm text-zinc-900 dark:text-zinc-100 font-medium">
+                      {record.config.MachineType}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-zinc-600 dark:text-zinc-400">
+                      {record.config.BuildTimeOnStandard}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-zinc-600 dark:text-zinc-400">
+                      {record.config.FullTimeOnStandard}
+                    </td>
+                    <td className="px-6 py-4 text-sm font-mono">
+                      <span className={`px-2 py-1 rounded ${
+                        record.durations.totalMs 
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
+                          : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500'
+                      }`}>
+                        {formatDuration(record.durations.totalMs)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm font-mono">
+                      <span className={`px-2 py-1 rounded ${
+                        record.durations.totalWithDeploymentMs 
+                          ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' 
+                          : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500'
+                      }`}>
+                        {formatDuration(record.durations.totalWithDeploymentMs)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-zinc-500 dark:text-zinc-500 font-mono">
+                      {record.gitBranch}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        <div className="mt-8 text-sm text-zinc-500 dark:text-zinc-500">
+          <p>Last updated: {new Date().toISOString()}</p>
+          <p className="mt-1">
+            <a href="/api/record-deploy" className="text-blue-600 dark:text-blue-400 hover:underline">
+              View raw timing data
+            </a>
+          </p>
         </div>
       </main>
     </div>
