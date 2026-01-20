@@ -9,6 +9,21 @@ import Component7 from '@/generated/components/Component7';
 import Component8 from '@/generated/components/Component8';
 import Component9 from '@/generated/components/Component9';
 import Component10 from '@/generated/components/Component10';
+import Component11 from '@/generated/components/Component11';
+import Component12 from '@/generated/components/Component12';
+import Component13 from '@/generated/components/Component13';
+import Component14 from '@/generated/components/Component14';
+import Component15 from '@/generated/components/Component15';
+import Component16 from '@/generated/components/Component16';
+import Component17 from '@/generated/components/Component17';
+import Component18 from '@/generated/components/Component18';
+import Component19 from '@/generated/components/Component19';
+import Component20 from '@/generated/components/Component20';
+import Component21 from '@/generated/components/Component21';
+import Component22 from '@/generated/components/Component22';
+import Component23 from '@/generated/components/Component23';
+import Component24 from '@/generated/components/Component24';
+import Component25 from '@/generated/components/Component25';
 
 const sampleData = {
   id: 'page-0',
@@ -36,10 +51,10 @@ export default function BenchPage0() {
         Benchmark Page 0
       </h1>
       <p className="mb-6 text-zinc-600 dark:text-zinc-400">
-        This page imports 11 components for build testing.
+        This page imports 26 components for build testing.
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {[Component0, Component1, Component2, Component3, Component4, Component5, Component6, Component7, Component8, Component9, Component10].map((Component, idx) => (
+        {[Component0, Component1, Component2, Component3, Component4, Component5, Component6, Component7, Component8, Component9, Component10, Component11, Component12, Component13, Component14, Component15, Component16, Component17, Component18, Component19, Component20, Component21, Component22, Component23, Component24, Component25].map((Component, idx) => (
           <Component key={idx} data={sampleData} />
         ))}
       </div>

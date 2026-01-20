@@ -1,14 +1,29 @@
-import Component110 from '@/generated/components/Component110';
-import Component111 from '@/generated/components/Component111';
-import Component112 from '@/generated/components/Component112';
-import Component113 from '@/generated/components/Component113';
-import Component114 from '@/generated/components/Component114';
-import Component115 from '@/generated/components/Component115';
-import Component116 from '@/generated/components/Component116';
-import Component117 from '@/generated/components/Component117';
-import Component118 from '@/generated/components/Component118';
-import Component119 from '@/generated/components/Component119';
-import Component120 from '@/generated/components/Component120';
+import Component260 from '@/generated/components/Component260';
+import Component261 from '@/generated/components/Component261';
+import Component262 from '@/generated/components/Component262';
+import Component263 from '@/generated/components/Component263';
+import Component264 from '@/generated/components/Component264';
+import Component265 from '@/generated/components/Component265';
+import Component266 from '@/generated/components/Component266';
+import Component267 from '@/generated/components/Component267';
+import Component268 from '@/generated/components/Component268';
+import Component269 from '@/generated/components/Component269';
+import Component270 from '@/generated/components/Component270';
+import Component271 from '@/generated/components/Component271';
+import Component272 from '@/generated/components/Component272';
+import Component273 from '@/generated/components/Component273';
+import Component274 from '@/generated/components/Component274';
+import Component275 from '@/generated/components/Component275';
+import Component276 from '@/generated/components/Component276';
+import Component277 from '@/generated/components/Component277';
+import Component278 from '@/generated/components/Component278';
+import Component279 from '@/generated/components/Component279';
+import Component280 from '@/generated/components/Component280';
+import Component281 from '@/generated/components/Component281';
+import Component282 from '@/generated/components/Component282';
+import Component283 from '@/generated/components/Component283';
+import Component284 from '@/generated/components/Component284';
+import Component285 from '@/generated/components/Component285';
 
 const sampleData = {
   id: 'page-10',
@@ -36,10 +51,10 @@ export default function BenchPage10() {
         Benchmark Page 10
       </h1>
       <p className="mb-6 text-zinc-600 dark:text-zinc-400">
-        This page imports 11 components for build testing.
+        This page imports 26 components for build testing.
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {[Component110, Component111, Component112, Component113, Component114, Component115, Component116, Component117, Component118, Component119, Component120].map((Component, idx) => (
+        {[Component260, Component261, Component262, Component263, Component264, Component265, Component266, Component267, Component268, Component269, Component270, Component271, Component272, Component273, Component274, Component275, Component276, Component277, Component278, Component279, Component280, Component281, Component282, Component283, Component284, Component285].map((Component, idx) => (
           <Component key={idx} data={sampleData} />
         ))}
       </div>
