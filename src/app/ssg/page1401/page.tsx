@@ -1,0 +1,22 @@
+// Static SSG Page 1401 - v13
+import '@/generated/styles/p1401_m0.css';
+import SharedComponent307 from '@/generated/components/SharedComponent307';
+import SharedComponent308 from '@/generated/components/SharedComponent308';
+import SharedComponent309 from '@/generated/components/SharedComponent309';
+import SharedComponent310 from '@/generated/components/SharedComponent310';
+import SharedComponent311 from '@/generated/components/SharedComponent311';
+
+export default function SSGPage1401() {
+  return (
+    <div className="p1401-m0-s0 p-4 min-h-screen">
+      <h1 className="text-lg font-bold mb-2">Static Page 1401</h1>
+      <div className="grid grid-cols-2 gap-1">
+        <SharedComponent307 id="1401-0" value={140100} label="S" />
+        <SharedComponent308 id="1401-1" value={140101} label="S" />
+        <SharedComponent309 id="1401-2" value={140102} label="S" />
+        <SharedComponent310 id="1401-3" value={140103} label="S" />
+        <SharedComponent311 id="1401-4" value={140104} label="S" />
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,1881 @@
+/* Page 184 Module 0 - v13 */
+
+.p184-m0-s0 {
+  --idx: 0;
+  --page: 184;
+  --module: 0;
+  color: hsl(328, 70%, 50%);
+  background: linear-gradient(0deg, hsl(328, 60%, 95%), hsl(358, 60%, 90%));
+  padding: 1rem 0.5rem;
+  margin: 0rem;
+  border: 1px solid hsl(328, 50%, 70%);
+  border-radius: 4px;
+  box-shadow: 
+    0 1px 2px rgba(0,0,0,0.1),
+    inset 0 0px 0px rgba(255,255,255,0.0);
+  transform: rotate(-5deg) scale(1.00);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+.p184-m0-s0:hover {
+  transform: rotate(-3deg) scale(1.02);
+  box-shadow: 
+    0 2px 4px rgba(0,0,0,0.2),
+    inset 0 0px 0px rgba(255,255,255,0.2);
+}
+.p184-m0-s0:focus {
+  outline: 2px solid hsl(148, 70%, 50%);
+  outline-offset: 1px;
+}
+.p184-m0-s0::before {
+  content: "184-0-0";
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s0::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background: hsl(28, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s1 {
+  --idx: 1;
+  --page: 184;
+  --module: 0;
+  color: hsl(337, 70%, 50%);
+  background: linear-gradient(9deg, hsl(337, 60%, 95%), hsl(7, 60%, 90%));
+  padding: 2rem 1.5rem;
+  margin: 0.25rem;
+  border: 2px solid hsl(337, 50%, 70%);
+  border-radius: 5px;
+  box-shadow: 
+    0 2px 3px rgba(0,0,0,0.2),
+    inset 0 1px 1px rgba(255,255,255,0.1);
+  transform: rotate(-4deg) scale(1.01);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  line-height: 1.3;
+}
+.p184-m0-s1:hover {
+  transform: rotate(-2deg) scale(1.03);
+  box-shadow: 
+    0 3px 5px rgba(0,0,0,0.3),
+    inset 0 1px 1px rgba(255,255,255,0.3);
+}
+.p184-m0-s1:focus {
+  outline: 3px solid hsl(157, 70%, 50%);
+  outline-offset: 2px;
+}
+.p184-m0-s1::before {
+  content: "184-0-1";
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s1::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 11px;
+  height: 11px;
+  background: hsl(37, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s2 {
+  --idx: 2;
+  --page: 184;
+  --module: 0;
+  color: hsl(346, 70%, 50%);
+  background: linear-gradient(18deg, hsl(346, 60%, 95%), hsl(16, 60%, 90%));
+  padding: 3rem 2.5rem;
+  margin: 0.5rem;
+  border: 3px solid hsl(346, 50%, 70%);
+  border-radius: 6px;
+  box-shadow: 
+    0 3px 4px rgba(0,0,0,0.3),
+    inset 0 0px 2px rgba(255,255,255,0.2);
+  transform: rotate(-3deg) scale(1.02);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  line-height: 1.4;
+}
+.p184-m0-s2:hover {
+  transform: rotate(-1deg) scale(1.04);
+  box-shadow: 
+    0 4px 6px rgba(0,0,0,0.4),
+    inset 0 2px 2px rgba(255,255,255,0.4);
+}
+.p184-m0-s2:focus {
+  outline: 2px solid hsl(166, 70%, 50%);
+  outline-offset: 3px;
+}
+.p184-m0-s2::before {
+  content: "184-0-2";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s2::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  background: hsl(46, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s3 {
+  --idx: 3;
+  --page: 184;
+  --module: 0;
+  color: hsl(355, 70%, 50%);
+  background: linear-gradient(27deg, hsl(355, 60%, 95%), hsl(25, 60%, 90%));
+  padding: 4rem 0.5rem;
+  margin: 0.75rem;
+  border: 1px solid hsl(355, 50%, 70%);
+  border-radius: 7px;
+  box-shadow: 
+    0 4px 5px rgba(0,0,0,0.4),
+    inset 0 1px 3px rgba(255,255,255,0.3);
+  transform: rotate(-2deg) scale(1.03);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+.p184-m0-s3:hover {
+  transform: rotate(0deg) scale(1.05);
+  box-shadow: 
+    0 5px 7px rgba(0,0,0,0.5),
+    inset 0 0px 3px rgba(255,255,255,0.0);
+}
+.p184-m0-s3:focus {
+  outline: 3px solid hsl(175, 70%, 50%);
+  outline-offset: 1px;
+}
+.p184-m0-s3::before {
+  content: "184-0-3";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s3::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 13px;
+  height: 13px;
+  background: hsl(55, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s4 {
+  --idx: 4;
+  --page: 184;
+  --module: 0;
+  color: hsl(4, 70%, 50%);
+  background: linear-gradient(36deg, hsl(4, 60%, 95%), hsl(34, 60%, 90%));
+  padding: 1rem 1.5rem;
+  margin: 1rem;
+  border: 2px solid hsl(4, 50%, 70%);
+  border-radius: 8px;
+  box-shadow: 
+    0 1px 6px rgba(0,0,0,0.5),
+    inset 0 0px 0px rgba(255,255,255,0.4);
+  transform: rotate(-1deg) scale(1.04);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+.p184-m0-s4:hover {
+  transform: rotate(1deg) scale(1.06);
+  box-shadow: 
+    0 6px 8px rgba(0,0,0,0.6),
+    inset 0 1px 4px rgba(255,255,255,0.1);
+}
+.p184-m0-s4:focus {
+  outline: 2px solid hsl(184, 70%, 50%);
+  outline-offset: 2px;
+}
+.p184-m0-s4::before {
+  content: "184-0-4";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s4::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 14px;
+  height: 14px;
+  background: hsl(64, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s5 {
+  --idx: 5;
+  --page: 184;
+  --module: 0;
+  color: hsl(13, 70%, 50%);
+  background: linear-gradient(45deg, hsl(13, 60%, 95%), hsl(43, 60%, 90%));
+  padding: 2rem 2.5rem;
+  margin: 0rem;
+  border: 3px solid hsl(13, 50%, 70%);
+  border-radius: 9px;
+  box-shadow: 
+    0 2px 7px rgba(0,0,0,0.6),
+    inset 0 1px 1px rgba(255,255,255,0.0);
+  transform: rotate(0deg) scale(1.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  line-height: 1.2;
+}
+.p184-m0-s5:hover {
+  transform: rotate(2deg) scale(1.07);
+  box-shadow: 
+    0 7px 9px rgba(0,0,0,0.7),
+    inset 0 2px 5px rgba(255,255,255,0.2);
+}
+.p184-m0-s5:focus {
+  outline: 3px solid hsl(193, 70%, 50%);
+  outline-offset: 3px;
+}
+.p184-m0-s5::before {
+  content: "184-0-5";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s5::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 15px;
+  height: 15px;
+  background: hsl(73, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s6 {
+  --idx: 6;
+  --page: 184;
+  --module: 0;
+  color: hsl(22, 70%, 50%);
+  background: linear-gradient(54deg, hsl(22, 60%, 95%), hsl(52, 60%, 90%));
+  padding: 3rem 0.5rem;
+  margin: 0.25rem;
+  border: 1px solid hsl(22, 50%, 70%);
+  border-radius: 10px;
+  box-shadow: 
+    0 3px 8px rgba(0,0,0,0.7),
+    inset 0 0px 2px rgba(255,255,255,0.1);
+  transform: rotate(1deg) scale(1.06);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  line-height: 1.3;
+}
+.p184-m0-s6:hover {
+  transform: rotate(3deg) scale(1.08);
+  box-shadow: 
+    0 2px 10px rgba(0,0,0,0.8),
+    inset 0 0px 0px rgba(255,255,255,0.3);
+}
+.p184-m0-s6:focus {
+  outline: 2px solid hsl(202, 70%, 50%);
+  outline-offset: 1px;
+}
+.p184-m0-s6::before {
+  content: "184-0-6";
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s6::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  background: hsl(82, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s7 {
+  --idx: 7;
+  --page: 184;
+  --module: 0;
+  color: hsl(31, 70%, 50%);
+  background: linear-gradient(63deg, hsl(31, 60%, 95%), hsl(61, 60%, 90%));
+  padding: 4rem 1.5rem;
+  margin: 0.5rem;
+  border: 2px solid hsl(31, 50%, 70%);
+  border-radius: 11px;
+  box-shadow: 
+    0 4px 9px rgba(0,0,0,0.8),
+    inset 0 1px 3px rgba(255,255,255,0.2);
+  transform: rotate(2deg) scale(1.07);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.125rem;
+  line-height: 1.4;
+}
+.p184-m0-s7:hover {
+  transform: rotate(4deg) scale(1.09);
+  box-shadow: 
+    0 3px 11px rgba(0,0,0,0.9),
+    inset 0 1px 1px rgba(255,255,255,0.4);
+}
+.p184-m0-s7:focus {
+  outline: 3px solid hsl(211, 70%, 50%);
+  outline-offset: 2px;
+}
+.p184-m0-s7::before {
+  content: "184-0-7";
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s7::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 17px;
+  height: 17px;
+  background: hsl(91, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s8 {
+  --idx: 8;
+  --page: 184;
+  --module: 0;
+  color: hsl(40, 70%, 50%);
+  background: linear-gradient(72deg, hsl(40, 60%, 95%), hsl(70, 60%, 90%));
+  padding: 1rem 2.5rem;
+  margin: 0.75rem;
+  border: 3px solid hsl(40, 50%, 70%);
+  border-radius: 12px;
+  box-shadow: 
+    0 1px 2px rgba(0,0,0,0.9),
+    inset 0 0px 0px rgba(255,255,255,0.3);
+  transform: rotate(3deg) scale(1.08);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+.p184-m0-s8:hover {
+  transform: rotate(5deg) scale(1.00);
+  box-shadow: 
+    0 4px 12px rgba(0,0,0,0.10),
+    inset 0 2px 2px rgba(255,255,255,0.0);
+}
+.p184-m0-s8:focus {
+  outline: 2px solid hsl(220, 70%, 50%);
+  outline-offset: 3px;
+}
+.p184-m0-s8::before {
+  content: "184-0-8";
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s8::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 18px;
+  height: 18px;
+  background: hsl(100, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s9 {
+  --idx: 9;
+  --page: 184;
+  --module: 0;
+  color: hsl(49, 70%, 50%);
+  background: linear-gradient(81deg, hsl(49, 60%, 95%), hsl(79, 60%, 90%));
+  padding: 2rem 0.5rem;
+  margin: 1rem;
+  border: 1px solid hsl(49, 50%, 70%);
+  border-radius: 13px;
+  box-shadow: 
+    0 2px 3px rgba(0,0,0,0.10),
+    inset 0 1px 1px rgba(255,255,255,0.4);
+  transform: rotate(4deg) scale(1.09);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.p184-m0-s9:hover {
+  transform: rotate(6deg) scale(1.01);
+  box-shadow: 
+    0 5px 13px rgba(0,0,0,0.11),
+    inset 0 0px 3px rgba(255,255,255,0.1);
+}
+.p184-m0-s9:focus {
+  outline: 3px solid hsl(229, 70%, 50%);
+  outline-offset: 1px;
+}
+.p184-m0-s9::before {
+  content: "184-0-9";
+  position: absolute;
+  top: 9px;
+  left: 9px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s9::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 19px;
+  height: 19px;
+  background: hsl(109, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s10 {
+  --idx: 10;
+  --page: 184;
+  --module: 0;
+  color: hsl(58, 70%, 50%);
+  background: linear-gradient(90deg, hsl(58, 60%, 95%), hsl(88, 60%, 90%));
+  padding: 3rem 1.5rem;
+  margin: 0rem;
+  border: 2px solid hsl(58, 50%, 70%);
+  border-radius: 14px;
+  box-shadow: 
+    0 3px 4px rgba(0,0,0,0.1),
+    inset 0 0px 2px rgba(255,255,255,0.0);
+  transform: rotate(-5deg) scale(1.00);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  line-height: 1.2;
+}
+.p184-m0-s10:hover {
+  transform: rotate(-3deg) scale(1.02);
+  box-shadow: 
+    0 6px 14px rgba(0,0,0,0.2),
+    inset 0 1px 4px rgba(255,255,255,0.2);
+}
+.p184-m0-s10:focus {
+  outline: 2px solid hsl(238, 70%, 50%);
+  outline-offset: 2px;
+}
+.p184-m0-s10::before {
+  content: "184-0-10";
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s10::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  background: hsl(118, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s11 {
+  --idx: 11;
+  --page: 184;
+  --module: 0;
+  color: hsl(67, 70%, 50%);
+  background: linear-gradient(99deg, hsl(67, 60%, 95%), hsl(97, 60%, 90%));
+  padding: 4rem 2.5rem;
+  margin: 0.25rem;
+  border: 3px solid hsl(67, 50%, 70%);
+  border-radius: 15px;
+  box-shadow: 
+    0 4px 5px rgba(0,0,0,0.2),
+    inset 0 1px 3px rgba(255,255,255,0.1);
+  transform: rotate(-4deg) scale(1.01);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.125rem;
+  line-height: 1.3;
+}
+.p184-m0-s11:hover {
+  transform: rotate(-2deg) scale(1.03);
+  box-shadow: 
+    0 7px 15px rgba(0,0,0,0.3),
+    inset 0 2px 5px rgba(255,255,255,0.3);
+}
+.p184-m0-s11:focus {
+  outline: 3px solid hsl(247, 70%, 50%);
+  outline-offset: 3px;
+}
+.p184-m0-s11::before {
+  content: "184-0-11";
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s11::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 21px;
+  height: 21px;
+  background: hsl(127, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s12 {
+  --idx: 12;
+  --page: 184;
+  --module: 0;
+  color: hsl(76, 70%, 50%);
+  background: linear-gradient(108deg, hsl(76, 60%, 95%), hsl(106, 60%, 90%));
+  padding: 1rem 0.5rem;
+  margin: 0.5rem;
+  border: 1px solid hsl(76, 50%, 70%);
+  border-radius: 4px;
+  box-shadow: 
+    0 1px 6px rgba(0,0,0,0.3),
+    inset 0 0px 0px rgba(255,255,255,0.2);
+  transform: rotate(-3deg) scale(1.02);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+.p184-m0-s12:hover {
+  transform: rotate(-1deg) scale(1.04);
+  box-shadow: 
+    0 2px 4px rgba(0,0,0,0.4),
+    inset 0 0px 0px rgba(255,255,255,0.4);
+}
+.p184-m0-s12:focus {
+  outline: 2px solid hsl(256, 70%, 50%);
+  outline-offset: 1px;
+}
+.p184-m0-s12::before {
+  content: "184-0-12";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s12::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 22px;
+  height: 22px;
+  background: hsl(136, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s13 {
+  --idx: 13;
+  --page: 184;
+  --module: 0;
+  color: hsl(85, 70%, 50%);
+  background: linear-gradient(117deg, hsl(85, 60%, 95%), hsl(115, 60%, 90%));
+  padding: 2rem 1.5rem;
+  margin: 0.75rem;
+  border: 2px solid hsl(85, 50%, 70%);
+  border-radius: 5px;
+  box-shadow: 
+    0 2px 7px rgba(0,0,0,0.4),
+    inset 0 1px 1px rgba(255,255,255,0.3);
+  transform: rotate(-2deg) scale(1.03);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.p184-m0-s13:hover {
+  transform: rotate(0deg) scale(1.05);
+  box-shadow: 
+    0 3px 5px rgba(0,0,0,0.5),
+    inset 0 1px 1px rgba(255,255,255,0.0);
+}
+.p184-m0-s13:focus {
+  outline: 3px solid hsl(265, 70%, 50%);
+  outline-offset: 2px;
+}
+.p184-m0-s13::before {
+  content: "184-0-13";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s13::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 23px;
+  height: 23px;
+  background: hsl(145, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s14 {
+  --idx: 14;
+  --page: 184;
+  --module: 0;
+  color: hsl(94, 70%, 50%);
+  background: linear-gradient(126deg, hsl(94, 60%, 95%), hsl(124, 60%, 90%));
+  padding: 3rem 2.5rem;
+  margin: 1rem;
+  border: 3px solid hsl(94, 50%, 70%);
+  border-radius: 6px;
+  box-shadow: 
+    0 3px 8px rgba(0,0,0,0.5),
+    inset 0 0px 2px rgba(255,255,255,0.4);
+  transform: rotate(-1deg) scale(1.04);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.p184-m0-s14:hover {
+  transform: rotate(1deg) scale(1.06);
+  box-shadow: 
+    0 4px 6px rgba(0,0,0,0.6),
+    inset 0 2px 2px rgba(255,255,255,0.1);
+}
+.p184-m0-s14:focus {
+  outline: 2px solid hsl(274, 70%, 50%);
+  outline-offset: 3px;
+}
+.p184-m0-s14::before {
+  content: "184-0-14";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s14::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  background: hsl(154, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s15 {
+  --idx: 15;
+  --page: 184;
+  --module: 0;
+  color: hsl(103, 70%, 50%);
+  background: linear-gradient(135deg, hsl(103, 60%, 95%), hsl(133, 60%, 90%));
+  padding: 4rem 0.5rem;
+  margin: 0rem;
+  border: 1px solid hsl(103, 50%, 70%);
+  border-radius: 7px;
+  box-shadow: 
+    0 4px 9px rgba(0,0,0,0.6),
+    inset 0 1px 3px rgba(255,255,255,0.0);
+  transform: rotate(0deg) scale(1.05);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.125rem;
+  line-height: 1.2;
+}
+.p184-m0-s15:hover {
+  transform: rotate(2deg) scale(1.07);
+  box-shadow: 
+    0 5px 7px rgba(0,0,0,0.7),
+    inset 0 0px 3px rgba(255,255,255,0.2);
+}
+.p184-m0-s15:focus {
+  outline: 3px solid hsl(283, 70%, 50%);
+  outline-offset: 1px;
+}
+.p184-m0-s15::before {
+  content: "184-0-15";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s15::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 25px;
+  height: 25px;
+  background: hsl(163, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s16 {
+  --idx: 16;
+  --page: 184;
+  --module: 0;
+  color: hsl(112, 70%, 50%);
+  background: linear-gradient(144deg, hsl(112, 60%, 95%), hsl(142, 60%, 90%));
+  padding: 1rem 1.5rem;
+  margin: 0.25rem;
+  border: 2px solid hsl(112, 50%, 70%);
+  border-radius: 8px;
+  box-shadow: 
+    0 1px 2px rgba(0,0,0,0.7),
+    inset 0 0px 0px rgba(255,255,255,0.1);
+  transform: rotate(1deg) scale(1.06);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.75rem;
+  line-height: 1.3;
+}
+.p184-m0-s16:hover {
+  transform: rotate(3deg) scale(1.08);
+  box-shadow: 
+    0 6px 8px rgba(0,0,0,0.8),
+    inset 0 1px 4px rgba(255,255,255,0.3);
+}
+.p184-m0-s16:focus {
+  outline: 2px solid hsl(292, 70%, 50%);
+  outline-offset: 2px;
+}
+.p184-m0-s16::before {
+  content: "184-0-16";
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s16::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 26px;
+  height: 26px;
+  background: hsl(172, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s17 {
+  --idx: 17;
+  --page: 184;
+  --module: 0;
+  color: hsl(121, 70%, 50%);
+  background: linear-gradient(153deg, hsl(121, 60%, 95%), hsl(151, 60%, 90%));
+  padding: 2rem 2.5rem;
+  margin: 0.5rem;
+  border: 3px solid hsl(121, 50%, 70%);
+  border-radius: 9px;
+  box-shadow: 
+    0 2px 3px rgba(0,0,0,0.8),
+    inset 0 1px 1px rgba(255,255,255,0.2);
+  transform: rotate(2deg) scale(1.07);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+.p184-m0-s17:hover {
+  transform: rotate(4deg) scale(1.09);
+  box-shadow: 
+    0 7px 9px rgba(0,0,0,0.9),
+    inset 0 2px 5px rgba(255,255,255,0.4);
+}
+.p184-m0-s17:focus {
+  outline: 3px solid hsl(301, 70%, 50%);
+  outline-offset: 3px;
+}
+.p184-m0-s17::before {
+  content: "184-0-17";
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s17::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 27px;
+  height: 27px;
+  background: hsl(181, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s18 {
+  --idx: 18;
+  --page: 184;
+  --module: 0;
+  color: hsl(130, 70%, 50%);
+  background: linear-gradient(162deg, hsl(130, 60%, 95%), hsl(160, 60%, 90%));
+  padding: 3rem 0.5rem;
+  margin: 0.75rem;
+  border: 1px solid hsl(130, 50%, 70%);
+  border-radius: 10px;
+  box-shadow: 
+    0 3px 4px rgba(0,0,0,0.9),
+    inset 0 0px 2px rgba(255,255,255,0.3);
+  transform: rotate(3deg) scale(1.08);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.p184-m0-s18:hover {
+  transform: rotate(5deg) scale(1.00);
+  box-shadow: 
+    0 2px 10px rgba(0,0,0,0.10),
+    inset 0 0px 0px rgba(255,255,255,0.0);
+}
+.p184-m0-s18:focus {
+  outline: 2px solid hsl(310, 70%, 50%);
+  outline-offset: 1px;
+}
+.p184-m0-s18::before {
+  content: "184-0-18";
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s18::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  background: hsl(190, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s19 {
+  --idx: 19;
+  --page: 184;
+  --module: 0;
+  color: hsl(139, 70%, 50%);
+  background: linear-gradient(171deg, hsl(139, 60%, 95%), hsl(169, 60%, 90%));
+  padding: 4rem 1.5rem;
+  margin: 1rem;
+  border: 2px solid hsl(139, 50%, 70%);
+  border-radius: 11px;
+  box-shadow: 
+    0 4px 5px rgba(0,0,0,0.10),
+    inset 0 1px 3px rgba(255,255,255,0.4);
+  transform: rotate(4deg) scale(1.09);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+.p184-m0-s19:hover {
+  transform: rotate(6deg) scale(1.01);
+  box-shadow: 
+    0 3px 11px rgba(0,0,0,0.11),
+    inset 0 1px 1px rgba(255,255,255,0.1);
+}
+.p184-m0-s19:focus {
+  outline: 3px solid hsl(319, 70%, 50%);
+  outline-offset: 2px;
+}
+.p184-m0-s19::before {
+  content: "184-0-19";
+  position: absolute;
+  top: 9px;
+  left: 9px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s19::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 29px;
+  height: 29px;
+  background: hsl(199, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s20 {
+  --idx: 20;
+  --page: 184;
+  --module: 0;
+  color: hsl(148, 70%, 50%);
+  background: linear-gradient(180deg, hsl(148, 60%, 95%), hsl(178, 60%, 90%));
+  padding: 1rem 2.5rem;
+  margin: 0rem;
+  border: 3px solid hsl(148, 50%, 70%);
+  border-radius: 12px;
+  box-shadow: 
+    0 1px 6px rgba(0,0,0,0.1),
+    inset 0 0px 0px rgba(255,255,255,0.0);
+  transform: rotate(-5deg) scale(1.00);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+.p184-m0-s20:hover {
+  transform: rotate(-3deg) scale(1.02);
+  box-shadow: 
+    0 4px 12px rgba(0,0,0,0.2),
+    inset 0 2px 2px rgba(255,255,255,0.2);
+}
+.p184-m0-s20:focus {
+  outline: 2px solid hsl(328, 70%, 50%);
+  outline-offset: 3px;
+}
+.p184-m0-s20::before {
+  content: "184-0-20";
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s20::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background: hsl(208, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s21 {
+  --idx: 21;
+  --page: 184;
+  --module: 0;
+  color: hsl(157, 70%, 50%);
+  background: linear-gradient(189deg, hsl(157, 60%, 95%), hsl(187, 60%, 90%));
+  padding: 2rem 0.5rem;
+  margin: 0.25rem;
+  border: 1px solid hsl(157, 50%, 70%);
+  border-radius: 13px;
+  box-shadow: 
+    0 2px 7px rgba(0,0,0,0.2),
+    inset 0 1px 1px rgba(255,255,255,0.1);
+  transform: rotate(-4deg) scale(1.01);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  line-height: 1.3;
+}
+.p184-m0-s21:hover {
+  transform: rotate(-2deg) scale(1.03);
+  box-shadow: 
+    0 5px 13px rgba(0,0,0,0.3),
+    inset 0 0px 3px rgba(255,255,255,0.3);
+}
+.p184-m0-s21:focus {
+  outline: 3px solid hsl(337, 70%, 50%);
+  outline-offset: 1px;
+}
+.p184-m0-s21::before {
+  content: "184-0-21";
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s21::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 11px;
+  height: 11px;
+  background: hsl(217, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s22 {
+  --idx: 22;
+  --page: 184;
+  --module: 0;
+  color: hsl(166, 70%, 50%);
+  background: linear-gradient(198deg, hsl(166, 60%, 95%), hsl(196, 60%, 90%));
+  padding: 3rem 1.5rem;
+  margin: 0.5rem;
+  border: 2px solid hsl(166, 50%, 70%);
+  border-radius: 14px;
+  box-shadow: 
+    0 3px 8px rgba(0,0,0,0.3),
+    inset 0 0px 2px rgba(255,255,255,0.2);
+  transform: rotate(-3deg) scale(1.02);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  line-height: 1.4;
+}
+.p184-m0-s22:hover {
+  transform: rotate(-1deg) scale(1.04);
+  box-shadow: 
+    0 6px 14px rgba(0,0,0,0.4),
+    inset 0 1px 4px rgba(255,255,255,0.4);
+}
+.p184-m0-s22:focus {
+  outline: 2px solid hsl(346, 70%, 50%);
+  outline-offset: 2px;
+}
+.p184-m0-s22::before {
+  content: "184-0-22";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s22::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  background: hsl(226, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s23 {
+  --idx: 23;
+  --page: 184;
+  --module: 0;
+  color: hsl(175, 70%, 50%);
+  background: linear-gradient(207deg, hsl(175, 60%, 95%), hsl(205, 60%, 90%));
+  padding: 4rem 2.5rem;
+  margin: 0.75rem;
+  border: 3px solid hsl(175, 50%, 70%);
+  border-radius: 15px;
+  box-shadow: 
+    0 4px 9px rgba(0,0,0,0.4),
+    inset 0 1px 3px rgba(255,255,255,0.3);
+  transform: rotate(-2deg) scale(1.03);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+.p184-m0-s23:hover {
+  transform: rotate(0deg) scale(1.05);
+  box-shadow: 
+    0 7px 15px rgba(0,0,0,0.5),
+    inset 0 2px 5px rgba(255,255,255,0.0);
+}
+.p184-m0-s23:focus {
+  outline: 3px solid hsl(355, 70%, 50%);
+  outline-offset: 3px;
+}
+.p184-m0-s23::before {
+  content: "184-0-23";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s23::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 13px;
+  height: 13px;
+  background: hsl(235, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s24 {
+  --idx: 24;
+  --page: 184;
+  --module: 0;
+  color: hsl(184, 70%, 50%);
+  background: linear-gradient(216deg, hsl(184, 60%, 95%), hsl(214, 60%, 90%));
+  padding: 1rem 0.5rem;
+  margin: 1rem;
+  border: 1px solid hsl(184, 50%, 70%);
+  border-radius: 4px;
+  box-shadow: 
+    0 1px 2px rgba(0,0,0,0.5),
+    inset 0 0px 0px rgba(255,255,255,0.4);
+  transform: rotate(-1deg) scale(1.04);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+.p184-m0-s24:hover {
+  transform: rotate(1deg) scale(1.06);
+  box-shadow: 
+    0 2px 4px rgba(0,0,0,0.6),
+    inset 0 0px 0px rgba(255,255,255,0.1);
+}
+.p184-m0-s24:focus {
+  outline: 2px solid hsl(4, 70%, 50%);
+  outline-offset: 1px;
+}
+.p184-m0-s24::before {
+  content: "184-0-24";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s24::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 14px;
+  height: 14px;
+  background: hsl(244, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s25 {
+  --idx: 25;
+  --page: 184;
+  --module: 0;
+  color: hsl(193, 70%, 50%);
+  background: linear-gradient(225deg, hsl(193, 60%, 95%), hsl(223, 60%, 90%));
+  padding: 2rem 1.5rem;
+  margin: 0rem;
+  border: 2px solid hsl(193, 50%, 70%);
+  border-radius: 5px;
+  box-shadow: 
+    0 2px 3px rgba(0,0,0,0.6),
+    inset 0 1px 1px rgba(255,255,255,0.0);
+  transform: rotate(0deg) scale(1.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  line-height: 1.2;
+}
+.p184-m0-s25:hover {
+  transform: rotate(2deg) scale(1.07);
+  box-shadow: 
+    0 3px 5px rgba(0,0,0,0.7),
+    inset 0 1px 1px rgba(255,255,255,0.2);
+}
+.p184-m0-s25:focus {
+  outline: 3px solid hsl(13, 70%, 50%);
+  outline-offset: 2px;
+}
+.p184-m0-s25::before {
+  content: "184-0-25";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s25::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 15px;
+  height: 15px;
+  background: hsl(253, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s26 {
+  --idx: 26;
+  --page: 184;
+  --module: 0;
+  color: hsl(202, 70%, 50%);
+  background: linear-gradient(234deg, hsl(202, 60%, 95%), hsl(232, 60%, 90%));
+  padding: 3rem 2.5rem;
+  margin: 0.25rem;
+  border: 3px solid hsl(202, 50%, 70%);
+  border-radius: 6px;
+  box-shadow: 
+    0 3px 4px rgba(0,0,0,0.7),
+    inset 0 0px 2px rgba(255,255,255,0.1);
+  transform: rotate(1deg) scale(1.06);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  line-height: 1.3;
+}
+.p184-m0-s26:hover {
+  transform: rotate(3deg) scale(1.08);
+  box-shadow: 
+    0 4px 6px rgba(0,0,0,0.8),
+    inset 0 2px 2px rgba(255,255,255,0.3);
+}
+.p184-m0-s26:focus {
+  outline: 2px solid hsl(22, 70%, 50%);
+  outline-offset: 3px;
+}
+.p184-m0-s26::before {
+  content: "184-0-26";
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s26::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  background: hsl(262, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s27 {
+  --idx: 27;
+  --page: 184;
+  --module: 0;
+  color: hsl(211, 70%, 50%);
+  background: linear-gradient(243deg, hsl(211, 60%, 95%), hsl(241, 60%, 90%));
+  padding: 4rem 0.5rem;
+  margin: 0.5rem;
+  border: 1px solid hsl(211, 50%, 70%);
+  border-radius: 7px;
+  box-shadow: 
+    0 4px 5px rgba(0,0,0,0.8),
+    inset 0 1px 3px rgba(255,255,255,0.2);
+  transform: rotate(2deg) scale(1.07);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.125rem;
+  line-height: 1.4;
+}
+.p184-m0-s27:hover {
+  transform: rotate(4deg) scale(1.09);
+  box-shadow: 
+    0 5px 7px rgba(0,0,0,0.9),
+    inset 0 0px 3px rgba(255,255,255,0.4);
+}
+.p184-m0-s27:focus {
+  outline: 3px solid hsl(31, 70%, 50%);
+  outline-offset: 1px;
+}
+.p184-m0-s27::before {
+  content: "184-0-27";
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s27::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 17px;
+  height: 17px;
+  background: hsl(271, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s28 {
+  --idx: 28;
+  --page: 184;
+  --module: 0;
+  color: hsl(220, 70%, 50%);
+  background: linear-gradient(252deg, hsl(220, 60%, 95%), hsl(250, 60%, 90%));
+  padding: 1rem 1.5rem;
+  margin: 0.75rem;
+  border: 2px solid hsl(220, 50%, 70%);
+  border-radius: 8px;
+  box-shadow: 
+    0 1px 6px rgba(0,0,0,0.9),
+    inset 0 0px 0px rgba(255,255,255,0.3);
+  transform: rotate(3deg) scale(1.08);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+.p184-m0-s28:hover {
+  transform: rotate(5deg) scale(1.00);
+  box-shadow: 
+    0 6px 8px rgba(0,0,0,0.10),
+    inset 0 1px 4px rgba(255,255,255,0.0);
+}
+.p184-m0-s28:focus {
+  outline: 2px solid hsl(40, 70%, 50%);
+  outline-offset: 2px;
+}
+.p184-m0-s28::before {
+  content: "184-0-28";
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s28::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 18px;
+  height: 18px;
+  background: hsl(280, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s29 {
+  --idx: 29;
+  --page: 184;
+  --module: 0;
+  color: hsl(229, 70%, 50%);
+  background: linear-gradient(261deg, hsl(229, 60%, 95%), hsl(259, 60%, 90%));
+  padding: 2rem 2.5rem;
+  margin: 1rem;
+  border: 3px solid hsl(229, 50%, 70%);
+  border-radius: 9px;
+  box-shadow: 
+    0 2px 7px rgba(0,0,0,0.10),
+    inset 0 1px 1px rgba(255,255,255,0.4);
+  transform: rotate(4deg) scale(1.09);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.p184-m0-s29:hover {
+  transform: rotate(6deg) scale(1.01);
+  box-shadow: 
+    0 7px 9px rgba(0,0,0,0.11),
+    inset 0 2px 5px rgba(255,255,255,0.1);
+}
+.p184-m0-s29:focus {
+  outline: 3px solid hsl(49, 70%, 50%);
+  outline-offset: 3px;
+}
+.p184-m0-s29::before {
+  content: "184-0-29";
+  position: absolute;
+  top: 9px;
+  left: 9px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s29::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 19px;
+  height: 19px;
+  background: hsl(289, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s30 {
+  --idx: 30;
+  --page: 184;
+  --module: 0;
+  color: hsl(238, 70%, 50%);
+  background: linear-gradient(270deg, hsl(238, 60%, 95%), hsl(268, 60%, 90%));
+  padding: 3rem 0.5rem;
+  margin: 0rem;
+  border: 1px solid hsl(238, 50%, 70%);
+  border-radius: 10px;
+  box-shadow: 
+    0 3px 8px rgba(0,0,0,0.1),
+    inset 0 0px 2px rgba(255,255,255,0.0);
+  transform: rotate(-5deg) scale(1.00);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  line-height: 1.2;
+}
+.p184-m0-s30:hover {
+  transform: rotate(-3deg) scale(1.02);
+  box-shadow: 
+    0 2px 10px rgba(0,0,0,0.2),
+    inset 0 0px 0px rgba(255,255,255,0.2);
+}
+.p184-m0-s30:focus {
+  outline: 2px solid hsl(58, 70%, 50%);
+  outline-offset: 1px;
+}
+.p184-m0-s30::before {
+  content: "184-0-30";
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s30::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  background: hsl(298, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s31 {
+  --idx: 31;
+  --page: 184;
+  --module: 0;
+  color: hsl(247, 70%, 50%);
+  background: linear-gradient(279deg, hsl(247, 60%, 95%), hsl(277, 60%, 90%));
+  padding: 4rem 1.5rem;
+  margin: 0.25rem;
+  border: 2px solid hsl(247, 50%, 70%);
+  border-radius: 11px;
+  box-shadow: 
+    0 4px 9px rgba(0,0,0,0.2),
+    inset 0 1px 3px rgba(255,255,255,0.1);
+  transform: rotate(-4deg) scale(1.01);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.125rem;
+  line-height: 1.3;
+}
+.p184-m0-s31:hover {
+  transform: rotate(-2deg) scale(1.03);
+  box-shadow: 
+    0 3px 11px rgba(0,0,0,0.3),
+    inset 0 1px 1px rgba(255,255,255,0.3);
+}
+.p184-m0-s31:focus {
+  outline: 3px solid hsl(67, 70%, 50%);
+  outline-offset: 2px;
+}
+.p184-m0-s31::before {
+  content: "184-0-31";
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s31::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 21px;
+  height: 21px;
+  background: hsl(307, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s32 {
+  --idx: 32;
+  --page: 184;
+  --module: 0;
+  color: hsl(256, 70%, 50%);
+  background: linear-gradient(288deg, hsl(256, 60%, 95%), hsl(286, 60%, 90%));
+  padding: 1rem 2.5rem;
+  margin: 0.5rem;
+  border: 3px solid hsl(256, 50%, 70%);
+  border-radius: 12px;
+  box-shadow: 
+    0 1px 2px rgba(0,0,0,0.3),
+    inset 0 0px 0px rgba(255,255,255,0.2);
+  transform: rotate(-3deg) scale(1.02);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+.p184-m0-s32:hover {
+  transform: rotate(-1deg) scale(1.04);
+  box-shadow: 
+    0 4px 12px rgba(0,0,0,0.4),
+    inset 0 2px 2px rgba(255,255,255,0.4);
+}
+.p184-m0-s32:focus {
+  outline: 2px solid hsl(76, 70%, 50%);
+  outline-offset: 3px;
+}
+.p184-m0-s32::before {
+  content: "184-0-32";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s32::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 22px;
+  height: 22px;
+  background: hsl(316, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s33 {
+  --idx: 33;
+  --page: 184;
+  --module: 0;
+  color: hsl(265, 70%, 50%);
+  background: linear-gradient(297deg, hsl(265, 60%, 95%), hsl(295, 60%, 90%));
+  padding: 2rem 0.5rem;
+  margin: 0.75rem;
+  border: 1px solid hsl(265, 50%, 70%);
+  border-radius: 13px;
+  box-shadow: 
+    0 2px 3px rgba(0,0,0,0.4),
+    inset 0 1px 1px rgba(255,255,255,0.3);
+  transform: rotate(-2deg) scale(1.03);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.p184-m0-s33:hover {
+  transform: rotate(0deg) scale(1.05);
+  box-shadow: 
+    0 5px 13px rgba(0,0,0,0.5),
+    inset 0 0px 3px rgba(255,255,255,0.0);
+}
+.p184-m0-s33:focus {
+  outline: 3px solid hsl(85, 70%, 50%);
+  outline-offset: 1px;
+}
+.p184-m0-s33::before {
+  content: "184-0-33";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s33::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 23px;
+  height: 23px;
+  background: hsl(325, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s34 {
+  --idx: 34;
+  --page: 184;
+  --module: 0;
+  color: hsl(274, 70%, 50%);
+  background: linear-gradient(306deg, hsl(274, 60%, 95%), hsl(304, 60%, 90%));
+  padding: 3rem 1.5rem;
+  margin: 1rem;
+  border: 2px solid hsl(274, 50%, 70%);
+  border-radius: 14px;
+  box-shadow: 
+    0 3px 4px rgba(0,0,0,0.5),
+    inset 0 0px 2px rgba(255,255,255,0.4);
+  transform: rotate(-1deg) scale(1.04);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.p184-m0-s34:hover {
+  transform: rotate(1deg) scale(1.06);
+  box-shadow: 
+    0 6px 14px rgba(0,0,0,0.6),
+    inset 0 1px 4px rgba(255,255,255,0.1);
+}
+.p184-m0-s34:focus {
+  outline: 2px solid hsl(94, 70%, 50%);
+  outline-offset: 2px;
+}
+.p184-m0-s34::before {
+  content: "184-0-34";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s34::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  background: hsl(334, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s35 {
+  --idx: 35;
+  --page: 184;
+  --module: 0;
+  color: hsl(283, 70%, 50%);
+  background: linear-gradient(315deg, hsl(283, 60%, 95%), hsl(313, 60%, 90%));
+  padding: 4rem 2.5rem;
+  margin: 0rem;
+  border: 3px solid hsl(283, 50%, 70%);
+  border-radius: 15px;
+  box-shadow: 
+    0 4px 5px rgba(0,0,0,0.6),
+    inset 0 1px 3px rgba(255,255,255,0.0);
+  transform: rotate(0deg) scale(1.05);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.125rem;
+  line-height: 1.2;
+}
+.p184-m0-s35:hover {
+  transform: rotate(2deg) scale(1.07);
+  box-shadow: 
+    0 7px 15px rgba(0,0,0,0.7),
+    inset 0 2px 5px rgba(255,255,255,0.2);
+}
+.p184-m0-s35:focus {
+  outline: 3px solid hsl(103, 70%, 50%);
+  outline-offset: 3px;
+}
+.p184-m0-s35::before {
+  content: "184-0-35";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s35::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 25px;
+  height: 25px;
+  background: hsl(343, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s36 {
+  --idx: 36;
+  --page: 184;
+  --module: 0;
+  color: hsl(292, 70%, 50%);
+  background: linear-gradient(324deg, hsl(292, 60%, 95%), hsl(322, 60%, 90%));
+  padding: 1rem 0.5rem;
+  margin: 0.25rem;
+  border: 1px solid hsl(292, 50%, 70%);
+  border-radius: 4px;
+  box-shadow: 
+    0 1px 6px rgba(0,0,0,0.7),
+    inset 0 0px 0px rgba(255,255,255,0.1);
+  transform: rotate(1deg) scale(1.06);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.75rem;
+  line-height: 1.3;
+}
+.p184-m0-s36:hover {
+  transform: rotate(3deg) scale(1.08);
+  box-shadow: 
+    0 2px 4px rgba(0,0,0,0.8),
+    inset 0 0px 0px rgba(255,255,255,0.3);
+}
+.p184-m0-s36:focus {
+  outline: 2px solid hsl(112, 70%, 50%);
+  outline-offset: 1px;
+}
+.p184-m0-s36::before {
+  content: "184-0-36";
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s36::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 26px;
+  height: 26px;
+  background: hsl(352, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s37 {
+  --idx: 37;
+  --page: 184;
+  --module: 0;
+  color: hsl(301, 70%, 50%);
+  background: linear-gradient(333deg, hsl(301, 60%, 95%), hsl(331, 60%, 90%));
+  padding: 2rem 1.5rem;
+  margin: 0.5rem;
+  border: 2px solid hsl(301, 50%, 70%);
+  border-radius: 5px;
+  box-shadow: 
+    0 2px 7px rgba(0,0,0,0.8),
+    inset 0 1px 1px rgba(255,255,255,0.2);
+  transform: rotate(2deg) scale(1.07);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+.p184-m0-s37:hover {
+  transform: rotate(4deg) scale(1.09);
+  box-shadow: 
+    0 3px 5px rgba(0,0,0,0.9),
+    inset 0 1px 1px rgba(255,255,255,0.4);
+}
+.p184-m0-s37:focus {
+  outline: 3px solid hsl(121, 70%, 50%);
+  outline-offset: 2px;
+}
+.p184-m0-s37::before {
+  content: "184-0-37";
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s37::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 27px;
+  height: 27px;
+  background: hsl(1, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s38 {
+  --idx: 38;
+  --page: 184;
+  --module: 0;
+  color: hsl(310, 70%, 50%);
+  background: linear-gradient(342deg, hsl(310, 60%, 95%), hsl(340, 60%, 90%));
+  padding: 3rem 2.5rem;
+  margin: 0.75rem;
+  border: 3px solid hsl(310, 50%, 70%);
+  border-radius: 6px;
+  box-shadow: 
+    0 3px 8px rgba(0,0,0,0.9),
+    inset 0 0px 2px rgba(255,255,255,0.3);
+  transform: rotate(3deg) scale(1.08);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.p184-m0-s38:hover {
+  transform: rotate(5deg) scale(1.00);
+  box-shadow: 
+    0 4px 6px rgba(0,0,0,0.10),
+    inset 0 2px 2px rgba(255,255,255,0.0);
+}
+.p184-m0-s38:focus {
+  outline: 2px solid hsl(130, 70%, 50%);
+  outline-offset: 3px;
+}
+.p184-m0-s38::before {
+  content: "184-0-38";
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s38::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  background: hsl(10, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p184-m0-s39 {
+  --idx: 39;
+  --page: 184;
+  --module: 0;
+  color: hsl(319, 70%, 50%);
+  background: linear-gradient(351deg, hsl(319, 60%, 95%), hsl(349, 60%, 90%));
+  padding: 4rem 0.5rem;
+  margin: 1rem;
+  border: 1px solid hsl(319, 50%, 70%);
+  border-radius: 7px;
+  box-shadow: 
+    0 4px 9px rgba(0,0,0,0.10),
+    inset 0 1px 3px rgba(255,255,255,0.4);
+  transform: rotate(4deg) scale(1.09);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+.p184-m0-s39:hover {
+  transform: rotate(6deg) scale(1.01);
+  box-shadow: 
+    0 5px 7px rgba(0,0,0,0.11),
+    inset 0 0px 3px rgba(255,255,255,0.1);
+}
+.p184-m0-s39:focus {
+  outline: 3px solid hsl(139, 70%, 50%);
+  outline-offset: 1px;
+}
+.p184-m0-s39::before {
+  content: "184-0-39";
+  position: absolute;
+  top: 9px;
+  left: 9px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p184-m0-s39::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 29px;
+  height: 29px;
+  background: hsl(19, 50%, 80%);
+  border-radius: 50%;
+}

@@ -1,0 +1,22 @@
+// Static SSG Page 1297 - v13
+import '@/generated/styles/p1297_m0.css';
+import SharedComponent79 from '@/generated/components/SharedComponent79';
+import SharedComponent80 from '@/generated/components/SharedComponent80';
+import SharedComponent81 from '@/generated/components/SharedComponent81';
+import SharedComponent82 from '@/generated/components/SharedComponent82';
+import SharedComponent83 from '@/generated/components/SharedComponent83';
+
+export default function SSGPage1297() {
+  return (
+    <div className="p1297-m0-s0 p-4 min-h-screen">
+      <h1 className="text-lg font-bold mb-2">Static Page 1297</h1>
+      <div className="grid grid-cols-2 gap-1">
+        <SharedComponent79 id="1297-0" value={129700} label="S" />
+        <SharedComponent80 id="1297-1" value={129701} label="S" />
+        <SharedComponent81 id="1297-2" value={129702} label="S" />
+        <SharedComponent82 id="1297-3" value={129703} label="S" />
+        <SharedComponent83 id="1297-4" value={129704} label="S" />
+      </div>
+    </div>
+  );
+}

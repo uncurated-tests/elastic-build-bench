@@ -1,0 +1,1881 @@
+/* Page 1955 Module 0 - v13 */
+
+.p1955-m0-s0 {
+  --idx: 0;
+  --page: 1955;
+  --module: 0;
+  color: hsl(335, 70%, 50%);
+  background: linear-gradient(0deg, hsl(335, 60%, 95%), hsl(5, 60%, 90%));
+  padding: 1rem 0.5rem;
+  margin: 0rem;
+  border: 1px solid hsl(335, 50%, 70%);
+  border-radius: 4px;
+  box-shadow: 
+    0 1px 2px rgba(0,0,0,0.1),
+    inset 0 0px 0px rgba(255,255,255,0.0);
+  transform: rotate(-5deg) scale(1.00);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+.p1955-m0-s0:hover {
+  transform: rotate(-3deg) scale(1.02);
+  box-shadow: 
+    0 2px 4px rgba(0,0,0,0.2),
+    inset 0 0px 0px rgba(255,255,255,0.2);
+}
+.p1955-m0-s0:focus {
+  outline: 2px solid hsl(155, 70%, 50%);
+  outline-offset: 1px;
+}
+.p1955-m0-s0::before {
+  content: "1955-0-0";
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s0::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background: hsl(35, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s1 {
+  --idx: 1;
+  --page: 1955;
+  --module: 0;
+  color: hsl(344, 70%, 50%);
+  background: linear-gradient(9deg, hsl(344, 60%, 95%), hsl(14, 60%, 90%));
+  padding: 2rem 1.5rem;
+  margin: 0.25rem;
+  border: 2px solid hsl(344, 50%, 70%);
+  border-radius: 5px;
+  box-shadow: 
+    0 2px 3px rgba(0,0,0,0.2),
+    inset 0 1px 1px rgba(255,255,255,0.1);
+  transform: rotate(-4deg) scale(1.01);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  line-height: 1.3;
+}
+.p1955-m0-s1:hover {
+  transform: rotate(-2deg) scale(1.03);
+  box-shadow: 
+    0 3px 5px rgba(0,0,0,0.3),
+    inset 0 1px 1px rgba(255,255,255,0.3);
+}
+.p1955-m0-s1:focus {
+  outline: 3px solid hsl(164, 70%, 50%);
+  outline-offset: 2px;
+}
+.p1955-m0-s1::before {
+  content: "1955-0-1";
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s1::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 11px;
+  height: 11px;
+  background: hsl(44, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s2 {
+  --idx: 2;
+  --page: 1955;
+  --module: 0;
+  color: hsl(353, 70%, 50%);
+  background: linear-gradient(18deg, hsl(353, 60%, 95%), hsl(23, 60%, 90%));
+  padding: 3rem 2.5rem;
+  margin: 0.5rem;
+  border: 3px solid hsl(353, 50%, 70%);
+  border-radius: 6px;
+  box-shadow: 
+    0 3px 4px rgba(0,0,0,0.3),
+    inset 0 0px 2px rgba(255,255,255,0.2);
+  transform: rotate(-3deg) scale(1.02);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  line-height: 1.4;
+}
+.p1955-m0-s2:hover {
+  transform: rotate(-1deg) scale(1.04);
+  box-shadow: 
+    0 4px 6px rgba(0,0,0,0.4),
+    inset 0 2px 2px rgba(255,255,255,0.4);
+}
+.p1955-m0-s2:focus {
+  outline: 2px solid hsl(173, 70%, 50%);
+  outline-offset: 3px;
+}
+.p1955-m0-s2::before {
+  content: "1955-0-2";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s2::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  background: hsl(53, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s3 {
+  --idx: 3;
+  --page: 1955;
+  --module: 0;
+  color: hsl(2, 70%, 50%);
+  background: linear-gradient(27deg, hsl(2, 60%, 95%), hsl(32, 60%, 90%));
+  padding: 4rem 0.5rem;
+  margin: 0.75rem;
+  border: 1px solid hsl(2, 50%, 70%);
+  border-radius: 7px;
+  box-shadow: 
+    0 4px 5px rgba(0,0,0,0.4),
+    inset 0 1px 3px rgba(255,255,255,0.3);
+  transform: rotate(-2deg) scale(1.03);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+.p1955-m0-s3:hover {
+  transform: rotate(0deg) scale(1.05);
+  box-shadow: 
+    0 5px 7px rgba(0,0,0,0.5),
+    inset 0 0px 3px rgba(255,255,255,0.0);
+}
+.p1955-m0-s3:focus {
+  outline: 3px solid hsl(182, 70%, 50%);
+  outline-offset: 1px;
+}
+.p1955-m0-s3::before {
+  content: "1955-0-3";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s3::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 13px;
+  height: 13px;
+  background: hsl(62, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s4 {
+  --idx: 4;
+  --page: 1955;
+  --module: 0;
+  color: hsl(11, 70%, 50%);
+  background: linear-gradient(36deg, hsl(11, 60%, 95%), hsl(41, 60%, 90%));
+  padding: 1rem 1.5rem;
+  margin: 1rem;
+  border: 2px solid hsl(11, 50%, 70%);
+  border-radius: 8px;
+  box-shadow: 
+    0 1px 6px rgba(0,0,0,0.5),
+    inset 0 0px 0px rgba(255,255,255,0.4);
+  transform: rotate(-1deg) scale(1.04);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+.p1955-m0-s4:hover {
+  transform: rotate(1deg) scale(1.06);
+  box-shadow: 
+    0 6px 8px rgba(0,0,0,0.6),
+    inset 0 1px 4px rgba(255,255,255,0.1);
+}
+.p1955-m0-s4:focus {
+  outline: 2px solid hsl(191, 70%, 50%);
+  outline-offset: 2px;
+}
+.p1955-m0-s4::before {
+  content: "1955-0-4";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s4::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 14px;
+  height: 14px;
+  background: hsl(71, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s5 {
+  --idx: 5;
+  --page: 1955;
+  --module: 0;
+  color: hsl(20, 70%, 50%);
+  background: linear-gradient(45deg, hsl(20, 60%, 95%), hsl(50, 60%, 90%));
+  padding: 2rem 2.5rem;
+  margin: 0rem;
+  border: 3px solid hsl(20, 50%, 70%);
+  border-radius: 9px;
+  box-shadow: 
+    0 2px 7px rgba(0,0,0,0.6),
+    inset 0 1px 1px rgba(255,255,255,0.0);
+  transform: rotate(0deg) scale(1.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  line-height: 1.2;
+}
+.p1955-m0-s5:hover {
+  transform: rotate(2deg) scale(1.07);
+  box-shadow: 
+    0 7px 9px rgba(0,0,0,0.7),
+    inset 0 2px 5px rgba(255,255,255,0.2);
+}
+.p1955-m0-s5:focus {
+  outline: 3px solid hsl(200, 70%, 50%);
+  outline-offset: 3px;
+}
+.p1955-m0-s5::before {
+  content: "1955-0-5";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s5::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 15px;
+  height: 15px;
+  background: hsl(80, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s6 {
+  --idx: 6;
+  --page: 1955;
+  --module: 0;
+  color: hsl(29, 70%, 50%);
+  background: linear-gradient(54deg, hsl(29, 60%, 95%), hsl(59, 60%, 90%));
+  padding: 3rem 0.5rem;
+  margin: 0.25rem;
+  border: 1px solid hsl(29, 50%, 70%);
+  border-radius: 10px;
+  box-shadow: 
+    0 3px 8px rgba(0,0,0,0.7),
+    inset 0 0px 2px rgba(255,255,255,0.1);
+  transform: rotate(1deg) scale(1.06);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  line-height: 1.3;
+}
+.p1955-m0-s6:hover {
+  transform: rotate(3deg) scale(1.08);
+  box-shadow: 
+    0 2px 10px rgba(0,0,0,0.8),
+    inset 0 0px 0px rgba(255,255,255,0.3);
+}
+.p1955-m0-s6:focus {
+  outline: 2px solid hsl(209, 70%, 50%);
+  outline-offset: 1px;
+}
+.p1955-m0-s6::before {
+  content: "1955-0-6";
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s6::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  background: hsl(89, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s7 {
+  --idx: 7;
+  --page: 1955;
+  --module: 0;
+  color: hsl(38, 70%, 50%);
+  background: linear-gradient(63deg, hsl(38, 60%, 95%), hsl(68, 60%, 90%));
+  padding: 4rem 1.5rem;
+  margin: 0.5rem;
+  border: 2px solid hsl(38, 50%, 70%);
+  border-radius: 11px;
+  box-shadow: 
+    0 4px 9px rgba(0,0,0,0.8),
+    inset 0 1px 3px rgba(255,255,255,0.2);
+  transform: rotate(2deg) scale(1.07);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.125rem;
+  line-height: 1.4;
+}
+.p1955-m0-s7:hover {
+  transform: rotate(4deg) scale(1.09);
+  box-shadow: 
+    0 3px 11px rgba(0,0,0,0.9),
+    inset 0 1px 1px rgba(255,255,255,0.4);
+}
+.p1955-m0-s7:focus {
+  outline: 3px solid hsl(218, 70%, 50%);
+  outline-offset: 2px;
+}
+.p1955-m0-s7::before {
+  content: "1955-0-7";
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s7::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 17px;
+  height: 17px;
+  background: hsl(98, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s8 {
+  --idx: 8;
+  --page: 1955;
+  --module: 0;
+  color: hsl(47, 70%, 50%);
+  background: linear-gradient(72deg, hsl(47, 60%, 95%), hsl(77, 60%, 90%));
+  padding: 1rem 2.5rem;
+  margin: 0.75rem;
+  border: 3px solid hsl(47, 50%, 70%);
+  border-radius: 12px;
+  box-shadow: 
+    0 1px 2px rgba(0,0,0,0.9),
+    inset 0 0px 0px rgba(255,255,255,0.3);
+  transform: rotate(3deg) scale(1.08);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+.p1955-m0-s8:hover {
+  transform: rotate(5deg) scale(1.00);
+  box-shadow: 
+    0 4px 12px rgba(0,0,0,0.10),
+    inset 0 2px 2px rgba(255,255,255,0.0);
+}
+.p1955-m0-s8:focus {
+  outline: 2px solid hsl(227, 70%, 50%);
+  outline-offset: 3px;
+}
+.p1955-m0-s8::before {
+  content: "1955-0-8";
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s8::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 18px;
+  height: 18px;
+  background: hsl(107, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s9 {
+  --idx: 9;
+  --page: 1955;
+  --module: 0;
+  color: hsl(56, 70%, 50%);
+  background: linear-gradient(81deg, hsl(56, 60%, 95%), hsl(86, 60%, 90%));
+  padding: 2rem 0.5rem;
+  margin: 1rem;
+  border: 1px solid hsl(56, 50%, 70%);
+  border-radius: 13px;
+  box-shadow: 
+    0 2px 3px rgba(0,0,0,0.10),
+    inset 0 1px 1px rgba(255,255,255,0.4);
+  transform: rotate(4deg) scale(1.09);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.p1955-m0-s9:hover {
+  transform: rotate(6deg) scale(1.01);
+  box-shadow: 
+    0 5px 13px rgba(0,0,0,0.11),
+    inset 0 0px 3px rgba(255,255,255,0.1);
+}
+.p1955-m0-s9:focus {
+  outline: 3px solid hsl(236, 70%, 50%);
+  outline-offset: 1px;
+}
+.p1955-m0-s9::before {
+  content: "1955-0-9";
+  position: absolute;
+  top: 9px;
+  left: 9px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s9::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 19px;
+  height: 19px;
+  background: hsl(116, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s10 {
+  --idx: 10;
+  --page: 1955;
+  --module: 0;
+  color: hsl(65, 70%, 50%);
+  background: linear-gradient(90deg, hsl(65, 60%, 95%), hsl(95, 60%, 90%));
+  padding: 3rem 1.5rem;
+  margin: 0rem;
+  border: 2px solid hsl(65, 50%, 70%);
+  border-radius: 14px;
+  box-shadow: 
+    0 3px 4px rgba(0,0,0,0.1),
+    inset 0 0px 2px rgba(255,255,255,0.0);
+  transform: rotate(-5deg) scale(1.00);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  line-height: 1.2;
+}
+.p1955-m0-s10:hover {
+  transform: rotate(-3deg) scale(1.02);
+  box-shadow: 
+    0 6px 14px rgba(0,0,0,0.2),
+    inset 0 1px 4px rgba(255,255,255,0.2);
+}
+.p1955-m0-s10:focus {
+  outline: 2px solid hsl(245, 70%, 50%);
+  outline-offset: 2px;
+}
+.p1955-m0-s10::before {
+  content: "1955-0-10";
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s10::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  background: hsl(125, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s11 {
+  --idx: 11;
+  --page: 1955;
+  --module: 0;
+  color: hsl(74, 70%, 50%);
+  background: linear-gradient(99deg, hsl(74, 60%, 95%), hsl(104, 60%, 90%));
+  padding: 4rem 2.5rem;
+  margin: 0.25rem;
+  border: 3px solid hsl(74, 50%, 70%);
+  border-radius: 15px;
+  box-shadow: 
+    0 4px 5px rgba(0,0,0,0.2),
+    inset 0 1px 3px rgba(255,255,255,0.1);
+  transform: rotate(-4deg) scale(1.01);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.125rem;
+  line-height: 1.3;
+}
+.p1955-m0-s11:hover {
+  transform: rotate(-2deg) scale(1.03);
+  box-shadow: 
+    0 7px 15px rgba(0,0,0,0.3),
+    inset 0 2px 5px rgba(255,255,255,0.3);
+}
+.p1955-m0-s11:focus {
+  outline: 3px solid hsl(254, 70%, 50%);
+  outline-offset: 3px;
+}
+.p1955-m0-s11::before {
+  content: "1955-0-11";
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s11::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 21px;
+  height: 21px;
+  background: hsl(134, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s12 {
+  --idx: 12;
+  --page: 1955;
+  --module: 0;
+  color: hsl(83, 70%, 50%);
+  background: linear-gradient(108deg, hsl(83, 60%, 95%), hsl(113, 60%, 90%));
+  padding: 1rem 0.5rem;
+  margin: 0.5rem;
+  border: 1px solid hsl(83, 50%, 70%);
+  border-radius: 4px;
+  box-shadow: 
+    0 1px 6px rgba(0,0,0,0.3),
+    inset 0 0px 0px rgba(255,255,255,0.2);
+  transform: rotate(-3deg) scale(1.02);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+.p1955-m0-s12:hover {
+  transform: rotate(-1deg) scale(1.04);
+  box-shadow: 
+    0 2px 4px rgba(0,0,0,0.4),
+    inset 0 0px 0px rgba(255,255,255,0.4);
+}
+.p1955-m0-s12:focus {
+  outline: 2px solid hsl(263, 70%, 50%);
+  outline-offset: 1px;
+}
+.p1955-m0-s12::before {
+  content: "1955-0-12";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s12::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 22px;
+  height: 22px;
+  background: hsl(143, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s13 {
+  --idx: 13;
+  --page: 1955;
+  --module: 0;
+  color: hsl(92, 70%, 50%);
+  background: linear-gradient(117deg, hsl(92, 60%, 95%), hsl(122, 60%, 90%));
+  padding: 2rem 1.5rem;
+  margin: 0.75rem;
+  border: 2px solid hsl(92, 50%, 70%);
+  border-radius: 5px;
+  box-shadow: 
+    0 2px 7px rgba(0,0,0,0.4),
+    inset 0 1px 1px rgba(255,255,255,0.3);
+  transform: rotate(-2deg) scale(1.03);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.p1955-m0-s13:hover {
+  transform: rotate(0deg) scale(1.05);
+  box-shadow: 
+    0 3px 5px rgba(0,0,0,0.5),
+    inset 0 1px 1px rgba(255,255,255,0.0);
+}
+.p1955-m0-s13:focus {
+  outline: 3px solid hsl(272, 70%, 50%);
+  outline-offset: 2px;
+}
+.p1955-m0-s13::before {
+  content: "1955-0-13";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s13::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 23px;
+  height: 23px;
+  background: hsl(152, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s14 {
+  --idx: 14;
+  --page: 1955;
+  --module: 0;
+  color: hsl(101, 70%, 50%);
+  background: linear-gradient(126deg, hsl(101, 60%, 95%), hsl(131, 60%, 90%));
+  padding: 3rem 2.5rem;
+  margin: 1rem;
+  border: 3px solid hsl(101, 50%, 70%);
+  border-radius: 6px;
+  box-shadow: 
+    0 3px 8px rgba(0,0,0,0.5),
+    inset 0 0px 2px rgba(255,255,255,0.4);
+  transform: rotate(-1deg) scale(1.04);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.p1955-m0-s14:hover {
+  transform: rotate(1deg) scale(1.06);
+  box-shadow: 
+    0 4px 6px rgba(0,0,0,0.6),
+    inset 0 2px 2px rgba(255,255,255,0.1);
+}
+.p1955-m0-s14:focus {
+  outline: 2px solid hsl(281, 70%, 50%);
+  outline-offset: 3px;
+}
+.p1955-m0-s14::before {
+  content: "1955-0-14";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s14::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  background: hsl(161, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s15 {
+  --idx: 15;
+  --page: 1955;
+  --module: 0;
+  color: hsl(110, 70%, 50%);
+  background: linear-gradient(135deg, hsl(110, 60%, 95%), hsl(140, 60%, 90%));
+  padding: 4rem 0.5rem;
+  margin: 0rem;
+  border: 1px solid hsl(110, 50%, 70%);
+  border-radius: 7px;
+  box-shadow: 
+    0 4px 9px rgba(0,0,0,0.6),
+    inset 0 1px 3px rgba(255,255,255,0.0);
+  transform: rotate(0deg) scale(1.05);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.125rem;
+  line-height: 1.2;
+}
+.p1955-m0-s15:hover {
+  transform: rotate(2deg) scale(1.07);
+  box-shadow: 
+    0 5px 7px rgba(0,0,0,0.7),
+    inset 0 0px 3px rgba(255,255,255,0.2);
+}
+.p1955-m0-s15:focus {
+  outline: 3px solid hsl(290, 70%, 50%);
+  outline-offset: 1px;
+}
+.p1955-m0-s15::before {
+  content: "1955-0-15";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s15::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 25px;
+  height: 25px;
+  background: hsl(170, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s16 {
+  --idx: 16;
+  --page: 1955;
+  --module: 0;
+  color: hsl(119, 70%, 50%);
+  background: linear-gradient(144deg, hsl(119, 60%, 95%), hsl(149, 60%, 90%));
+  padding: 1rem 1.5rem;
+  margin: 0.25rem;
+  border: 2px solid hsl(119, 50%, 70%);
+  border-radius: 8px;
+  box-shadow: 
+    0 1px 2px rgba(0,0,0,0.7),
+    inset 0 0px 0px rgba(255,255,255,0.1);
+  transform: rotate(1deg) scale(1.06);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.75rem;
+  line-height: 1.3;
+}
+.p1955-m0-s16:hover {
+  transform: rotate(3deg) scale(1.08);
+  box-shadow: 
+    0 6px 8px rgba(0,0,0,0.8),
+    inset 0 1px 4px rgba(255,255,255,0.3);
+}
+.p1955-m0-s16:focus {
+  outline: 2px solid hsl(299, 70%, 50%);
+  outline-offset: 2px;
+}
+.p1955-m0-s16::before {
+  content: "1955-0-16";
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s16::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 26px;
+  height: 26px;
+  background: hsl(179, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s17 {
+  --idx: 17;
+  --page: 1955;
+  --module: 0;
+  color: hsl(128, 70%, 50%);
+  background: linear-gradient(153deg, hsl(128, 60%, 95%), hsl(158, 60%, 90%));
+  padding: 2rem 2.5rem;
+  margin: 0.5rem;
+  border: 3px solid hsl(128, 50%, 70%);
+  border-radius: 9px;
+  box-shadow: 
+    0 2px 3px rgba(0,0,0,0.8),
+    inset 0 1px 1px rgba(255,255,255,0.2);
+  transform: rotate(2deg) scale(1.07);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+.p1955-m0-s17:hover {
+  transform: rotate(4deg) scale(1.09);
+  box-shadow: 
+    0 7px 9px rgba(0,0,0,0.9),
+    inset 0 2px 5px rgba(255,255,255,0.4);
+}
+.p1955-m0-s17:focus {
+  outline: 3px solid hsl(308, 70%, 50%);
+  outline-offset: 3px;
+}
+.p1955-m0-s17::before {
+  content: "1955-0-17";
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s17::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 27px;
+  height: 27px;
+  background: hsl(188, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s18 {
+  --idx: 18;
+  --page: 1955;
+  --module: 0;
+  color: hsl(137, 70%, 50%);
+  background: linear-gradient(162deg, hsl(137, 60%, 95%), hsl(167, 60%, 90%));
+  padding: 3rem 0.5rem;
+  margin: 0.75rem;
+  border: 1px solid hsl(137, 50%, 70%);
+  border-radius: 10px;
+  box-shadow: 
+    0 3px 4px rgba(0,0,0,0.9),
+    inset 0 0px 2px rgba(255,255,255,0.3);
+  transform: rotate(3deg) scale(1.08);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.p1955-m0-s18:hover {
+  transform: rotate(5deg) scale(1.00);
+  box-shadow: 
+    0 2px 10px rgba(0,0,0,0.10),
+    inset 0 0px 0px rgba(255,255,255,0.0);
+}
+.p1955-m0-s18:focus {
+  outline: 2px solid hsl(317, 70%, 50%);
+  outline-offset: 1px;
+}
+.p1955-m0-s18::before {
+  content: "1955-0-18";
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s18::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  background: hsl(197, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s19 {
+  --idx: 19;
+  --page: 1955;
+  --module: 0;
+  color: hsl(146, 70%, 50%);
+  background: linear-gradient(171deg, hsl(146, 60%, 95%), hsl(176, 60%, 90%));
+  padding: 4rem 1.5rem;
+  margin: 1rem;
+  border: 2px solid hsl(146, 50%, 70%);
+  border-radius: 11px;
+  box-shadow: 
+    0 4px 5px rgba(0,0,0,0.10),
+    inset 0 1px 3px rgba(255,255,255,0.4);
+  transform: rotate(4deg) scale(1.09);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+.p1955-m0-s19:hover {
+  transform: rotate(6deg) scale(1.01);
+  box-shadow: 
+    0 3px 11px rgba(0,0,0,0.11),
+    inset 0 1px 1px rgba(255,255,255,0.1);
+}
+.p1955-m0-s19:focus {
+  outline: 3px solid hsl(326, 70%, 50%);
+  outline-offset: 2px;
+}
+.p1955-m0-s19::before {
+  content: "1955-0-19";
+  position: absolute;
+  top: 9px;
+  left: 9px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s19::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 29px;
+  height: 29px;
+  background: hsl(206, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s20 {
+  --idx: 20;
+  --page: 1955;
+  --module: 0;
+  color: hsl(155, 70%, 50%);
+  background: linear-gradient(180deg, hsl(155, 60%, 95%), hsl(185, 60%, 90%));
+  padding: 1rem 2.5rem;
+  margin: 0rem;
+  border: 3px solid hsl(155, 50%, 70%);
+  border-radius: 12px;
+  box-shadow: 
+    0 1px 6px rgba(0,0,0,0.1),
+    inset 0 0px 0px rgba(255,255,255,0.0);
+  transform: rotate(-5deg) scale(1.00);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+.p1955-m0-s20:hover {
+  transform: rotate(-3deg) scale(1.02);
+  box-shadow: 
+    0 4px 12px rgba(0,0,0,0.2),
+    inset 0 2px 2px rgba(255,255,255,0.2);
+}
+.p1955-m0-s20:focus {
+  outline: 2px solid hsl(335, 70%, 50%);
+  outline-offset: 3px;
+}
+.p1955-m0-s20::before {
+  content: "1955-0-20";
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s20::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background: hsl(215, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s21 {
+  --idx: 21;
+  --page: 1955;
+  --module: 0;
+  color: hsl(164, 70%, 50%);
+  background: linear-gradient(189deg, hsl(164, 60%, 95%), hsl(194, 60%, 90%));
+  padding: 2rem 0.5rem;
+  margin: 0.25rem;
+  border: 1px solid hsl(164, 50%, 70%);
+  border-radius: 13px;
+  box-shadow: 
+    0 2px 7px rgba(0,0,0,0.2),
+    inset 0 1px 1px rgba(255,255,255,0.1);
+  transform: rotate(-4deg) scale(1.01);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  line-height: 1.3;
+}
+.p1955-m0-s21:hover {
+  transform: rotate(-2deg) scale(1.03);
+  box-shadow: 
+    0 5px 13px rgba(0,0,0,0.3),
+    inset 0 0px 3px rgba(255,255,255,0.3);
+}
+.p1955-m0-s21:focus {
+  outline: 3px solid hsl(344, 70%, 50%);
+  outline-offset: 1px;
+}
+.p1955-m0-s21::before {
+  content: "1955-0-21";
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s21::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 11px;
+  height: 11px;
+  background: hsl(224, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s22 {
+  --idx: 22;
+  --page: 1955;
+  --module: 0;
+  color: hsl(173, 70%, 50%);
+  background: linear-gradient(198deg, hsl(173, 60%, 95%), hsl(203, 60%, 90%));
+  padding: 3rem 1.5rem;
+  margin: 0.5rem;
+  border: 2px solid hsl(173, 50%, 70%);
+  border-radius: 14px;
+  box-shadow: 
+    0 3px 8px rgba(0,0,0,0.3),
+    inset 0 0px 2px rgba(255,255,255,0.2);
+  transform: rotate(-3deg) scale(1.02);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  line-height: 1.4;
+}
+.p1955-m0-s22:hover {
+  transform: rotate(-1deg) scale(1.04);
+  box-shadow: 
+    0 6px 14px rgba(0,0,0,0.4),
+    inset 0 1px 4px rgba(255,255,255,0.4);
+}
+.p1955-m0-s22:focus {
+  outline: 2px solid hsl(353, 70%, 50%);
+  outline-offset: 2px;
+}
+.p1955-m0-s22::before {
+  content: "1955-0-22";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s22::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  background: hsl(233, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s23 {
+  --idx: 23;
+  --page: 1955;
+  --module: 0;
+  color: hsl(182, 70%, 50%);
+  background: linear-gradient(207deg, hsl(182, 60%, 95%), hsl(212, 60%, 90%));
+  padding: 4rem 2.5rem;
+  margin: 0.75rem;
+  border: 3px solid hsl(182, 50%, 70%);
+  border-radius: 15px;
+  box-shadow: 
+    0 4px 9px rgba(0,0,0,0.4),
+    inset 0 1px 3px rgba(255,255,255,0.3);
+  transform: rotate(-2deg) scale(1.03);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+.p1955-m0-s23:hover {
+  transform: rotate(0deg) scale(1.05);
+  box-shadow: 
+    0 7px 15px rgba(0,0,0,0.5),
+    inset 0 2px 5px rgba(255,255,255,0.0);
+}
+.p1955-m0-s23:focus {
+  outline: 3px solid hsl(2, 70%, 50%);
+  outline-offset: 3px;
+}
+.p1955-m0-s23::before {
+  content: "1955-0-23";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s23::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 13px;
+  height: 13px;
+  background: hsl(242, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s24 {
+  --idx: 24;
+  --page: 1955;
+  --module: 0;
+  color: hsl(191, 70%, 50%);
+  background: linear-gradient(216deg, hsl(191, 60%, 95%), hsl(221, 60%, 90%));
+  padding: 1rem 0.5rem;
+  margin: 1rem;
+  border: 1px solid hsl(191, 50%, 70%);
+  border-radius: 4px;
+  box-shadow: 
+    0 1px 2px rgba(0,0,0,0.5),
+    inset 0 0px 0px rgba(255,255,255,0.4);
+  transform: rotate(-1deg) scale(1.04);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+.p1955-m0-s24:hover {
+  transform: rotate(1deg) scale(1.06);
+  box-shadow: 
+    0 2px 4px rgba(0,0,0,0.6),
+    inset 0 0px 0px rgba(255,255,255,0.1);
+}
+.p1955-m0-s24:focus {
+  outline: 2px solid hsl(11, 70%, 50%);
+  outline-offset: 1px;
+}
+.p1955-m0-s24::before {
+  content: "1955-0-24";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s24::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 14px;
+  height: 14px;
+  background: hsl(251, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s25 {
+  --idx: 25;
+  --page: 1955;
+  --module: 0;
+  color: hsl(200, 70%, 50%);
+  background: linear-gradient(225deg, hsl(200, 60%, 95%), hsl(230, 60%, 90%));
+  padding: 2rem 1.5rem;
+  margin: 0rem;
+  border: 2px solid hsl(200, 50%, 70%);
+  border-radius: 5px;
+  box-shadow: 
+    0 2px 3px rgba(0,0,0,0.6),
+    inset 0 1px 1px rgba(255,255,255,0.0);
+  transform: rotate(0deg) scale(1.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  line-height: 1.2;
+}
+.p1955-m0-s25:hover {
+  transform: rotate(2deg) scale(1.07);
+  box-shadow: 
+    0 3px 5px rgba(0,0,0,0.7),
+    inset 0 1px 1px rgba(255,255,255,0.2);
+}
+.p1955-m0-s25:focus {
+  outline: 3px solid hsl(20, 70%, 50%);
+  outline-offset: 2px;
+}
+.p1955-m0-s25::before {
+  content: "1955-0-25";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s25::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 15px;
+  height: 15px;
+  background: hsl(260, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s26 {
+  --idx: 26;
+  --page: 1955;
+  --module: 0;
+  color: hsl(209, 70%, 50%);
+  background: linear-gradient(234deg, hsl(209, 60%, 95%), hsl(239, 60%, 90%));
+  padding: 3rem 2.5rem;
+  margin: 0.25rem;
+  border: 3px solid hsl(209, 50%, 70%);
+  border-radius: 6px;
+  box-shadow: 
+    0 3px 4px rgba(0,0,0,0.7),
+    inset 0 0px 2px rgba(255,255,255,0.1);
+  transform: rotate(1deg) scale(1.06);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  line-height: 1.3;
+}
+.p1955-m0-s26:hover {
+  transform: rotate(3deg) scale(1.08);
+  box-shadow: 
+    0 4px 6px rgba(0,0,0,0.8),
+    inset 0 2px 2px rgba(255,255,255,0.3);
+}
+.p1955-m0-s26:focus {
+  outline: 2px solid hsl(29, 70%, 50%);
+  outline-offset: 3px;
+}
+.p1955-m0-s26::before {
+  content: "1955-0-26";
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s26::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  background: hsl(269, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s27 {
+  --idx: 27;
+  --page: 1955;
+  --module: 0;
+  color: hsl(218, 70%, 50%);
+  background: linear-gradient(243deg, hsl(218, 60%, 95%), hsl(248, 60%, 90%));
+  padding: 4rem 0.5rem;
+  margin: 0.5rem;
+  border: 1px solid hsl(218, 50%, 70%);
+  border-radius: 7px;
+  box-shadow: 
+    0 4px 5px rgba(0,0,0,0.8),
+    inset 0 1px 3px rgba(255,255,255,0.2);
+  transform: rotate(2deg) scale(1.07);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.125rem;
+  line-height: 1.4;
+}
+.p1955-m0-s27:hover {
+  transform: rotate(4deg) scale(1.09);
+  box-shadow: 
+    0 5px 7px rgba(0,0,0,0.9),
+    inset 0 0px 3px rgba(255,255,255,0.4);
+}
+.p1955-m0-s27:focus {
+  outline: 3px solid hsl(38, 70%, 50%);
+  outline-offset: 1px;
+}
+.p1955-m0-s27::before {
+  content: "1955-0-27";
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s27::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 17px;
+  height: 17px;
+  background: hsl(278, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s28 {
+  --idx: 28;
+  --page: 1955;
+  --module: 0;
+  color: hsl(227, 70%, 50%);
+  background: linear-gradient(252deg, hsl(227, 60%, 95%), hsl(257, 60%, 90%));
+  padding: 1rem 1.5rem;
+  margin: 0.75rem;
+  border: 2px solid hsl(227, 50%, 70%);
+  border-radius: 8px;
+  box-shadow: 
+    0 1px 6px rgba(0,0,0,0.9),
+    inset 0 0px 0px rgba(255,255,255,0.3);
+  transform: rotate(3deg) scale(1.08);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+.p1955-m0-s28:hover {
+  transform: rotate(5deg) scale(1.00);
+  box-shadow: 
+    0 6px 8px rgba(0,0,0,0.10),
+    inset 0 1px 4px rgba(255,255,255,0.0);
+}
+.p1955-m0-s28:focus {
+  outline: 2px solid hsl(47, 70%, 50%);
+  outline-offset: 2px;
+}
+.p1955-m0-s28::before {
+  content: "1955-0-28";
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s28::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 18px;
+  height: 18px;
+  background: hsl(287, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s29 {
+  --idx: 29;
+  --page: 1955;
+  --module: 0;
+  color: hsl(236, 70%, 50%);
+  background: linear-gradient(261deg, hsl(236, 60%, 95%), hsl(266, 60%, 90%));
+  padding: 2rem 2.5rem;
+  margin: 1rem;
+  border: 3px solid hsl(236, 50%, 70%);
+  border-radius: 9px;
+  box-shadow: 
+    0 2px 7px rgba(0,0,0,0.10),
+    inset 0 1px 1px rgba(255,255,255,0.4);
+  transform: rotate(4deg) scale(1.09);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.p1955-m0-s29:hover {
+  transform: rotate(6deg) scale(1.01);
+  box-shadow: 
+    0 7px 9px rgba(0,0,0,0.11),
+    inset 0 2px 5px rgba(255,255,255,0.1);
+}
+.p1955-m0-s29:focus {
+  outline: 3px solid hsl(56, 70%, 50%);
+  outline-offset: 3px;
+}
+.p1955-m0-s29::before {
+  content: "1955-0-29";
+  position: absolute;
+  top: 9px;
+  left: 9px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s29::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 19px;
+  height: 19px;
+  background: hsl(296, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s30 {
+  --idx: 30;
+  --page: 1955;
+  --module: 0;
+  color: hsl(245, 70%, 50%);
+  background: linear-gradient(270deg, hsl(245, 60%, 95%), hsl(275, 60%, 90%));
+  padding: 3rem 0.5rem;
+  margin: 0rem;
+  border: 1px solid hsl(245, 50%, 70%);
+  border-radius: 10px;
+  box-shadow: 
+    0 3px 8px rgba(0,0,0,0.1),
+    inset 0 0px 2px rgba(255,255,255,0.0);
+  transform: rotate(-5deg) scale(1.00);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  line-height: 1.2;
+}
+.p1955-m0-s30:hover {
+  transform: rotate(-3deg) scale(1.02);
+  box-shadow: 
+    0 2px 10px rgba(0,0,0,0.2),
+    inset 0 0px 0px rgba(255,255,255,0.2);
+}
+.p1955-m0-s30:focus {
+  outline: 2px solid hsl(65, 70%, 50%);
+  outline-offset: 1px;
+}
+.p1955-m0-s30::before {
+  content: "1955-0-30";
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s30::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  background: hsl(305, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s31 {
+  --idx: 31;
+  --page: 1955;
+  --module: 0;
+  color: hsl(254, 70%, 50%);
+  background: linear-gradient(279deg, hsl(254, 60%, 95%), hsl(284, 60%, 90%));
+  padding: 4rem 1.5rem;
+  margin: 0.25rem;
+  border: 2px solid hsl(254, 50%, 70%);
+  border-radius: 11px;
+  box-shadow: 
+    0 4px 9px rgba(0,0,0,0.2),
+    inset 0 1px 3px rgba(255,255,255,0.1);
+  transform: rotate(-4deg) scale(1.01);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.125rem;
+  line-height: 1.3;
+}
+.p1955-m0-s31:hover {
+  transform: rotate(-2deg) scale(1.03);
+  box-shadow: 
+    0 3px 11px rgba(0,0,0,0.3),
+    inset 0 1px 1px rgba(255,255,255,0.3);
+}
+.p1955-m0-s31:focus {
+  outline: 3px solid hsl(74, 70%, 50%);
+  outline-offset: 2px;
+}
+.p1955-m0-s31::before {
+  content: "1955-0-31";
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s31::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 21px;
+  height: 21px;
+  background: hsl(314, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s32 {
+  --idx: 32;
+  --page: 1955;
+  --module: 0;
+  color: hsl(263, 70%, 50%);
+  background: linear-gradient(288deg, hsl(263, 60%, 95%), hsl(293, 60%, 90%));
+  padding: 1rem 2.5rem;
+  margin: 0.5rem;
+  border: 3px solid hsl(263, 50%, 70%);
+  border-radius: 12px;
+  box-shadow: 
+    0 1px 2px rgba(0,0,0,0.3),
+    inset 0 0px 0px rgba(255,255,255,0.2);
+  transform: rotate(-3deg) scale(1.02);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+.p1955-m0-s32:hover {
+  transform: rotate(-1deg) scale(1.04);
+  box-shadow: 
+    0 4px 12px rgba(0,0,0,0.4),
+    inset 0 2px 2px rgba(255,255,255,0.4);
+}
+.p1955-m0-s32:focus {
+  outline: 2px solid hsl(83, 70%, 50%);
+  outline-offset: 3px;
+}
+.p1955-m0-s32::before {
+  content: "1955-0-32";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s32::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 22px;
+  height: 22px;
+  background: hsl(323, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s33 {
+  --idx: 33;
+  --page: 1955;
+  --module: 0;
+  color: hsl(272, 70%, 50%);
+  background: linear-gradient(297deg, hsl(272, 60%, 95%), hsl(302, 60%, 90%));
+  padding: 2rem 0.5rem;
+  margin: 0.75rem;
+  border: 1px solid hsl(272, 50%, 70%);
+  border-radius: 13px;
+  box-shadow: 
+    0 2px 3px rgba(0,0,0,0.4),
+    inset 0 1px 1px rgba(255,255,255,0.3);
+  transform: rotate(-2deg) scale(1.03);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.p1955-m0-s33:hover {
+  transform: rotate(0deg) scale(1.05);
+  box-shadow: 
+    0 5px 13px rgba(0,0,0,0.5),
+    inset 0 0px 3px rgba(255,255,255,0.0);
+}
+.p1955-m0-s33:focus {
+  outline: 3px solid hsl(92, 70%, 50%);
+  outline-offset: 1px;
+}
+.p1955-m0-s33::before {
+  content: "1955-0-33";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s33::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 23px;
+  height: 23px;
+  background: hsl(332, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s34 {
+  --idx: 34;
+  --page: 1955;
+  --module: 0;
+  color: hsl(281, 70%, 50%);
+  background: linear-gradient(306deg, hsl(281, 60%, 95%), hsl(311, 60%, 90%));
+  padding: 3rem 1.5rem;
+  margin: 1rem;
+  border: 2px solid hsl(281, 50%, 70%);
+  border-radius: 14px;
+  box-shadow: 
+    0 3px 4px rgba(0,0,0,0.5),
+    inset 0 0px 2px rgba(255,255,255,0.4);
+  transform: rotate(-1deg) scale(1.04);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.p1955-m0-s34:hover {
+  transform: rotate(1deg) scale(1.06);
+  box-shadow: 
+    0 6px 14px rgba(0,0,0,0.6),
+    inset 0 1px 4px rgba(255,255,255,0.1);
+}
+.p1955-m0-s34:focus {
+  outline: 2px solid hsl(101, 70%, 50%);
+  outline-offset: 2px;
+}
+.p1955-m0-s34::before {
+  content: "1955-0-34";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s34::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  background: hsl(341, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s35 {
+  --idx: 35;
+  --page: 1955;
+  --module: 0;
+  color: hsl(290, 70%, 50%);
+  background: linear-gradient(315deg, hsl(290, 60%, 95%), hsl(320, 60%, 90%));
+  padding: 4rem 2.5rem;
+  margin: 0rem;
+  border: 3px solid hsl(290, 50%, 70%);
+  border-radius: 15px;
+  box-shadow: 
+    0 4px 5px rgba(0,0,0,0.6),
+    inset 0 1px 3px rgba(255,255,255,0.0);
+  transform: rotate(0deg) scale(1.05);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.125rem;
+  line-height: 1.2;
+}
+.p1955-m0-s35:hover {
+  transform: rotate(2deg) scale(1.07);
+  box-shadow: 
+    0 7px 15px rgba(0,0,0,0.7),
+    inset 0 2px 5px rgba(255,255,255,0.2);
+}
+.p1955-m0-s35:focus {
+  outline: 3px solid hsl(110, 70%, 50%);
+  outline-offset: 3px;
+}
+.p1955-m0-s35::before {
+  content: "1955-0-35";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s35::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 25px;
+  height: 25px;
+  background: hsl(350, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s36 {
+  --idx: 36;
+  --page: 1955;
+  --module: 0;
+  color: hsl(299, 70%, 50%);
+  background: linear-gradient(324deg, hsl(299, 60%, 95%), hsl(329, 60%, 90%));
+  padding: 1rem 0.5rem;
+  margin: 0.25rem;
+  border: 1px solid hsl(299, 50%, 70%);
+  border-radius: 4px;
+  box-shadow: 
+    0 1px 6px rgba(0,0,0,0.7),
+    inset 0 0px 0px rgba(255,255,255,0.1);
+  transform: rotate(1deg) scale(1.06);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.75rem;
+  line-height: 1.3;
+}
+.p1955-m0-s36:hover {
+  transform: rotate(3deg) scale(1.08);
+  box-shadow: 
+    0 2px 4px rgba(0,0,0,0.8),
+    inset 0 0px 0px rgba(255,255,255,0.3);
+}
+.p1955-m0-s36:focus {
+  outline: 2px solid hsl(119, 70%, 50%);
+  outline-offset: 1px;
+}
+.p1955-m0-s36::before {
+  content: "1955-0-36";
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s36::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 26px;
+  height: 26px;
+  background: hsl(359, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s37 {
+  --idx: 37;
+  --page: 1955;
+  --module: 0;
+  color: hsl(308, 70%, 50%);
+  background: linear-gradient(333deg, hsl(308, 60%, 95%), hsl(338, 60%, 90%));
+  padding: 2rem 1.5rem;
+  margin: 0.5rem;
+  border: 2px solid hsl(308, 50%, 70%);
+  border-radius: 5px;
+  box-shadow: 
+    0 2px 7px rgba(0,0,0,0.8),
+    inset 0 1px 1px rgba(255,255,255,0.2);
+  transform: rotate(2deg) scale(1.07);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+.p1955-m0-s37:hover {
+  transform: rotate(4deg) scale(1.09);
+  box-shadow: 
+    0 3px 5px rgba(0,0,0,0.9),
+    inset 0 1px 1px rgba(255,255,255,0.4);
+}
+.p1955-m0-s37:focus {
+  outline: 3px solid hsl(128, 70%, 50%);
+  outline-offset: 2px;
+}
+.p1955-m0-s37::before {
+  content: "1955-0-37";
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s37::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 27px;
+  height: 27px;
+  background: hsl(8, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s38 {
+  --idx: 38;
+  --page: 1955;
+  --module: 0;
+  color: hsl(317, 70%, 50%);
+  background: linear-gradient(342deg, hsl(317, 60%, 95%), hsl(347, 60%, 90%));
+  padding: 3rem 2.5rem;
+  margin: 0.75rem;
+  border: 3px solid hsl(317, 50%, 70%);
+  border-radius: 6px;
+  box-shadow: 
+    0 3px 8px rgba(0,0,0,0.9),
+    inset 0 0px 2px rgba(255,255,255,0.3);
+  transform: rotate(3deg) scale(1.08);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.p1955-m0-s38:hover {
+  transform: rotate(5deg) scale(1.00);
+  box-shadow: 
+    0 4px 6px rgba(0,0,0,0.10),
+    inset 0 2px 2px rgba(255,255,255,0.0);
+}
+.p1955-m0-s38:focus {
+  outline: 2px solid hsl(137, 70%, 50%);
+  outline-offset: 3px;
+}
+.p1955-m0-s38::before {
+  content: "1955-0-38";
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s38::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  background: hsl(17, 50%, 80%);
+  border-radius: 50%;
+}
+
+.p1955-m0-s39 {
+  --idx: 39;
+  --page: 1955;
+  --module: 0;
+  color: hsl(326, 70%, 50%);
+  background: linear-gradient(351deg, hsl(326, 60%, 95%), hsl(356, 60%, 90%));
+  padding: 4rem 0.5rem;
+  margin: 1rem;
+  border: 1px solid hsl(326, 50%, 70%);
+  border-radius: 7px;
+  box-shadow: 
+    0 4px 9px rgba(0,0,0,0.10),
+    inset 0 1px 3px rgba(255,255,255,0.4);
+  transform: rotate(4deg) scale(1.09);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+.p1955-m0-s39:hover {
+  transform: rotate(6deg) scale(1.01);
+  box-shadow: 
+    0 5px 7px rgba(0,0,0,0.11),
+    inset 0 0px 3px rgba(255,255,255,0.1);
+}
+.p1955-m0-s39:focus {
+  outline: 3px solid hsl(146, 70%, 50%);
+  outline-offset: 1px;
+}
+.p1955-m0-s39::before {
+  content: "1955-0-39";
+  position: absolute;
+  top: 9px;
+  left: 9px;
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+.p1955-m0-s39::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 29px;
+  height: 29px;
+  background: hsl(26, 50%, 80%);
+  border-radius: 50%;
+}

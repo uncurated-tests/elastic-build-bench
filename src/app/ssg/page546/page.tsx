@@ -1,59 +1,21 @@
-// SSG Page 546
-import '@/generated/styles/page546.css';
+// Static SSG Page 546 - v13
+import '@/generated/styles/p546_m0.css';
 import SharedComponent322 from '@/generated/components/SharedComponent322';
 import SharedComponent323 from '@/generated/components/SharedComponent323';
 import SharedComponent324 from '@/generated/components/SharedComponent324';
 import SharedComponent325 from '@/generated/components/SharedComponent325';
 import SharedComponent326 from '@/generated/components/SharedComponent326';
-import SharedComponent327 from '@/generated/components/SharedComponent327';
-import SharedComponent328 from '@/generated/components/SharedComponent328';
-import SharedComponent329 from '@/generated/components/SharedComponent329';
-import SharedComponent330 from '@/generated/components/SharedComponent330';
-import SharedComponent331 from '@/generated/components/SharedComponent331';
-import SharedComponent332 from '@/generated/components/SharedComponent332';
-import SharedComponent333 from '@/generated/components/SharedComponent333';
-import SharedComponent334 from '@/generated/components/SharedComponent334';
-import SharedComponent335 from '@/generated/components/SharedComponent335';
-import SharedComponent336 from '@/generated/components/SharedComponent336';
-import SharedComponent337 from '@/generated/components/SharedComponent337';
-import SharedComponent338 from '@/generated/components/SharedComponent338';
-import SharedComponent339 from '@/generated/components/SharedComponent339';
-import SharedComponent340 from '@/generated/components/SharedComponent340';
-import SharedComponent341 from '@/generated/components/SharedComponent341';
 
-function computePageData(pageId: number) {
-  let result = pageId;
-  for (let i = 0; i < 1000; i++) {
-    result = Math.sin(result + i * 0.001) * Math.cos(result) + Math.sqrt(Math.abs(result) + 1);
-  }
-  return {
-    pageId,
-    checksum: result,
-    generatedAt: new Date().toISOString(),
-  };
-}
-
-export default async function SSGPage546() {
-  const data = computePageData(546);
-  
-  const items = Array.from({ length: 20 }, (_, i) => ({
-    id: `${546}-${i}`,
-    value: 546 * 100 + i,
-    label: `Page 546 Item`,
-  }));
-  
+export default function SSGPage546() {
   return (
-    <div className="page-546 p-6 min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <h1 className="page-546-header text-xl font-bold mb-4 text-zinc-900 dark:text-zinc-100">
-        SSG Page 546
-      </h1>
-      <p className="text-sm text-zinc-500 mb-4">
-        Generated: {data.generatedAt} | Checksum: {data.checksum.toFixed(4)}
-      </p>
-      <div className="page-546-content grid grid-cols-2 md:grid-cols-4 gap-2">
-        {[SharedComponent322, SharedComponent323, SharedComponent324, SharedComponent325, SharedComponent326, SharedComponent327, SharedComponent328, SharedComponent329, SharedComponent330, SharedComponent331, SharedComponent332, SharedComponent333, SharedComponent334, SharedComponent335, SharedComponent336, SharedComponent337, SharedComponent338, SharedComponent339, SharedComponent340, SharedComponent341].map((Component, idx) => (
-          <Component key={idx} {...items[idx]} />
-        ))}
+    <div className="p546-m0-s0 p-4 min-h-screen">
+      <h1 className="text-lg font-bold mb-2">Static Page 546</h1>
+      <div className="grid grid-cols-2 gap-1">
+        <SharedComponent322 id="546-0" value={54600} label="S" />
+        <SharedComponent323 id="546-1" value={54601} label="S" />
+        <SharedComponent324 id="546-2" value={54602} label="S" />
+        <SharedComponent325 id="546-3" value={54603} label="S" />
+        <SharedComponent326 id="546-4" value={54604} label="S" />
       </div>
     </div>
   );
