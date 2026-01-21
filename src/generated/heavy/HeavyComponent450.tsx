@@ -1,0 +1,79 @@
+'use client';
+import React, { memo, useMemo } from 'react';
+
+// Complex recursive type definitions to increase TypeScript compilation time
+type DeepReadonly450<T> = T extends (infer U)[]
+  ? DeepReadonlyArray450<U>
+  : T extends object
+  ? DeepReadonlyObject450<T>
+  : T;
+
+interface DeepReadonlyArray450<T> extends ReadonlyArray<DeepReadonly450<T>> {}
+
+type DeepReadonlyObject450<T> = {
+  readonly [P in keyof T]: DeepReadonly450<T[P]>;
+};
+
+type UnionToIntersection450<U> = (U extends unknown ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
+
+type LastOf450<T> = UnionToIntersection450<T extends unknown ? () => T : never> extends () => infer R ? R : never;
+
+type Push450<T extends unknown[], V> = [...T, V];
+
+type TuplifyUnion450<T, L = LastOf450<T>, N = [T] extends [never] ? true : false> = true extends N
+  ? []
+  : Push450<TuplifyUnion450<Exclude<T, L>>, L>;
+
+type DeepPartial450<T> = T extends object
+  ? { [P in keyof T]?: DeepPartial450<T[P]> }
+  : T;
+
+type Paths450<T, D extends number = 10> = [D] extends [never]
+  ? never
+  : T extends object
+  ? { [K in keyof T]-?: K extends string | number ? `${K}` | Join450<K, Paths450<T[K], Prev450[D]>> : never }[keyof T]
+  : never;
+
+type Prev450 = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+type Join450<K, P> = K extends string | number
+  ? P extends string | number
+    ? `${K}.${P}`
+    : never
+  : never;
+
+interface NestedConfig450 {
+  level1: {
+    level2: {
+      level3: {
+        value: string;
+        count: number;
+        enabled: boolean;
+        items: Array<{ id: number; name: string }>;
+      };
+    };
+  };
+}
+
+type ConfigPaths450 = Paths450<NestedConfig450>;
+
+interface HeavyProps450 {
+  config: DeepPartial450<NestedConfig450>;
+  path?: ConfigPaths450;
+}
+
+const HeavyComponent450 = memo(function HeavyComponent450({ config }: HeavyProps450) {
+  const computed = useMemo(() => {
+    const depth = JSON.stringify(config || {}).length;
+    return Math.sin(depth * 450) * Math.cos(depth);
+  }, [config]);
+
+  return (
+    <div className="heavy-450 p-1 text-xs bg-zinc-100 dark:bg-zinc-800 rounded">
+      <span>H450: {computed.toFixed(2)}</span>
+    </div>
+  );
+});
+
+HeavyComponent450.displayName = 'HeavyComponent450';
+export default HeavyComponent450;

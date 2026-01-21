@@ -1,59 +1,35 @@
-// SSG Page 560
-import '@/generated/styles/page560.css';
+// SSG Page 560 - v12
+import '@/generated/styles/p560_m0.css';
+import '@/generated/styles/p560_m1.css';
+import '@/generated/styles/p560_m2.css';
+import '@/generated/styles/p560_m3.css';
+import '@/generated/styles/p560_m4.css';
+import '@/generated/styles/p560_m5.css';
+import '@/generated/styles/p560_m6.css';
+import '@/generated/styles/p560_m7.css';
+import '@/generated/styles/p560_m8.css';
+import '@/generated/styles/p560_m9.css';
+import '@/generated/styles/p560_m10.css';
 import SharedComponent420 from '@/generated/components/SharedComponent420';
 import SharedComponent421 from '@/generated/components/SharedComponent421';
 import SharedComponent422 from '@/generated/components/SharedComponent422';
 import SharedComponent423 from '@/generated/components/SharedComponent423';
 import SharedComponent424 from '@/generated/components/SharedComponent424';
-import SharedComponent425 from '@/generated/components/SharedComponent425';
-import SharedComponent426 from '@/generated/components/SharedComponent426';
-import SharedComponent427 from '@/generated/components/SharedComponent427';
-import SharedComponent428 from '@/generated/components/SharedComponent428';
-import SharedComponent429 from '@/generated/components/SharedComponent429';
-import SharedComponent430 from '@/generated/components/SharedComponent430';
-import SharedComponent431 from '@/generated/components/SharedComponent431';
-import SharedComponent432 from '@/generated/components/SharedComponent432';
-import SharedComponent433 from '@/generated/components/SharedComponent433';
-import SharedComponent434 from '@/generated/components/SharedComponent434';
-import SharedComponent435 from '@/generated/components/SharedComponent435';
-import SharedComponent436 from '@/generated/components/SharedComponent436';
-import SharedComponent437 from '@/generated/components/SharedComponent437';
-import SharedComponent438 from '@/generated/components/SharedComponent438';
-import SharedComponent439 from '@/generated/components/SharedComponent439';
+import HeavyComponent6160 from '@/generated/heavy/HeavyComponent6160';
+import HeavyComponent6161 from '@/generated/heavy/HeavyComponent6161';
 
-function computePageData(pageId: number) {
-  let result = pageId;
-  for (let i = 0; i < 1000; i++) {
-    result = Math.sin(result + i * 0.001) * Math.cos(result) + Math.sqrt(Math.abs(result) + 1);
-  }
-  return {
-    pageId,
-    checksum: result,
-    generatedAt: new Date().toISOString(),
-  };
-}
-
-export default async function SSGPage560() {
-  const data = computePageData(560);
-  
-  const items = Array.from({ length: 20 }, (_, i) => ({
-    id: `${560}-${i}`,
-    value: 560 * 100 + i,
-    label: `Page 560 Item`,
-  }));
-  
+export default function SSGPage560() {
   return (
-    <div className="page-560 p-6 min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <h1 className="page-560-header text-xl font-bold mb-4 text-zinc-900 dark:text-zinc-100">
-        SSG Page 560
-      </h1>
-      <p className="text-sm text-zinc-500 mb-4">
-        Generated: {data.generatedAt} | Checksum: {data.checksum.toFixed(4)}
-      </p>
-      <div className="page-560-content grid grid-cols-2 md:grid-cols-4 gap-2">
-        {[SharedComponent420, SharedComponent421, SharedComponent422, SharedComponent423, SharedComponent424, SharedComponent425, SharedComponent426, SharedComponent427, SharedComponent428, SharedComponent429, SharedComponent430, SharedComponent431, SharedComponent432, SharedComponent433, SharedComponent434, SharedComponent435, SharedComponent436, SharedComponent437, SharedComponent438, SharedComponent439].map((Component, idx) => (
-          <Component key={idx} {...items[idx]} />
-        ))}
+    <div className="p560-m0-v0 p-4 min-h-screen">
+      <h1 className="text-lg font-bold mb-2">Page 560</h1>
+      <div className="grid grid-cols-2 gap-1">
+        <SharedComponent420 id="560-0" value={56000} label="S" />
+        <SharedComponent421 id="560-1" value={56001} label="S" />
+        <SharedComponent422 id="560-2" value={56002} label="S" />
+        <SharedComponent423 id="560-3" value={56003} label="S" />
+        <SharedComponent424 id="560-4" value={56004} label="S" />
+        <HeavyComponent6160 config={{ level1: { level2: { level3: { value: "p560", count: 560, enabled: true, items: [] }}}}} />
+        <HeavyComponent6161 config={{ level1: { level2: { level3: { value: "p560", count: 560, enabled: true, items: [] }}}}} />
       </div>
     </div>
   );

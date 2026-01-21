@@ -1,0 +1,36 @@
+// SSG Page 1050 - v12
+import '@/generated/styles/p1050_m0.css';
+import '@/generated/styles/p1050_m1.css';
+import '@/generated/styles/p1050_m2.css';
+import '@/generated/styles/p1050_m3.css';
+import '@/generated/styles/p1050_m4.css';
+import '@/generated/styles/p1050_m5.css';
+import '@/generated/styles/p1050_m6.css';
+import '@/generated/styles/p1050_m7.css';
+import '@/generated/styles/p1050_m8.css';
+import '@/generated/styles/p1050_m9.css';
+import '@/generated/styles/p1050_m10.css';
+import SharedComponent350 from '@/generated/components/SharedComponent350';
+import SharedComponent351 from '@/generated/components/SharedComponent351';
+import SharedComponent352 from '@/generated/components/SharedComponent352';
+import SharedComponent353 from '@/generated/components/SharedComponent353';
+import SharedComponent354 from '@/generated/components/SharedComponent354';
+import HeavyComponent11550 from '@/generated/heavy/HeavyComponent11550';
+import HeavyComponent11551 from '@/generated/heavy/HeavyComponent11551';
+
+export default function SSGPage1050() {
+  return (
+    <div className="p1050-m0-v0 p-4 min-h-screen">
+      <h1 className="text-lg font-bold mb-2">Page 1050</h1>
+      <div className="grid grid-cols-2 gap-1">
+        <SharedComponent350 id="1050-0" value={105000} label="S" />
+        <SharedComponent351 id="1050-1" value={105001} label="S" />
+        <SharedComponent352 id="1050-2" value={105002} label="S" />
+        <SharedComponent353 id="1050-3" value={105003} label="S" />
+        <SharedComponent354 id="1050-4" value={105004} label="S" />
+        <HeavyComponent11550 config={{ level1: { level2: { level3: { value: "p1050", count: 1050, enabled: true, items: [] }}}}} />
+        <HeavyComponent11551 config={{ level1: { level2: { level3: { value: "p1050", count: 1050, enabled: true, items: [] }}}}} />
+      </div>
+    </div>
+  );
+}

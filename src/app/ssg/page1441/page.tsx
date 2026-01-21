@@ -1,0 +1,36 @@
+// SSG Page 1441 - v12
+import '@/generated/styles/p1441_m0.css';
+import '@/generated/styles/p1441_m1.css';
+import '@/generated/styles/p1441_m2.css';
+import '@/generated/styles/p1441_m3.css';
+import '@/generated/styles/p1441_m4.css';
+import '@/generated/styles/p1441_m5.css';
+import '@/generated/styles/p1441_m6.css';
+import '@/generated/styles/p1441_m7.css';
+import '@/generated/styles/p1441_m8.css';
+import '@/generated/styles/p1441_m9.css';
+import '@/generated/styles/p1441_m10.css';
+import SharedComponent87 from '@/generated/components/SharedComponent87';
+import SharedComponent88 from '@/generated/components/SharedComponent88';
+import SharedComponent89 from '@/generated/components/SharedComponent89';
+import SharedComponent90 from '@/generated/components/SharedComponent90';
+import SharedComponent91 from '@/generated/components/SharedComponent91';
+import HeavyComponent851 from '@/generated/heavy/HeavyComponent851';
+import HeavyComponent852 from '@/generated/heavy/HeavyComponent852';
+
+export default function SSGPage1441() {
+  return (
+    <div className="p1441-m0-v0 p-4 min-h-screen">
+      <h1 className="text-lg font-bold mb-2">Page 1441</h1>
+      <div className="grid grid-cols-2 gap-1">
+        <SharedComponent87 id="1441-0" value={144100} label="S" />
+        <SharedComponent88 id="1441-1" value={144101} label="S" />
+        <SharedComponent89 id="1441-2" value={144102} label="S" />
+        <SharedComponent90 id="1441-3" value={144103} label="S" />
+        <SharedComponent91 id="1441-4" value={144104} label="S" />
+        <HeavyComponent851 config={{ level1: { level2: { level3: { value: "p1441", count: 1441, enabled: true, items: [] }}}}} />
+        <HeavyComponent852 config={{ level1: { level2: { level3: { value: "p1441", count: 1441, enabled: true, items: [] }}}}} />
+      </div>
+    </div>
+  );
+}

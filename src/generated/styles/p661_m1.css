@@ -1,0 +1,601 @@
+/* Page 661 Module 1 */
+
+.p661-m1-v0 {
+  --idx: 0;
+  color: hsl(354, 70%, 50%);
+  background: linear-gradient(0deg, hsl(354, 60%, 95%), hsl(24, 60%, 90%));
+  padding: 1rem;
+  border-radius: 4px;
+  box-shadow: 0 0px 0px rgba(0,0,0,0.0);
+  transform: rotate(0deg) scale(1.00);
+  transition: all 0.0s ease;
+}
+.p661-m1-v0:hover {
+  transform: rotate(5deg) scale(1.05);
+}
+.p661-m1-v0::before {
+  content: "v0";
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.p661-m1-v1 {
+  --idx: 1;
+  color: hsl(6, 70%, 50%);
+  background: linear-gradient(12deg, hsl(6, 60%, 95%), hsl(36, 60%, 90%));
+  padding: 2rem;
+  border-radius: 5px;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+  transform: rotate(1deg) scale(1.01);
+  transition: all 0.1s ease;
+}
+.p661-m1-v1:hover {
+  transform: rotate(6deg) scale(1.06);
+}
+.p661-m1-v1::before {
+  content: "v1";
+  position: absolute;
+  top: 1px;
+  left: 1px;
+}
+
+.p661-m1-v2 {
+  --idx: 2;
+  color: hsl(18, 70%, 50%);
+  background: linear-gradient(24deg, hsl(18, 60%, 95%), hsl(48, 60%, 90%));
+  padding: 3rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 2px rgba(0,0,0,0.2);
+  transform: rotate(2deg) scale(1.02);
+  transition: all 0.2s ease;
+}
+.p661-m1-v2:hover {
+  transform: rotate(7deg) scale(1.07);
+}
+.p661-m1-v2::before {
+  content: "v2";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+}
+
+.p661-m1-v3 {
+  --idx: 3;
+  color: hsl(30, 70%, 50%);
+  background: linear-gradient(36deg, hsl(30, 60%, 95%), hsl(60, 60%, 90%));
+  padding: 4rem;
+  border-radius: 7px;
+  box-shadow: 0 3px 3px rgba(0,0,0,0.3);
+  transform: rotate(3deg) scale(1.03);
+  transition: all 0.3s ease;
+}
+.p661-m1-v3:hover {
+  transform: rotate(8deg) scale(1.08);
+}
+.p661-m1-v3::before {
+  content: "v3";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+}
+
+.p661-m1-v4 {
+  --idx: 4;
+  color: hsl(42, 70%, 50%);
+  background: linear-gradient(48deg, hsl(42, 60%, 95%), hsl(72, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 0px 4px rgba(0,0,0,0.4);
+  transform: rotate(4deg) scale(1.04);
+  transition: all 0.4s ease;
+}
+.p661-m1-v4:hover {
+  transform: rotate(9deg) scale(1.09);
+}
+.p661-m1-v4::before {
+  content: "v4";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+}
+
+.p661-m1-v5 {
+  --idx: 5;
+  color: hsl(54, 70%, 50%);
+  background: linear-gradient(60deg, hsl(54, 60%, 95%), hsl(84, 60%, 90%));
+  padding: 2rem;
+  border-radius: 9px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.5);
+  transform: rotate(5deg) scale(1.05);
+  transition: all 0.0s ease;
+}
+.p661-m1-v5:hover {
+  transform: rotate(10deg) scale(1.00);
+}
+.p661-m1-v5::before {
+  content: "v5";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+
+.p661-m1-v6 {
+  --idx: 6;
+  color: hsl(66, 70%, 50%);
+  background: linear-gradient(72deg, hsl(66, 60%, 95%), hsl(96, 60%, 90%));
+  padding: 3rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+  transform: rotate(6deg) scale(1.06);
+  transition: all 0.1s ease;
+}
+.p661-m1-v6:hover {
+  transform: rotate(11deg) scale(1.01);
+}
+.p661-m1-v6::before {
+  content: "v6";
+  position: absolute;
+  top: 6px;
+  left: 6px;
+}
+
+.p661-m1-v7 {
+  --idx: 7;
+  color: hsl(78, 70%, 50%);
+  background: linear-gradient(84deg, hsl(78, 60%, 95%), hsl(108, 60%, 90%));
+  padding: 4rem;
+  border-radius: 11px;
+  box-shadow: 0 3px 7px rgba(0,0,0,0.7);
+  transform: rotate(7deg) scale(1.07);
+  transition: all 0.2s ease;
+}
+.p661-m1-v7:hover {
+  transform: rotate(12deg) scale(1.02);
+}
+.p661-m1-v7::before {
+  content: "v7";
+  position: absolute;
+  top: 7px;
+  left: 7px;
+}
+
+.p661-m1-v8 {
+  --idx: 8;
+  color: hsl(90, 70%, 50%);
+  background: linear-gradient(96deg, hsl(90, 60%, 95%), hsl(120, 60%, 90%));
+  padding: 1rem;
+  border-radius: 4px;
+  box-shadow: 0 0px 0px rgba(0,0,0,0.8);
+  transform: rotate(8deg) scale(1.08);
+  transition: all 0.3s ease;
+}
+.p661-m1-v8:hover {
+  transform: rotate(13deg) scale(1.03);
+}
+.p661-m1-v8::before {
+  content: "v8";
+  position: absolute;
+  top: 8px;
+  left: 8px;
+}
+
+.p661-m1-v9 {
+  --idx: 9;
+  color: hsl(102, 70%, 50%);
+  background: linear-gradient(108deg, hsl(102, 60%, 95%), hsl(132, 60%, 90%));
+  padding: 2rem;
+  border-radius: 5px;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.9);
+  transform: rotate(9deg) scale(1.09);
+  transition: all 0.4s ease;
+}
+.p661-m1-v9:hover {
+  transform: rotate(14deg) scale(1.04);
+}
+.p661-m1-v9::before {
+  content: "v9";
+  position: absolute;
+  top: 9px;
+  left: 9px;
+}
+
+.p661-m1-v10 {
+  --idx: 10;
+  color: hsl(114, 70%, 50%);
+  background: linear-gradient(120deg, hsl(114, 60%, 95%), hsl(144, 60%, 90%));
+  padding: 3rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 2px rgba(0,0,0,0.0);
+  transform: rotate(10deg) scale(1.00);
+  transition: all 0.0s ease;
+}
+.p661-m1-v10:hover {
+  transform: rotate(15deg) scale(1.05);
+}
+.p661-m1-v10::before {
+  content: "v10";
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.p661-m1-v11 {
+  --idx: 11;
+  color: hsl(126, 70%, 50%);
+  background: linear-gradient(132deg, hsl(126, 60%, 95%), hsl(156, 60%, 90%));
+  padding: 4rem;
+  border-radius: 7px;
+  box-shadow: 0 3px 3px rgba(0,0,0,0.1);
+  transform: rotate(11deg) scale(1.01);
+  transition: all 0.1s ease;
+}
+.p661-m1-v11:hover {
+  transform: rotate(16deg) scale(1.06);
+}
+.p661-m1-v11::before {
+  content: "v11";
+  position: absolute;
+  top: 1px;
+  left: 1px;
+}
+
+.p661-m1-v12 {
+  --idx: 12;
+  color: hsl(138, 70%, 50%);
+  background: linear-gradient(144deg, hsl(138, 60%, 95%), hsl(168, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 0px 4px rgba(0,0,0,0.2);
+  transform: rotate(12deg) scale(1.02);
+  transition: all 0.2s ease;
+}
+.p661-m1-v12:hover {
+  transform: rotate(17deg) scale(1.07);
+}
+.p661-m1-v12::before {
+  content: "v12";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+}
+
+.p661-m1-v13 {
+  --idx: 13;
+  color: hsl(150, 70%, 50%);
+  background: linear-gradient(156deg, hsl(150, 60%, 95%), hsl(180, 60%, 90%));
+  padding: 2rem;
+  border-radius: 9px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+  transform: rotate(13deg) scale(1.03);
+  transition: all 0.3s ease;
+}
+.p661-m1-v13:hover {
+  transform: rotate(18deg) scale(1.08);
+}
+.p661-m1-v13::before {
+  content: "v13";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+}
+
+.p661-m1-v14 {
+  --idx: 14;
+  color: hsl(162, 70%, 50%);
+  background: linear-gradient(168deg, hsl(162, 60%, 95%), hsl(192, 60%, 90%));
+  padding: 3rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  transform: rotate(14deg) scale(1.04);
+  transition: all 0.4s ease;
+}
+.p661-m1-v14:hover {
+  transform: rotate(19deg) scale(1.09);
+}
+.p661-m1-v14::before {
+  content: "v14";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+}
+
+.p661-m1-v15 {
+  --idx: 15;
+  color: hsl(174, 70%, 50%);
+  background: linear-gradient(180deg, hsl(174, 60%, 95%), hsl(204, 60%, 90%));
+  padding: 4rem;
+  border-radius: 11px;
+  box-shadow: 0 3px 7px rgba(0,0,0,0.5);
+  transform: rotate(15deg) scale(1.05);
+  transition: all 0.0s ease;
+}
+.p661-m1-v15:hover {
+  transform: rotate(20deg) scale(1.00);
+}
+.p661-m1-v15::before {
+  content: "v15";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+
+.p661-m1-v16 {
+  --idx: 16;
+  color: hsl(186, 70%, 50%);
+  background: linear-gradient(192deg, hsl(186, 60%, 95%), hsl(216, 60%, 90%));
+  padding: 1rem;
+  border-radius: 4px;
+  box-shadow: 0 0px 0px rgba(0,0,0,0.6);
+  transform: rotate(16deg) scale(1.06);
+  transition: all 0.1s ease;
+}
+.p661-m1-v16:hover {
+  transform: rotate(21deg) scale(1.01);
+}
+.p661-m1-v16::before {
+  content: "v16";
+  position: absolute;
+  top: 6px;
+  left: 6px;
+}
+
+.p661-m1-v17 {
+  --idx: 17;
+  color: hsl(198, 70%, 50%);
+  background: linear-gradient(204deg, hsl(198, 60%, 95%), hsl(228, 60%, 90%));
+  padding: 2rem;
+  border-radius: 5px;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.7);
+  transform: rotate(17deg) scale(1.07);
+  transition: all 0.2s ease;
+}
+.p661-m1-v17:hover {
+  transform: rotate(22deg) scale(1.02);
+}
+.p661-m1-v17::before {
+  content: "v17";
+  position: absolute;
+  top: 7px;
+  left: 7px;
+}
+
+.p661-m1-v18 {
+  --idx: 18;
+  color: hsl(210, 70%, 50%);
+  background: linear-gradient(216deg, hsl(210, 60%, 95%), hsl(240, 60%, 90%));
+  padding: 3rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 2px rgba(0,0,0,0.8);
+  transform: rotate(18deg) scale(1.08);
+  transition: all 0.3s ease;
+}
+.p661-m1-v18:hover {
+  transform: rotate(23deg) scale(1.03);
+}
+.p661-m1-v18::before {
+  content: "v18";
+  position: absolute;
+  top: 8px;
+  left: 8px;
+}
+
+.p661-m1-v19 {
+  --idx: 19;
+  color: hsl(222, 70%, 50%);
+  background: linear-gradient(228deg, hsl(222, 60%, 95%), hsl(252, 60%, 90%));
+  padding: 4rem;
+  border-radius: 7px;
+  box-shadow: 0 3px 3px rgba(0,0,0,0.9);
+  transform: rotate(19deg) scale(1.09);
+  transition: all 0.4s ease;
+}
+.p661-m1-v19:hover {
+  transform: rotate(24deg) scale(1.04);
+}
+.p661-m1-v19::before {
+  content: "v19";
+  position: absolute;
+  top: 9px;
+  left: 9px;
+}
+
+.p661-m1-v20 {
+  --idx: 20;
+  color: hsl(234, 70%, 50%);
+  background: linear-gradient(240deg, hsl(234, 60%, 95%), hsl(264, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 0px 4px rgba(0,0,0,0.0);
+  transform: rotate(20deg) scale(1.00);
+  transition: all 0.0s ease;
+}
+.p661-m1-v20:hover {
+  transform: rotate(25deg) scale(1.05);
+}
+.p661-m1-v20::before {
+  content: "v20";
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.p661-m1-v21 {
+  --idx: 21;
+  color: hsl(246, 70%, 50%);
+  background: linear-gradient(252deg, hsl(246, 60%, 95%), hsl(276, 60%, 90%));
+  padding: 2rem;
+  border-radius: 9px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+  transform: rotate(21deg) scale(1.01);
+  transition: all 0.1s ease;
+}
+.p661-m1-v21:hover {
+  transform: rotate(26deg) scale(1.06);
+}
+.p661-m1-v21::before {
+  content: "v21";
+  position: absolute;
+  top: 1px;
+  left: 1px;
+}
+
+.p661-m1-v22 {
+  --idx: 22;
+  color: hsl(258, 70%, 50%);
+  background: linear-gradient(264deg, hsl(258, 60%, 95%), hsl(288, 60%, 90%));
+  padding: 3rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transform: rotate(22deg) scale(1.02);
+  transition: all 0.2s ease;
+}
+.p661-m1-v22:hover {
+  transform: rotate(27deg) scale(1.07);
+}
+.p661-m1-v22::before {
+  content: "v22";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+}
+
+.p661-m1-v23 {
+  --idx: 23;
+  color: hsl(270, 70%, 50%);
+  background: linear-gradient(276deg, hsl(270, 60%, 95%), hsl(300, 60%, 90%));
+  padding: 4rem;
+  border-radius: 11px;
+  box-shadow: 0 3px 7px rgba(0,0,0,0.3);
+  transform: rotate(23deg) scale(1.03);
+  transition: all 0.3s ease;
+}
+.p661-m1-v23:hover {
+  transform: rotate(28deg) scale(1.08);
+}
+.p661-m1-v23::before {
+  content: "v23";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+}
+
+.p661-m1-v24 {
+  --idx: 24;
+  color: hsl(282, 70%, 50%);
+  background: linear-gradient(288deg, hsl(282, 60%, 95%), hsl(312, 60%, 90%));
+  padding: 1rem;
+  border-radius: 4px;
+  box-shadow: 0 0px 0px rgba(0,0,0,0.4);
+  transform: rotate(24deg) scale(1.04);
+  transition: all 0.4s ease;
+}
+.p661-m1-v24:hover {
+  transform: rotate(29deg) scale(1.09);
+}
+.p661-m1-v24::before {
+  content: "v24";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+}
+
+.p661-m1-v25 {
+  --idx: 25;
+  color: hsl(294, 70%, 50%);
+  background: linear-gradient(300deg, hsl(294, 60%, 95%), hsl(324, 60%, 90%));
+  padding: 2rem;
+  border-radius: 5px;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.5);
+  transform: rotate(25deg) scale(1.05);
+  transition: all 0.0s ease;
+}
+.p661-m1-v25:hover {
+  transform: rotate(30deg) scale(1.00);
+}
+.p661-m1-v25::before {
+  content: "v25";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+
+.p661-m1-v26 {
+  --idx: 26;
+  color: hsl(306, 70%, 50%);
+  background: linear-gradient(312deg, hsl(306, 60%, 95%), hsl(336, 60%, 90%));
+  padding: 3rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 2px rgba(0,0,0,0.6);
+  transform: rotate(26deg) scale(1.06);
+  transition: all 0.1s ease;
+}
+.p661-m1-v26:hover {
+  transform: rotate(31deg) scale(1.01);
+}
+.p661-m1-v26::before {
+  content: "v26";
+  position: absolute;
+  top: 6px;
+  left: 6px;
+}
+
+.p661-m1-v27 {
+  --idx: 27;
+  color: hsl(318, 70%, 50%);
+  background: linear-gradient(324deg, hsl(318, 60%, 95%), hsl(348, 60%, 90%));
+  padding: 4rem;
+  border-radius: 7px;
+  box-shadow: 0 3px 3px rgba(0,0,0,0.7);
+  transform: rotate(27deg) scale(1.07);
+  transition: all 0.2s ease;
+}
+.p661-m1-v27:hover {
+  transform: rotate(32deg) scale(1.02);
+}
+.p661-m1-v27::before {
+  content: "v27";
+  position: absolute;
+  top: 7px;
+  left: 7px;
+}
+
+.p661-m1-v28 {
+  --idx: 28;
+  color: hsl(330, 70%, 50%);
+  background: linear-gradient(336deg, hsl(330, 60%, 95%), hsl(0, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 0px 4px rgba(0,0,0,0.8);
+  transform: rotate(28deg) scale(1.08);
+  transition: all 0.3s ease;
+}
+.p661-m1-v28:hover {
+  transform: rotate(33deg) scale(1.03);
+}
+.p661-m1-v28::before {
+  content: "v28";
+  position: absolute;
+  top: 8px;
+  left: 8px;
+}
+
+.p661-m1-v29 {
+  --idx: 29;
+  color: hsl(342, 70%, 50%);
+  background: linear-gradient(348deg, hsl(342, 60%, 95%), hsl(12, 60%, 90%));
+  padding: 2rem;
+  border-radius: 9px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.9);
+  transform: rotate(29deg) scale(1.09);
+  transition: all 0.4s ease;
+}
+.p661-m1-v29:hover {
+  transform: rotate(34deg) scale(1.04);
+}
+.p661-m1-v29::before {
+  content: "v29";
+  position: absolute;
+  top: 9px;
+  left: 9px;
+}

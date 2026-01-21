@@ -1,0 +1,36 @@
+// SSG Page 1337 - v12
+import '@/generated/styles/p1337_m0.css';
+import '@/generated/styles/p1337_m1.css';
+import '@/generated/styles/p1337_m2.css';
+import '@/generated/styles/p1337_m3.css';
+import '@/generated/styles/p1337_m4.css';
+import '@/generated/styles/p1337_m5.css';
+import '@/generated/styles/p1337_m6.css';
+import '@/generated/styles/p1337_m7.css';
+import '@/generated/styles/p1337_m8.css';
+import '@/generated/styles/p1337_m9.css';
+import '@/generated/styles/p1337_m10.css';
+import SharedComponent359 from '@/generated/components/SharedComponent359';
+import SharedComponent360 from '@/generated/components/SharedComponent360';
+import SharedComponent361 from '@/generated/components/SharedComponent361';
+import SharedComponent362 from '@/generated/components/SharedComponent362';
+import SharedComponent363 from '@/generated/components/SharedComponent363';
+import HeavyComponent14707 from '@/generated/heavy/HeavyComponent14707';
+import HeavyComponent14708 from '@/generated/heavy/HeavyComponent14708';
+
+export default function SSGPage1337() {
+  return (
+    <div className="p1337-m0-v0 p-4 min-h-screen">
+      <h1 className="text-lg font-bold mb-2">Page 1337</h1>
+      <div className="grid grid-cols-2 gap-1">
+        <SharedComponent359 id="1337-0" value={133700} label="S" />
+        <SharedComponent360 id="1337-1" value={133701} label="S" />
+        <SharedComponent361 id="1337-2" value={133702} label="S" />
+        <SharedComponent362 id="1337-3" value={133703} label="S" />
+        <SharedComponent363 id="1337-4" value={133704} label="S" />
+        <HeavyComponent14707 config={{ level1: { level2: { level3: { value: "p1337", count: 1337, enabled: true, items: [] }}}}} />
+        <HeavyComponent14708 config={{ level1: { level2: { level3: { value: "p1337", count: 1337, enabled: true, items: [] }}}}} />
+      </div>
+    </div>
+  );
+}

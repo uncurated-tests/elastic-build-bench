@@ -1,0 +1,79 @@
+'use client';
+import React, { memo, useMemo } from 'react';
+
+// Complex recursive type definitions to increase TypeScript compilation time
+type DeepReadonly10450<T> = T extends (infer U)[]
+  ? DeepReadonlyArray10450<U>
+  : T extends object
+  ? DeepReadonlyObject10450<T>
+  : T;
+
+interface DeepReadonlyArray10450<T> extends ReadonlyArray<DeepReadonly10450<T>> {}
+
+type DeepReadonlyObject10450<T> = {
+  readonly [P in keyof T]: DeepReadonly10450<T[P]>;
+};
+
+type UnionToIntersection10450<U> = (U extends unknown ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
+
+type LastOf10450<T> = UnionToIntersection10450<T extends unknown ? () => T : never> extends () => infer R ? R : never;
+
+type Push10450<T extends unknown[], V> = [...T, V];
+
+type TuplifyUnion10450<T, L = LastOf10450<T>, N = [T] extends [never] ? true : false> = true extends N
+  ? []
+  : Push10450<TuplifyUnion10450<Exclude<T, L>>, L>;
+
+type DeepPartial10450<T> = T extends object
+  ? { [P in keyof T]?: DeepPartial10450<T[P]> }
+  : T;
+
+type Paths10450<T, D extends number = 10> = [D] extends [never]
+  ? never
+  : T extends object
+  ? { [K in keyof T]-?: K extends string | number ? `${K}` | Join10450<K, Paths10450<T[K], Prev10450[D]>> : never }[keyof T]
+  : never;
+
+type Prev10450 = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+type Join10450<K, P> = K extends string | number
+  ? P extends string | number
+    ? `${K}.${P}`
+    : never
+  : never;
+
+interface NestedConfig10450 {
+  level1: {
+    level2: {
+      level3: {
+        value: string;
+        count: number;
+        enabled: boolean;
+        items: Array<{ id: number; name: string }>;
+      };
+    };
+  };
+}
+
+type ConfigPaths10450 = Paths10450<NestedConfig10450>;
+
+interface HeavyProps10450 {
+  config: DeepPartial10450<NestedConfig10450>;
+  path?: ConfigPaths10450;
+}
+
+const HeavyComponent10450 = memo(function HeavyComponent10450({ config }: HeavyProps10450) {
+  const computed = useMemo(() => {
+    const depth = JSON.stringify(config || {}).length;
+    return Math.sin(depth * 10450) * Math.cos(depth);
+  }, [config]);
+
+  return (
+    <div className="heavy-10450 p-1 text-xs bg-zinc-100 dark:bg-zinc-800 rounded">
+      <span>H10450: {computed.toFixed(2)}</span>
+    </div>
+  );
+});
+
+HeavyComponent10450.displayName = 'HeavyComponent10450';
+export default HeavyComponent10450;

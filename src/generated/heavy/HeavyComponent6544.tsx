@@ -1,0 +1,79 @@
+'use client';
+import React, { memo, useMemo } from 'react';
+
+// Complex recursive type definitions to increase TypeScript compilation time
+type DeepReadonly6544<T> = T extends (infer U)[]
+  ? DeepReadonlyArray6544<U>
+  : T extends object
+  ? DeepReadonlyObject6544<T>
+  : T;
+
+interface DeepReadonlyArray6544<T> extends ReadonlyArray<DeepReadonly6544<T>> {}
+
+type DeepReadonlyObject6544<T> = {
+  readonly [P in keyof T]: DeepReadonly6544<T[P]>;
+};
+
+type UnionToIntersection6544<U> = (U extends unknown ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
+
+type LastOf6544<T> = UnionToIntersection6544<T extends unknown ? () => T : never> extends () => infer R ? R : never;
+
+type Push6544<T extends unknown[], V> = [...T, V];
+
+type TuplifyUnion6544<T, L = LastOf6544<T>, N = [T] extends [never] ? true : false> = true extends N
+  ? []
+  : Push6544<TuplifyUnion6544<Exclude<T, L>>, L>;
+
+type DeepPartial6544<T> = T extends object
+  ? { [P in keyof T]?: DeepPartial6544<T[P]> }
+  : T;
+
+type Paths6544<T, D extends number = 10> = [D] extends [never]
+  ? never
+  : T extends object
+  ? { [K in keyof T]-?: K extends string | number ? `${K}` | Join6544<K, Paths6544<T[K], Prev6544[D]>> : never }[keyof T]
+  : never;
+
+type Prev6544 = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+type Join6544<K, P> = K extends string | number
+  ? P extends string | number
+    ? `${K}.${P}`
+    : never
+  : never;
+
+interface NestedConfig6544 {
+  level1: {
+    level2: {
+      level3: {
+        value: string;
+        count: number;
+        enabled: boolean;
+        items: Array<{ id: number; name: string }>;
+      };
+    };
+  };
+}
+
+type ConfigPaths6544 = Paths6544<NestedConfig6544>;
+
+interface HeavyProps6544 {
+  config: DeepPartial6544<NestedConfig6544>;
+  path?: ConfigPaths6544;
+}
+
+const HeavyComponent6544 = memo(function HeavyComponent6544({ config }: HeavyProps6544) {
+  const computed = useMemo(() => {
+    const depth = JSON.stringify(config || {}).length;
+    return Math.sin(depth * 6544) * Math.cos(depth);
+  }, [config]);
+
+  return (
+    <div className="heavy-6544 p-1 text-xs bg-zinc-100 dark:bg-zinc-800 rounded">
+      <span>H6544: {computed.toFixed(2)}</span>
+    </div>
+  );
+});
+
+HeavyComponent6544.displayName = 'HeavyComponent6544';
+export default HeavyComponent6544;

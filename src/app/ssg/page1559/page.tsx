@@ -1,0 +1,36 @@
+// SSG Page 1559 - v12
+import '@/generated/styles/p1559_m0.css';
+import '@/generated/styles/p1559_m1.css';
+import '@/generated/styles/p1559_m2.css';
+import '@/generated/styles/p1559_m3.css';
+import '@/generated/styles/p1559_m4.css';
+import '@/generated/styles/p1559_m5.css';
+import '@/generated/styles/p1559_m6.css';
+import '@/generated/styles/p1559_m7.css';
+import '@/generated/styles/p1559_m8.css';
+import '@/generated/styles/p1559_m9.css';
+import '@/generated/styles/p1559_m10.css';
+import SharedComponent413 from '@/generated/components/SharedComponent413';
+import SharedComponent414 from '@/generated/components/SharedComponent414';
+import SharedComponent415 from '@/generated/components/SharedComponent415';
+import SharedComponent416 from '@/generated/components/SharedComponent416';
+import SharedComponent417 from '@/generated/components/SharedComponent417';
+import HeavyComponent2149 from '@/generated/heavy/HeavyComponent2149';
+import HeavyComponent2150 from '@/generated/heavy/HeavyComponent2150';
+
+export default function SSGPage1559() {
+  return (
+    <div className="p1559-m0-v0 p-4 min-h-screen">
+      <h1 className="text-lg font-bold mb-2">Page 1559</h1>
+      <div className="grid grid-cols-2 gap-1">
+        <SharedComponent413 id="1559-0" value={155900} label="S" />
+        <SharedComponent414 id="1559-1" value={155901} label="S" />
+        <SharedComponent415 id="1559-2" value={155902} label="S" />
+        <SharedComponent416 id="1559-3" value={155903} label="S" />
+        <SharedComponent417 id="1559-4" value={155904} label="S" />
+        <HeavyComponent2149 config={{ level1: { level2: { level3: { value: "p1559", count: 1559, enabled: true, items: [] }}}}} />
+        <HeavyComponent2150 config={{ level1: { level2: { level3: { value: "p1559", count: 1559, enabled: true, items: [] }}}}} />
+      </div>
+    </div>
+  );
+}
