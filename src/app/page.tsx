@@ -325,6 +325,9 @@ export default async function Home() {
                       Actual E2E
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                      Build Cost
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                       Reduction
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
@@ -385,6 +388,23 @@ export default async function Home() {
                         }`}>
                           {formatDuration(record.durations.totalWithDeploymentMs)}
                         </span>
+                      </td>
+                      <td className="px-4 py-3 text-sm font-mono">
+                        {(() => {
+                          if (!record.durations.totalWithDeploymentMs) {
+                            return <span className="text-zinc-400">-</span>;
+                          }
+                          const minutes = Math.ceil(record.durations.totalWithDeploymentMs / 60000);
+                          const costPerMin = record.config.MachineType === 'Turbo' ? 0.105 
+                            : record.config.MachineType === 'Enhanced' ? 0.028 
+                            : 0.014;
+                          const cost = (minutes * costPerMin).toFixed(3);
+                          return (
+                            <span className="px-2 py-1 rounded text-xs bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
+                              ${cost}
+                            </span>
+                          );
+                        })()}
                       </td>
                       <td className="px-4 py-3 text-sm font-mono">
                         {(() => {
