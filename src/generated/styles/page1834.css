@@ -1,0 +1,17 @@
+/* Page 1834 styles */
+.page-1834 {
+  --page-index: 1834;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1834-header {
+  font-size: calc(1rem + 4px);
+  color: hsl(178, 70%, 50%);
+}
+
+.page-1834-content {
+  padding: 3rem;
+  border-radius: 6px;
+}
