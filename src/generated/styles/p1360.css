@@ -1,0 +1,36 @@
+/* Page 1360 Styles */
+
+.p1360-v0 {
+  color: hsl(280, 70%, 50%);
+  background: linear-gradient(0deg, hsl(280, 60%, 95%), hsl(310, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1360-v1 {
+  color: hsl(340, 70%, 50%);
+  background: linear-gradient(45deg, hsl(340, 60%, 95%), hsl(10, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1360-v2 {
+  color: hsl(40, 70%, 50%);
+  background: linear-gradient(90deg, hsl(40, 60%, 95%), hsl(70, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1360-v3 {
+  color: hsl(100, 70%, 50%);
+  background: linear-gradient(135deg, hsl(100, 60%, 95%), hsl(130, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1360-v4 {
+  color: hsl(160, 70%, 50%);
+  background: linear-gradient(180deg, hsl(160, 60%, 95%), hsl(190, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

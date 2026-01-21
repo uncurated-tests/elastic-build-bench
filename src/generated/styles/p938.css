@@ -1,0 +1,36 @@
+/* Page 938 Styles */
+
+.p938-v0 {
+  color: hsl(146, 70%, 50%);
+  background: linear-gradient(0deg, hsl(146, 60%, 95%), hsl(176, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p938-v1 {
+  color: hsl(206, 70%, 50%);
+  background: linear-gradient(45deg, hsl(206, 60%, 95%), hsl(236, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p938-v2 {
+  color: hsl(266, 70%, 50%);
+  background: linear-gradient(90deg, hsl(266, 60%, 95%), hsl(296, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p938-v3 {
+  color: hsl(326, 70%, 50%);
+  background: linear-gradient(135deg, hsl(326, 60%, 95%), hsl(356, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p938-v4 {
+  color: hsl(26, 70%, 50%);
+  background: linear-gradient(180deg, hsl(26, 60%, 95%), hsl(56, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

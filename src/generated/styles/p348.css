@@ -1,0 +1,36 @@
+/* Page 348 Styles */
+
+.p348-v0 {
+  color: hsl(276, 70%, 50%);
+  background: linear-gradient(0deg, hsl(276, 60%, 95%), hsl(306, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p348-v1 {
+  color: hsl(336, 70%, 50%);
+  background: linear-gradient(45deg, hsl(336, 60%, 95%), hsl(6, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p348-v2 {
+  color: hsl(36, 70%, 50%);
+  background: linear-gradient(90deg, hsl(36, 60%, 95%), hsl(66, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p348-v3 {
+  color: hsl(96, 70%, 50%);
+  background: linear-gradient(135deg, hsl(96, 60%, 95%), hsl(126, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p348-v4 {
+  color: hsl(156, 70%, 50%);
+  background: linear-gradient(180deg, hsl(156, 60%, 95%), hsl(186, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

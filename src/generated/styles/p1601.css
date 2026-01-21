@@ -1,0 +1,36 @@
+/* Page 1601 Styles */
+
+.p1601-v0 {
+  color: hsl(197, 70%, 50%);
+  background: linear-gradient(0deg, hsl(197, 60%, 95%), hsl(227, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1601-v1 {
+  color: hsl(257, 70%, 50%);
+  background: linear-gradient(45deg, hsl(257, 60%, 95%), hsl(287, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1601-v2 {
+  color: hsl(317, 70%, 50%);
+  background: linear-gradient(90deg, hsl(317, 60%, 95%), hsl(347, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1601-v3 {
+  color: hsl(17, 70%, 50%);
+  background: linear-gradient(135deg, hsl(17, 60%, 95%), hsl(47, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1601-v4 {
+  color: hsl(77, 70%, 50%);
+  background: linear-gradient(180deg, hsl(77, 60%, 95%), hsl(107, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

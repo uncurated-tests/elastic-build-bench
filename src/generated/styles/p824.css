@@ -1,0 +1,36 @@
+/* Page 824 Styles */
+
+.p824-v0 {
+  color: hsl(248, 70%, 50%);
+  background: linear-gradient(0deg, hsl(248, 60%, 95%), hsl(278, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p824-v1 {
+  color: hsl(308, 70%, 50%);
+  background: linear-gradient(45deg, hsl(308, 60%, 95%), hsl(338, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p824-v2 {
+  color: hsl(8, 70%, 50%);
+  background: linear-gradient(90deg, hsl(8, 60%, 95%), hsl(38, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p824-v3 {
+  color: hsl(68, 70%, 50%);
+  background: linear-gradient(135deg, hsl(68, 60%, 95%), hsl(98, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p824-v4 {
+  color: hsl(128, 70%, 50%);
+  background: linear-gradient(180deg, hsl(128, 60%, 95%), hsl(158, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

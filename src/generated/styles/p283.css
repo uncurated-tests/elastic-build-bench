@@ -1,0 +1,36 @@
+/* Page 283 Styles */
+
+.p283-v0 {
+  color: hsl(31, 70%, 50%);
+  background: linear-gradient(0deg, hsl(31, 60%, 95%), hsl(61, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p283-v1 {
+  color: hsl(91, 70%, 50%);
+  background: linear-gradient(45deg, hsl(91, 60%, 95%), hsl(121, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p283-v2 {
+  color: hsl(151, 70%, 50%);
+  background: linear-gradient(90deg, hsl(151, 60%, 95%), hsl(181, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p283-v3 {
+  color: hsl(211, 70%, 50%);
+  background: linear-gradient(135deg, hsl(211, 60%, 95%), hsl(241, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p283-v4 {
+  color: hsl(271, 70%, 50%);
+  background: linear-gradient(180deg, hsl(271, 60%, 95%), hsl(301, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

@@ -1,0 +1,36 @@
+/* Page 1747 Styles */
+
+.p1747-v0 {
+  color: hsl(199, 70%, 50%);
+  background: linear-gradient(0deg, hsl(199, 60%, 95%), hsl(229, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1747-v1 {
+  color: hsl(259, 70%, 50%);
+  background: linear-gradient(45deg, hsl(259, 60%, 95%), hsl(289, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1747-v2 {
+  color: hsl(319, 70%, 50%);
+  background: linear-gradient(90deg, hsl(319, 60%, 95%), hsl(349, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1747-v3 {
+  color: hsl(19, 70%, 50%);
+  background: linear-gradient(135deg, hsl(19, 60%, 95%), hsl(49, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1747-v4 {
+  color: hsl(79, 70%, 50%);
+  background: linear-gradient(180deg, hsl(79, 60%, 95%), hsl(109, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

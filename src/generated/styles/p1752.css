@@ -1,0 +1,36 @@
+/* Page 1752 Styles */
+
+.p1752-v0 {
+  color: hsl(24, 70%, 50%);
+  background: linear-gradient(0deg, hsl(24, 60%, 95%), hsl(54, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1752-v1 {
+  color: hsl(84, 70%, 50%);
+  background: linear-gradient(45deg, hsl(84, 60%, 95%), hsl(114, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1752-v2 {
+  color: hsl(144, 70%, 50%);
+  background: linear-gradient(90deg, hsl(144, 60%, 95%), hsl(174, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1752-v3 {
+  color: hsl(204, 70%, 50%);
+  background: linear-gradient(135deg, hsl(204, 60%, 95%), hsl(234, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1752-v4 {
+  color: hsl(264, 70%, 50%);
+  background: linear-gradient(180deg, hsl(264, 60%, 95%), hsl(294, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

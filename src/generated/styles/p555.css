@@ -1,0 +1,36 @@
+/* Page 555 Styles */
+
+.p555-v0 {
+  color: hsl(15, 70%, 50%);
+  background: linear-gradient(0deg, hsl(15, 60%, 95%), hsl(45, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p555-v1 {
+  color: hsl(75, 70%, 50%);
+  background: linear-gradient(45deg, hsl(75, 60%, 95%), hsl(105, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p555-v2 {
+  color: hsl(135, 70%, 50%);
+  background: linear-gradient(90deg, hsl(135, 60%, 95%), hsl(165, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p555-v3 {
+  color: hsl(195, 70%, 50%);
+  background: linear-gradient(135deg, hsl(195, 60%, 95%), hsl(225, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p555-v4 {
+  color: hsl(255, 70%, 50%);
+  background: linear-gradient(180deg, hsl(255, 60%, 95%), hsl(285, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

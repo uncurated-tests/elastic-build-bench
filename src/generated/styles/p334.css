@@ -1,0 +1,36 @@
+/* Page 334 Styles */
+
+.p334-v0 {
+  color: hsl(118, 70%, 50%);
+  background: linear-gradient(0deg, hsl(118, 60%, 95%), hsl(148, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p334-v1 {
+  color: hsl(178, 70%, 50%);
+  background: linear-gradient(45deg, hsl(178, 60%, 95%), hsl(208, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p334-v2 {
+  color: hsl(238, 70%, 50%);
+  background: linear-gradient(90deg, hsl(238, 60%, 95%), hsl(268, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p334-v3 {
+  color: hsl(298, 70%, 50%);
+  background: linear-gradient(135deg, hsl(298, 60%, 95%), hsl(328, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p334-v4 {
+  color: hsl(358, 70%, 50%);
+  background: linear-gradient(180deg, hsl(358, 60%, 95%), hsl(28, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

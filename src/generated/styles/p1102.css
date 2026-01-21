@@ -1,0 +1,36 @@
+/* Page 1102 Styles */
+
+.p1102-v0 {
+  color: hsl(94, 70%, 50%);
+  background: linear-gradient(0deg, hsl(94, 60%, 95%), hsl(124, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1102-v1 {
+  color: hsl(154, 70%, 50%);
+  background: linear-gradient(45deg, hsl(154, 60%, 95%), hsl(184, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1102-v2 {
+  color: hsl(214, 70%, 50%);
+  background: linear-gradient(90deg, hsl(214, 60%, 95%), hsl(244, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1102-v3 {
+  color: hsl(274, 70%, 50%);
+  background: linear-gradient(135deg, hsl(274, 60%, 95%), hsl(304, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1102-v4 {
+  color: hsl(334, 70%, 50%);
+  background: linear-gradient(180deg, hsl(334, 60%, 95%), hsl(4, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

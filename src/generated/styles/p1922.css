@@ -1,0 +1,36 @@
+/* Page 1922 Styles */
+
+.p1922-v0 {
+  color: hsl(194, 70%, 50%);
+  background: linear-gradient(0deg, hsl(194, 60%, 95%), hsl(224, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1922-v1 {
+  color: hsl(254, 70%, 50%);
+  background: linear-gradient(45deg, hsl(254, 60%, 95%), hsl(284, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1922-v2 {
+  color: hsl(314, 70%, 50%);
+  background: linear-gradient(90deg, hsl(314, 60%, 95%), hsl(344, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1922-v3 {
+  color: hsl(14, 70%, 50%);
+  background: linear-gradient(135deg, hsl(14, 60%, 95%), hsl(44, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1922-v4 {
+  color: hsl(74, 70%, 50%);
+  background: linear-gradient(180deg, hsl(74, 60%, 95%), hsl(104, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

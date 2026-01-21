@@ -1,0 +1,36 @@
+/* Page 804 Styles */
+
+.p804-v0 {
+  color: hsl(228, 70%, 50%);
+  background: linear-gradient(0deg, hsl(228, 60%, 95%), hsl(258, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p804-v1 {
+  color: hsl(288, 70%, 50%);
+  background: linear-gradient(45deg, hsl(288, 60%, 95%), hsl(318, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p804-v2 {
+  color: hsl(348, 70%, 50%);
+  background: linear-gradient(90deg, hsl(348, 60%, 95%), hsl(18, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p804-v3 {
+  color: hsl(48, 70%, 50%);
+  background: linear-gradient(135deg, hsl(48, 60%, 95%), hsl(78, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p804-v4 {
+  color: hsl(108, 70%, 50%);
+  background: linear-gradient(180deg, hsl(108, 60%, 95%), hsl(138, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

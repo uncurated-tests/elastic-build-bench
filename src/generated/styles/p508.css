@@ -1,0 +1,36 @@
+/* Page 508 Styles */
+
+.p508-v0 {
+  color: hsl(76, 70%, 50%);
+  background: linear-gradient(0deg, hsl(76, 60%, 95%), hsl(106, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p508-v1 {
+  color: hsl(136, 70%, 50%);
+  background: linear-gradient(45deg, hsl(136, 60%, 95%), hsl(166, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p508-v2 {
+  color: hsl(196, 70%, 50%);
+  background: linear-gradient(90deg, hsl(196, 60%, 95%), hsl(226, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p508-v3 {
+  color: hsl(256, 70%, 50%);
+  background: linear-gradient(135deg, hsl(256, 60%, 95%), hsl(286, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p508-v4 {
+  color: hsl(316, 70%, 50%);
+  background: linear-gradient(180deg, hsl(316, 60%, 95%), hsl(346, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

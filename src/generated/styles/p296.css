@@ -1,0 +1,36 @@
+/* Page 296 Styles */
+
+.p296-v0 {
+  color: hsl(152, 70%, 50%);
+  background: linear-gradient(0deg, hsl(152, 60%, 95%), hsl(182, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p296-v1 {
+  color: hsl(212, 70%, 50%);
+  background: linear-gradient(45deg, hsl(212, 60%, 95%), hsl(242, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p296-v2 {
+  color: hsl(272, 70%, 50%);
+  background: linear-gradient(90deg, hsl(272, 60%, 95%), hsl(302, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p296-v3 {
+  color: hsl(332, 70%, 50%);
+  background: linear-gradient(135deg, hsl(332, 60%, 95%), hsl(2, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p296-v4 {
+  color: hsl(32, 70%, 50%);
+  background: linear-gradient(180deg, hsl(32, 60%, 95%), hsl(62, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

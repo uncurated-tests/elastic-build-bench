@@ -1,0 +1,36 @@
+/* Page 1836 Styles */
+
+.p1836-v0 {
+  color: hsl(252, 70%, 50%);
+  background: linear-gradient(0deg, hsl(252, 60%, 95%), hsl(282, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1836-v1 {
+  color: hsl(312, 70%, 50%);
+  background: linear-gradient(45deg, hsl(312, 60%, 95%), hsl(342, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1836-v2 {
+  color: hsl(12, 70%, 50%);
+  background: linear-gradient(90deg, hsl(12, 60%, 95%), hsl(42, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1836-v3 {
+  color: hsl(72, 70%, 50%);
+  background: linear-gradient(135deg, hsl(72, 60%, 95%), hsl(102, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1836-v4 {
+  color: hsl(132, 70%, 50%);
+  background: linear-gradient(180deg, hsl(132, 60%, 95%), hsl(162, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

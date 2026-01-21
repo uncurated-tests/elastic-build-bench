@@ -1,0 +1,36 @@
+/* Page 918 Styles */
+
+.p918-v0 {
+  color: hsl(126, 70%, 50%);
+  background: linear-gradient(0deg, hsl(126, 60%, 95%), hsl(156, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p918-v1 {
+  color: hsl(186, 70%, 50%);
+  background: linear-gradient(45deg, hsl(186, 60%, 95%), hsl(216, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p918-v2 {
+  color: hsl(246, 70%, 50%);
+  background: linear-gradient(90deg, hsl(246, 60%, 95%), hsl(276, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p918-v3 {
+  color: hsl(306, 70%, 50%);
+  background: linear-gradient(135deg, hsl(306, 60%, 95%), hsl(336, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p918-v4 {
+  color: hsl(6, 70%, 50%);
+  background: linear-gradient(180deg, hsl(6, 60%, 95%), hsl(36, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

@@ -1,0 +1,36 @@
+/* Page 811 Styles */
+
+.p811-v0 {
+  color: hsl(127, 70%, 50%);
+  background: linear-gradient(0deg, hsl(127, 60%, 95%), hsl(157, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p811-v1 {
+  color: hsl(187, 70%, 50%);
+  background: linear-gradient(45deg, hsl(187, 60%, 95%), hsl(217, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p811-v2 {
+  color: hsl(247, 70%, 50%);
+  background: linear-gradient(90deg, hsl(247, 60%, 95%), hsl(277, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p811-v3 {
+  color: hsl(307, 70%, 50%);
+  background: linear-gradient(135deg, hsl(307, 60%, 95%), hsl(337, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p811-v4 {
+  color: hsl(7, 70%, 50%);
+  background: linear-gradient(180deg, hsl(7, 60%, 95%), hsl(37, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

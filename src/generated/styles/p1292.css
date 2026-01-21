@@ -1,0 +1,36 @@
+/* Page 1292 Styles */
+
+.p1292-v0 {
+  color: hsl(284, 70%, 50%);
+  background: linear-gradient(0deg, hsl(284, 60%, 95%), hsl(314, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1292-v1 {
+  color: hsl(344, 70%, 50%);
+  background: linear-gradient(45deg, hsl(344, 60%, 95%), hsl(14, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1292-v2 {
+  color: hsl(44, 70%, 50%);
+  background: linear-gradient(90deg, hsl(44, 60%, 95%), hsl(74, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1292-v3 {
+  color: hsl(104, 70%, 50%);
+  background: linear-gradient(135deg, hsl(104, 60%, 95%), hsl(134, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1292-v4 {
+  color: hsl(164, 70%, 50%);
+  background: linear-gradient(180deg, hsl(164, 60%, 95%), hsl(194, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

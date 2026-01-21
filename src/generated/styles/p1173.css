@@ -1,0 +1,36 @@
+/* Page 1173 Styles */
+
+.p1173-v0 {
+  color: hsl(201, 70%, 50%);
+  background: linear-gradient(0deg, hsl(201, 60%, 95%), hsl(231, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1173-v1 {
+  color: hsl(261, 70%, 50%);
+  background: linear-gradient(45deg, hsl(261, 60%, 95%), hsl(291, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1173-v2 {
+  color: hsl(321, 70%, 50%);
+  background: linear-gradient(90deg, hsl(321, 60%, 95%), hsl(351, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1173-v3 {
+  color: hsl(21, 70%, 50%);
+  background: linear-gradient(135deg, hsl(21, 60%, 95%), hsl(51, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1173-v4 {
+  color: hsl(81, 70%, 50%);
+  background: linear-gradient(180deg, hsl(81, 60%, 95%), hsl(111, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

@@ -1,0 +1,36 @@
+/* Page 194 Styles */
+
+.p194-v0 {
+  color: hsl(338, 70%, 50%);
+  background: linear-gradient(0deg, hsl(338, 60%, 95%), hsl(8, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p194-v1 {
+  color: hsl(38, 70%, 50%);
+  background: linear-gradient(45deg, hsl(38, 60%, 95%), hsl(68, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p194-v2 {
+  color: hsl(98, 70%, 50%);
+  background: linear-gradient(90deg, hsl(98, 60%, 95%), hsl(128, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p194-v3 {
+  color: hsl(158, 70%, 50%);
+  background: linear-gradient(135deg, hsl(158, 60%, 95%), hsl(188, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p194-v4 {
+  color: hsl(218, 70%, 50%);
+  background: linear-gradient(180deg, hsl(218, 60%, 95%), hsl(248, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

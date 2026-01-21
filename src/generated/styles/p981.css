@@ -1,0 +1,36 @@
+/* Page 981 Styles */
+
+.p981-v0 {
+  color: hsl(297, 70%, 50%);
+  background: linear-gradient(0deg, hsl(297, 60%, 95%), hsl(327, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p981-v1 {
+  color: hsl(357, 70%, 50%);
+  background: linear-gradient(45deg, hsl(357, 60%, 95%), hsl(27, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p981-v2 {
+  color: hsl(57, 70%, 50%);
+  background: linear-gradient(90deg, hsl(57, 60%, 95%), hsl(87, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p981-v3 {
+  color: hsl(117, 70%, 50%);
+  background: linear-gradient(135deg, hsl(117, 60%, 95%), hsl(147, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p981-v4 {
+  color: hsl(177, 70%, 50%);
+  background: linear-gradient(180deg, hsl(177, 60%, 95%), hsl(207, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

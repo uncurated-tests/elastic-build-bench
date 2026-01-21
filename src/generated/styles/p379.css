@@ -1,0 +1,36 @@
+/* Page 379 Styles */
+
+.p379-v0 {
+  color: hsl(343, 70%, 50%);
+  background: linear-gradient(0deg, hsl(343, 60%, 95%), hsl(13, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p379-v1 {
+  color: hsl(43, 70%, 50%);
+  background: linear-gradient(45deg, hsl(43, 60%, 95%), hsl(73, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p379-v2 {
+  color: hsl(103, 70%, 50%);
+  background: linear-gradient(90deg, hsl(103, 60%, 95%), hsl(133, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p379-v3 {
+  color: hsl(163, 70%, 50%);
+  background: linear-gradient(135deg, hsl(163, 60%, 95%), hsl(193, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p379-v4 {
+  color: hsl(223, 70%, 50%);
+  background: linear-gradient(180deg, hsl(223, 60%, 95%), hsl(253, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

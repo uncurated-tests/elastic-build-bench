@@ -1,0 +1,36 @@
+/* Page 243 Styles */
+
+.p243-v0 {
+  color: hsl(351, 70%, 50%);
+  background: linear-gradient(0deg, hsl(351, 60%, 95%), hsl(21, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p243-v1 {
+  color: hsl(51, 70%, 50%);
+  background: linear-gradient(45deg, hsl(51, 60%, 95%), hsl(81, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p243-v2 {
+  color: hsl(111, 70%, 50%);
+  background: linear-gradient(90deg, hsl(111, 60%, 95%), hsl(141, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p243-v3 {
+  color: hsl(171, 70%, 50%);
+  background: linear-gradient(135deg, hsl(171, 60%, 95%), hsl(201, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p243-v4 {
+  color: hsl(231, 70%, 50%);
+  background: linear-gradient(180deg, hsl(231, 60%, 95%), hsl(261, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

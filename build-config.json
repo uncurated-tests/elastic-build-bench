@@ -2,14 +2,13 @@
   "BuildTimeOnStandard": "10min",
   "FullTimeOnStandard": "10min",
   "MachineType": "Standard",
-  "staticSsgPages": 2000,
-  "sharedComponents": 500,
-  "cssModulesPerPage": 14,
-  "totalCSSModules": 28000,
-  "apiRoutes": 5,
+  "ssgPages": 2000,
+  "sharedComponents": 100,
+  "cpuIterationsPerPage": 187500,
+  "apiRoutes": 3,
   "prebuildDelaySeconds": 0,
-  "strategy": "ssg-css-v14",
-  "expectedBuildTime": 615,
-  "generatedAt": "2026-01-21T16:09:48.773Z",
-  "buildId": "ea34726d-15f4-4ccc-b826-2aa01b34e4df"
+  "strategy": "ssg-cpu-v15",
+  "expectedBuildTime": 600,
+  "generatedAt": "2026-01-21T16:44:56.283Z",
+  "buildId": "b20c07ff-8b54-4b39-876c-7a11249c3861"
 }

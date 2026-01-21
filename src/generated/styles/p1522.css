@@ -1,0 +1,36 @@
+/* Page 1522 Styles */
+
+.p1522-v0 {
+  color: hsl(154, 70%, 50%);
+  background: linear-gradient(0deg, hsl(154, 60%, 95%), hsl(184, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1522-v1 {
+  color: hsl(214, 70%, 50%);
+  background: linear-gradient(45deg, hsl(214, 60%, 95%), hsl(244, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1522-v2 {
+  color: hsl(274, 70%, 50%);
+  background: linear-gradient(90deg, hsl(274, 60%, 95%), hsl(304, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1522-v3 {
+  color: hsl(334, 70%, 50%);
+  background: linear-gradient(135deg, hsl(334, 60%, 95%), hsl(4, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1522-v4 {
+  color: hsl(34, 70%, 50%);
+  background: linear-gradient(180deg, hsl(34, 60%, 95%), hsl(64, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

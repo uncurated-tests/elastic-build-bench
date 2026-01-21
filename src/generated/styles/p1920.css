@@ -1,0 +1,36 @@
+/* Page 1920 Styles */
+
+.p1920-v0 {
+  color: hsl(120, 70%, 50%);
+  background: linear-gradient(0deg, hsl(120, 60%, 95%), hsl(150, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1920-v1 {
+  color: hsl(180, 70%, 50%);
+  background: linear-gradient(45deg, hsl(180, 60%, 95%), hsl(210, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1920-v2 {
+  color: hsl(240, 70%, 50%);
+  background: linear-gradient(90deg, hsl(240, 60%, 95%), hsl(270, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1920-v3 {
+  color: hsl(300, 70%, 50%);
+  background: linear-gradient(135deg, hsl(300, 60%, 95%), hsl(330, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1920-v4 {
+  color: hsl(0, 70%, 50%);
+  background: linear-gradient(180deg, hsl(0, 60%, 95%), hsl(30, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

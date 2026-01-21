@@ -1,0 +1,36 @@
+/* Page 110 Styles */
+
+.p110-v0 {
+  color: hsl(110, 70%, 50%);
+  background: linear-gradient(0deg, hsl(110, 60%, 95%), hsl(140, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p110-v1 {
+  color: hsl(170, 70%, 50%);
+  background: linear-gradient(45deg, hsl(170, 60%, 95%), hsl(200, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p110-v2 {
+  color: hsl(230, 70%, 50%);
+  background: linear-gradient(90deg, hsl(230, 60%, 95%), hsl(260, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p110-v3 {
+  color: hsl(290, 70%, 50%);
+  background: linear-gradient(135deg, hsl(290, 60%, 95%), hsl(320, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p110-v4 {
+  color: hsl(350, 70%, 50%);
+  background: linear-gradient(180deg, hsl(350, 60%, 95%), hsl(20, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

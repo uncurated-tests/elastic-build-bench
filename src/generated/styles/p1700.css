@@ -1,0 +1,36 @@
+/* Page 1700 Styles */
+
+.p1700-v0 {
+  color: hsl(260, 70%, 50%);
+  background: linear-gradient(0deg, hsl(260, 60%, 95%), hsl(290, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1700-v1 {
+  color: hsl(320, 70%, 50%);
+  background: linear-gradient(45deg, hsl(320, 60%, 95%), hsl(350, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1700-v2 {
+  color: hsl(20, 70%, 50%);
+  background: linear-gradient(90deg, hsl(20, 60%, 95%), hsl(50, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1700-v3 {
+  color: hsl(80, 70%, 50%);
+  background: linear-gradient(135deg, hsl(80, 60%, 95%), hsl(110, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1700-v4 {
+  color: hsl(140, 70%, 50%);
+  background: linear-gradient(180deg, hsl(140, 60%, 95%), hsl(170, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

@@ -1,0 +1,36 @@
+/* Page 678 Styles */
+
+.p678-v0 {
+  color: hsl(246, 70%, 50%);
+  background: linear-gradient(0deg, hsl(246, 60%, 95%), hsl(276, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p678-v1 {
+  color: hsl(306, 70%, 50%);
+  background: linear-gradient(45deg, hsl(306, 60%, 95%), hsl(336, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p678-v2 {
+  color: hsl(6, 70%, 50%);
+  background: linear-gradient(90deg, hsl(6, 60%, 95%), hsl(36, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p678-v3 {
+  color: hsl(66, 70%, 50%);
+  background: linear-gradient(135deg, hsl(66, 60%, 95%), hsl(96, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p678-v4 {
+  color: hsl(126, 70%, 50%);
+  background: linear-gradient(180deg, hsl(126, 60%, 95%), hsl(156, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

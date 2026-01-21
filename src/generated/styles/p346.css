@@ -1,0 +1,36 @@
+/* Page 346 Styles */
+
+.p346-v0 {
+  color: hsl(202, 70%, 50%);
+  background: linear-gradient(0deg, hsl(202, 60%, 95%), hsl(232, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p346-v1 {
+  color: hsl(262, 70%, 50%);
+  background: linear-gradient(45deg, hsl(262, 60%, 95%), hsl(292, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p346-v2 {
+  color: hsl(322, 70%, 50%);
+  background: linear-gradient(90deg, hsl(322, 60%, 95%), hsl(352, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p346-v3 {
+  color: hsl(22, 70%, 50%);
+  background: linear-gradient(135deg, hsl(22, 60%, 95%), hsl(52, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p346-v4 {
+  color: hsl(82, 70%, 50%);
+  background: linear-gradient(180deg, hsl(82, 60%, 95%), hsl(112, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

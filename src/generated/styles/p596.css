@@ -1,0 +1,36 @@
+/* Page 596 Styles */
+
+.p596-v0 {
+  color: hsl(92, 70%, 50%);
+  background: linear-gradient(0deg, hsl(92, 60%, 95%), hsl(122, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p596-v1 {
+  color: hsl(152, 70%, 50%);
+  background: linear-gradient(45deg, hsl(152, 60%, 95%), hsl(182, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p596-v2 {
+  color: hsl(212, 70%, 50%);
+  background: linear-gradient(90deg, hsl(212, 60%, 95%), hsl(242, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p596-v3 {
+  color: hsl(272, 70%, 50%);
+  background: linear-gradient(135deg, hsl(272, 60%, 95%), hsl(302, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p596-v4 {
+  color: hsl(332, 70%, 50%);
+  background: linear-gradient(180deg, hsl(332, 60%, 95%), hsl(2, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

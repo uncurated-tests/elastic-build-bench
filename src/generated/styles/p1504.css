@@ -1,0 +1,36 @@
+/* Page 1504 Styles */
+
+.p1504-v0 {
+  color: hsl(208, 70%, 50%);
+  background: linear-gradient(0deg, hsl(208, 60%, 95%), hsl(238, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1504-v1 {
+  color: hsl(268, 70%, 50%);
+  background: linear-gradient(45deg, hsl(268, 60%, 95%), hsl(298, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1504-v2 {
+  color: hsl(328, 70%, 50%);
+  background: linear-gradient(90deg, hsl(328, 60%, 95%), hsl(358, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1504-v3 {
+  color: hsl(28, 70%, 50%);
+  background: linear-gradient(135deg, hsl(28, 60%, 95%), hsl(58, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1504-v4 {
+  color: hsl(88, 70%, 50%);
+  background: linear-gradient(180deg, hsl(88, 60%, 95%), hsl(118, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

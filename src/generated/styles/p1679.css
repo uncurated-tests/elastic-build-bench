@@ -1,0 +1,36 @@
+/* Page 1679 Styles */
+
+.p1679-v0 {
+  color: hsl(203, 70%, 50%);
+  background: linear-gradient(0deg, hsl(203, 60%, 95%), hsl(233, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1679-v1 {
+  color: hsl(263, 70%, 50%);
+  background: linear-gradient(45deg, hsl(263, 60%, 95%), hsl(293, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1679-v2 {
+  color: hsl(323, 70%, 50%);
+  background: linear-gradient(90deg, hsl(323, 60%, 95%), hsl(353, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1679-v3 {
+  color: hsl(23, 70%, 50%);
+  background: linear-gradient(135deg, hsl(23, 60%, 95%), hsl(53, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1679-v4 {
+  color: hsl(83, 70%, 50%);
+  background: linear-gradient(180deg, hsl(83, 60%, 95%), hsl(113, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

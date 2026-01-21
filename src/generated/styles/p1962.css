@@ -1,0 +1,36 @@
+/* Page 1962 Styles */
+
+.p1962-v0 {
+  color: hsl(234, 70%, 50%);
+  background: linear-gradient(0deg, hsl(234, 60%, 95%), hsl(264, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1962-v1 {
+  color: hsl(294, 70%, 50%);
+  background: linear-gradient(45deg, hsl(294, 60%, 95%), hsl(324, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1962-v2 {
+  color: hsl(354, 70%, 50%);
+  background: linear-gradient(90deg, hsl(354, 60%, 95%), hsl(24, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1962-v3 {
+  color: hsl(54, 70%, 50%);
+  background: linear-gradient(135deg, hsl(54, 60%, 95%), hsl(84, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1962-v4 {
+  color: hsl(114, 70%, 50%);
+  background: linear-gradient(180deg, hsl(114, 60%, 95%), hsl(144, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

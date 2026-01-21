@@ -1,37 +1,41 @@
-// Static SSG Page 648 - v14
-import '@/generated/styles/p648_m0.css';
-import '@/generated/styles/p648_m1.css';
-import '@/generated/styles/p648_m2.css';
-import '@/generated/styles/p648_m3.css';
-import '@/generated/styles/p648_m4.css';
-import '@/generated/styles/p648_m5.css';
-import '@/generated/styles/p648_m6.css';
-import '@/generated/styles/p648_m7.css';
-import '@/generated/styles/p648_m8.css';
-import '@/generated/styles/p648_m9.css';
-import '@/generated/styles/p648_m10.css';
-import '@/generated/styles/p648_m11.css';
-import '@/generated/styles/p648_m12.css';
-import '@/generated/styles/p648_m13.css';
+// SSG Page 648 - v15 (build-time CPU work)
+import '@/generated/styles/p648.css';
 import SharedComponent36 from '@/generated/components/SharedComponent36';
 import SharedComponent37 from '@/generated/components/SharedComponent37';
 import SharedComponent38 from '@/generated/components/SharedComponent38';
-import SharedComponent39 from '@/generated/components/SharedComponent39';
-import SharedComponent40 from '@/generated/components/SharedComponent40';
+
+// Build-time CPU work - runs synchronously during static generation
+// This adds real CPU time to the build without hanging
+function buildTimeWork(iterations: number): number {
+  let result = 0;
+  for (let i = 0; i < iterations; i++) {
+    // Mix of operations to prevent optimization
+    result += Math.sin(i * 0.001) * Math.cos(i * 0.002);
+    result += Math.sqrt(Math.abs(result + i)) * 0.0001;
+    result = result % 1000000; // Prevent overflow
+  }
+  return result;
+}
+
+// generateMetadata runs at build time for SSG pages
+export async function generateMetadata() {
+  const workResult = buildTimeWork(187500);
+  
+  return {
+    title: `Page 648 | Build Bench`,
+    description: `SSG page 648 - CPU work result: ${workResult.toFixed(2)}`,
+  };
+}
 
 export default function SSGPage648() {
   return (
-    <div className="p648-m0-s0 p-4 min-h-screen">
+    <div className="p648-v0 p-4 min-h-screen">
       <h1 className="text-lg font-bold mb-2">Page 648</h1>
+      <p className="text-sm text-zinc-500 mb-4">v15 SSG with build-time CPU work</p>
       <div className="grid grid-cols-2 gap-1">
         <SharedComponent36 id="648-0" value={64800} label="S" />
         <SharedComponent37 id="648-1" value={64801} label="S" />
         <SharedComponent38 id="648-2" value={64802} label="S" />
-        <SharedComponent39 id="648-3" value={64803} label="S" />
-        <SharedComponent40 id="648-4" value={64804} label="S" />
-      </div>
-      <div className="mt-4 text-xs text-zinc-500">
-        v14: 14 CSS modules
       </div>
     </div>
   );

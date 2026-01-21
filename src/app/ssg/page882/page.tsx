@@ -1,37 +1,41 @@
-// Static SSG Page 882 - v14
-import '@/generated/styles/p882_m0.css';
-import '@/generated/styles/p882_m1.css';
-import '@/generated/styles/p882_m2.css';
-import '@/generated/styles/p882_m3.css';
-import '@/generated/styles/p882_m4.css';
-import '@/generated/styles/p882_m5.css';
-import '@/generated/styles/p882_m6.css';
-import '@/generated/styles/p882_m7.css';
-import '@/generated/styles/p882_m8.css';
-import '@/generated/styles/p882_m9.css';
-import '@/generated/styles/p882_m10.css';
-import '@/generated/styles/p882_m11.css';
-import '@/generated/styles/p882_m12.css';
-import '@/generated/styles/p882_m13.css';
-import SharedComponent174 from '@/generated/components/SharedComponent174';
-import SharedComponent175 from '@/generated/components/SharedComponent175';
-import SharedComponent176 from '@/generated/components/SharedComponent176';
-import SharedComponent177 from '@/generated/components/SharedComponent177';
-import SharedComponent178 from '@/generated/components/SharedComponent178';
+// SSG Page 882 - v15 (build-time CPU work)
+import '@/generated/styles/p882.css';
+import SharedComponent74 from '@/generated/components/SharedComponent74';
+import SharedComponent75 from '@/generated/components/SharedComponent75';
+import SharedComponent76 from '@/generated/components/SharedComponent76';
+
+// Build-time CPU work - runs synchronously during static generation
+// This adds real CPU time to the build without hanging
+function buildTimeWork(iterations: number): number {
+  let result = 0;
+  for (let i = 0; i < iterations; i++) {
+    // Mix of operations to prevent optimization
+    result += Math.sin(i * 0.001) * Math.cos(i * 0.002);
+    result += Math.sqrt(Math.abs(result + i)) * 0.0001;
+    result = result % 1000000; // Prevent overflow
+  }
+  return result;
+}
+
+// generateMetadata runs at build time for SSG pages
+export async function generateMetadata() {
+  const workResult = buildTimeWork(187500);
+  
+  return {
+    title: `Page 882 | Build Bench`,
+    description: `SSG page 882 - CPU work result: ${workResult.toFixed(2)}`,
+  };
+}
 
 export default function SSGPage882() {
   return (
-    <div className="p882-m0-s0 p-4 min-h-screen">
+    <div className="p882-v0 p-4 min-h-screen">
       <h1 className="text-lg font-bold mb-2">Page 882</h1>
+      <p className="text-sm text-zinc-500 mb-4">v15 SSG with build-time CPU work</p>
       <div className="grid grid-cols-2 gap-1">
-        <SharedComponent174 id="882-0" value={88200} label="S" />
-        <SharedComponent175 id="882-1" value={88201} label="S" />
-        <SharedComponent176 id="882-2" value={88202} label="S" />
-        <SharedComponent177 id="882-3" value={88203} label="S" />
-        <SharedComponent178 id="882-4" value={88204} label="S" />
-      </div>
-      <div className="mt-4 text-xs text-zinc-500">
-        v14: 14 CSS modules
+        <SharedComponent74 id="882-0" value={88200} label="S" />
+        <SharedComponent75 id="882-1" value={88201} label="S" />
+        <SharedComponent76 id="882-2" value={88202} label="S" />
       </div>
     </div>
   );

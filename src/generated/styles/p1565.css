@@ -1,0 +1,36 @@
+/* Page 1565 Styles */
+
+.p1565-v0 {
+  color: hsl(305, 70%, 50%);
+  background: linear-gradient(0deg, hsl(305, 60%, 95%), hsl(335, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1565-v1 {
+  color: hsl(5, 70%, 50%);
+  background: linear-gradient(45deg, hsl(5, 60%, 95%), hsl(35, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1565-v2 {
+  color: hsl(65, 70%, 50%);
+  background: linear-gradient(90deg, hsl(65, 60%, 95%), hsl(95, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1565-v3 {
+  color: hsl(125, 70%, 50%);
+  background: linear-gradient(135deg, hsl(125, 60%, 95%), hsl(155, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1565-v4 {
+  color: hsl(185, 70%, 50%);
+  background: linear-gradient(180deg, hsl(185, 60%, 95%), hsl(215, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

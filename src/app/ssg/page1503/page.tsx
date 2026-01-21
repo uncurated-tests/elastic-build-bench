@@ -1,37 +1,41 @@
-// Static SSG Page 1503 - v14
-import '@/generated/styles/p1503_m0.css';
-import '@/generated/styles/p1503_m1.css';
-import '@/generated/styles/p1503_m2.css';
-import '@/generated/styles/p1503_m3.css';
-import '@/generated/styles/p1503_m4.css';
-import '@/generated/styles/p1503_m5.css';
-import '@/generated/styles/p1503_m6.css';
-import '@/generated/styles/p1503_m7.css';
-import '@/generated/styles/p1503_m8.css';
-import '@/generated/styles/p1503_m9.css';
-import '@/generated/styles/p1503_m10.css';
-import '@/generated/styles/p1503_m11.css';
-import '@/generated/styles/p1503_m12.css';
-import '@/generated/styles/p1503_m13.css';
+// SSG Page 1503 - v15 (build-time CPU work)
+import '@/generated/styles/p1503.css';
 import SharedComponent21 from '@/generated/components/SharedComponent21';
 import SharedComponent22 from '@/generated/components/SharedComponent22';
 import SharedComponent23 from '@/generated/components/SharedComponent23';
-import SharedComponent24 from '@/generated/components/SharedComponent24';
-import SharedComponent25 from '@/generated/components/SharedComponent25';
+
+// Build-time CPU work - runs synchronously during static generation
+// This adds real CPU time to the build without hanging
+function buildTimeWork(iterations: number): number {
+  let result = 0;
+  for (let i = 0; i < iterations; i++) {
+    // Mix of operations to prevent optimization
+    result += Math.sin(i * 0.001) * Math.cos(i * 0.002);
+    result += Math.sqrt(Math.abs(result + i)) * 0.0001;
+    result = result % 1000000; // Prevent overflow
+  }
+  return result;
+}
+
+// generateMetadata runs at build time for SSG pages
+export async function generateMetadata() {
+  const workResult = buildTimeWork(187500);
+  
+  return {
+    title: `Page 1503 | Build Bench`,
+    description: `SSG page 1503 - CPU work result: ${workResult.toFixed(2)}`,
+  };
+}
 
 export default function SSGPage1503() {
   return (
-    <div className="p1503-m0-s0 p-4 min-h-screen">
+    <div className="p1503-v0 p-4 min-h-screen">
       <h1 className="text-lg font-bold mb-2">Page 1503</h1>
+      <p className="text-sm text-zinc-500 mb-4">v15 SSG with build-time CPU work</p>
       <div className="grid grid-cols-2 gap-1">
         <SharedComponent21 id="1503-0" value={150300} label="S" />
         <SharedComponent22 id="1503-1" value={150301} label="S" />
         <SharedComponent23 id="1503-2" value={150302} label="S" />
-        <SharedComponent24 id="1503-3" value={150303} label="S" />
-        <SharedComponent25 id="1503-4" value={150304} label="S" />
-      </div>
-      <div className="mt-4 text-xs text-zinc-500">
-        v14: 14 CSS modules
       </div>
     </div>
   );

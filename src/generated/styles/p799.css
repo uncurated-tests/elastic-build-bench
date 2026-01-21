@@ -1,0 +1,36 @@
+/* Page 799 Styles */
+
+.p799-v0 {
+  color: hsl(43, 70%, 50%);
+  background: linear-gradient(0deg, hsl(43, 60%, 95%), hsl(73, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p799-v1 {
+  color: hsl(103, 70%, 50%);
+  background: linear-gradient(45deg, hsl(103, 60%, 95%), hsl(133, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p799-v2 {
+  color: hsl(163, 70%, 50%);
+  background: linear-gradient(90deg, hsl(163, 60%, 95%), hsl(193, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p799-v3 {
+  color: hsl(223, 70%, 50%);
+  background: linear-gradient(135deg, hsl(223, 60%, 95%), hsl(253, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p799-v4 {
+  color: hsl(283, 70%, 50%);
+  background: linear-gradient(180deg, hsl(283, 60%, 95%), hsl(313, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

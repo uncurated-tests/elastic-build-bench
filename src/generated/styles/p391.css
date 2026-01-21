@@ -1,0 +1,36 @@
+/* Page 391 Styles */
+
+.p391-v0 {
+  color: hsl(67, 70%, 50%);
+  background: linear-gradient(0deg, hsl(67, 60%, 95%), hsl(97, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p391-v1 {
+  color: hsl(127, 70%, 50%);
+  background: linear-gradient(45deg, hsl(127, 60%, 95%), hsl(157, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p391-v2 {
+  color: hsl(187, 70%, 50%);
+  background: linear-gradient(90deg, hsl(187, 60%, 95%), hsl(217, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p391-v3 {
+  color: hsl(247, 70%, 50%);
+  background: linear-gradient(135deg, hsl(247, 60%, 95%), hsl(277, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p391-v4 {
+  color: hsl(307, 70%, 50%);
+  background: linear-gradient(180deg, hsl(307, 60%, 95%), hsl(337, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

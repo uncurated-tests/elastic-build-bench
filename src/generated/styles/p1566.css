@@ -1,0 +1,36 @@
+/* Page 1566 Styles */
+
+.p1566-v0 {
+  color: hsl(342, 70%, 50%);
+  background: linear-gradient(0deg, hsl(342, 60%, 95%), hsl(12, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1566-v1 {
+  color: hsl(42, 70%, 50%);
+  background: linear-gradient(45deg, hsl(42, 60%, 95%), hsl(72, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1566-v2 {
+  color: hsl(102, 70%, 50%);
+  background: linear-gradient(90deg, hsl(102, 60%, 95%), hsl(132, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1566-v3 {
+  color: hsl(162, 70%, 50%);
+  background: linear-gradient(135deg, hsl(162, 60%, 95%), hsl(192, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1566-v4 {
+  color: hsl(222, 70%, 50%);
+  background: linear-gradient(180deg, hsl(222, 60%, 95%), hsl(252, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

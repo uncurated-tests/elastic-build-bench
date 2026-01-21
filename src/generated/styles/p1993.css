@@ -1,0 +1,36 @@
+/* Page 1993 Styles */
+
+.p1993-v0 {
+  color: hsl(301, 70%, 50%);
+  background: linear-gradient(0deg, hsl(301, 60%, 95%), hsl(331, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1993-v1 {
+  color: hsl(1, 70%, 50%);
+  background: linear-gradient(45deg, hsl(1, 60%, 95%), hsl(31, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1993-v2 {
+  color: hsl(61, 70%, 50%);
+  background: linear-gradient(90deg, hsl(61, 60%, 95%), hsl(91, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1993-v3 {
+  color: hsl(121, 70%, 50%);
+  background: linear-gradient(135deg, hsl(121, 60%, 95%), hsl(151, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1993-v4 {
+  color: hsl(181, 70%, 50%);
+  background: linear-gradient(180deg, hsl(181, 60%, 95%), hsl(211, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

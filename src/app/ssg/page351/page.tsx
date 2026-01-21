@@ -1,37 +1,41 @@
-// Static SSG Page 351 - v14
-import '@/generated/styles/p351_m0.css';
-import '@/generated/styles/p351_m1.css';
-import '@/generated/styles/p351_m2.css';
-import '@/generated/styles/p351_m3.css';
-import '@/generated/styles/p351_m4.css';
-import '@/generated/styles/p351_m5.css';
-import '@/generated/styles/p351_m6.css';
-import '@/generated/styles/p351_m7.css';
-import '@/generated/styles/p351_m8.css';
-import '@/generated/styles/p351_m9.css';
-import '@/generated/styles/p351_m10.css';
-import '@/generated/styles/p351_m11.css';
-import '@/generated/styles/p351_m12.css';
-import '@/generated/styles/p351_m13.css';
-import SharedComponent457 from '@/generated/components/SharedComponent457';
-import SharedComponent458 from '@/generated/components/SharedComponent458';
-import SharedComponent459 from '@/generated/components/SharedComponent459';
-import SharedComponent460 from '@/generated/components/SharedComponent460';
-import SharedComponent461 from '@/generated/components/SharedComponent461';
+// SSG Page 351 - v15 (build-time CPU work)
+import '@/generated/styles/p351.css';
+import SharedComponent57 from '@/generated/components/SharedComponent57';
+import SharedComponent58 from '@/generated/components/SharedComponent58';
+import SharedComponent59 from '@/generated/components/SharedComponent59';
+
+// Build-time CPU work - runs synchronously during static generation
+// This adds real CPU time to the build without hanging
+function buildTimeWork(iterations: number): number {
+  let result = 0;
+  for (let i = 0; i < iterations; i++) {
+    // Mix of operations to prevent optimization
+    result += Math.sin(i * 0.001) * Math.cos(i * 0.002);
+    result += Math.sqrt(Math.abs(result + i)) * 0.0001;
+    result = result % 1000000; // Prevent overflow
+  }
+  return result;
+}
+
+// generateMetadata runs at build time for SSG pages
+export async function generateMetadata() {
+  const workResult = buildTimeWork(187500);
+  
+  return {
+    title: `Page 351 | Build Bench`,
+    description: `SSG page 351 - CPU work result: ${workResult.toFixed(2)}`,
+  };
+}
 
 export default function SSGPage351() {
   return (
-    <div className="p351-m0-s0 p-4 min-h-screen">
+    <div className="p351-v0 p-4 min-h-screen">
       <h1 className="text-lg font-bold mb-2">Page 351</h1>
+      <p className="text-sm text-zinc-500 mb-4">v15 SSG with build-time CPU work</p>
       <div className="grid grid-cols-2 gap-1">
-        <SharedComponent457 id="351-0" value={35100} label="S" />
-        <SharedComponent458 id="351-1" value={35101} label="S" />
-        <SharedComponent459 id="351-2" value={35102} label="S" />
-        <SharedComponent460 id="351-3" value={35103} label="S" />
-        <SharedComponent461 id="351-4" value={35104} label="S" />
-      </div>
-      <div className="mt-4 text-xs text-zinc-500">
-        v14: 14 CSS modules
+        <SharedComponent57 id="351-0" value={35100} label="S" />
+        <SharedComponent58 id="351-1" value={35101} label="S" />
+        <SharedComponent59 id="351-2" value={35102} label="S" />
       </div>
     </div>
   );

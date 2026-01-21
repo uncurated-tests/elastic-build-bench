@@ -1,0 +1,36 @@
+/* Page 52 Styles */
+
+.p52-v0 {
+  color: hsl(124, 70%, 50%);
+  background: linear-gradient(0deg, hsl(124, 60%, 95%), hsl(154, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p52-v1 {
+  color: hsl(184, 70%, 50%);
+  background: linear-gradient(45deg, hsl(184, 60%, 95%), hsl(214, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p52-v2 {
+  color: hsl(244, 70%, 50%);
+  background: linear-gradient(90deg, hsl(244, 60%, 95%), hsl(274, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p52-v3 {
+  color: hsl(304, 70%, 50%);
+  background: linear-gradient(135deg, hsl(304, 60%, 95%), hsl(334, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p52-v4 {
+  color: hsl(4, 70%, 50%);
+  background: linear-gradient(180deg, hsl(4, 60%, 95%), hsl(34, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

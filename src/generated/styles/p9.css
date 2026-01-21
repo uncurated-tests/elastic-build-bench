@@ -1,0 +1,36 @@
+/* Page 9 Styles */
+
+.p9-v0 {
+  color: hsl(333, 70%, 50%);
+  background: linear-gradient(0deg, hsl(333, 60%, 95%), hsl(3, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p9-v1 {
+  color: hsl(33, 70%, 50%);
+  background: linear-gradient(45deg, hsl(33, 60%, 95%), hsl(63, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p9-v2 {
+  color: hsl(93, 70%, 50%);
+  background: linear-gradient(90deg, hsl(93, 60%, 95%), hsl(123, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p9-v3 {
+  color: hsl(153, 70%, 50%);
+  background: linear-gradient(135deg, hsl(153, 60%, 95%), hsl(183, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p9-v4 {
+  color: hsl(213, 70%, 50%);
+  background: linear-gradient(180deg, hsl(213, 60%, 95%), hsl(243, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

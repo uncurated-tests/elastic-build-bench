@@ -1,0 +1,36 @@
+/* Page 594 Styles */
+
+.p594-v0 {
+  color: hsl(18, 70%, 50%);
+  background: linear-gradient(0deg, hsl(18, 60%, 95%), hsl(48, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p594-v1 {
+  color: hsl(78, 70%, 50%);
+  background: linear-gradient(45deg, hsl(78, 60%, 95%), hsl(108, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p594-v2 {
+  color: hsl(138, 70%, 50%);
+  background: linear-gradient(90deg, hsl(138, 60%, 95%), hsl(168, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p594-v3 {
+  color: hsl(198, 70%, 50%);
+  background: linear-gradient(135deg, hsl(198, 60%, 95%), hsl(228, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p594-v4 {
+  color: hsl(258, 70%, 50%);
+  background: linear-gradient(180deg, hsl(258, 60%, 95%), hsl(288, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

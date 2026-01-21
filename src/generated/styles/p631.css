@@ -1,0 +1,36 @@
+/* Page 631 Styles */
+
+.p631-v0 {
+  color: hsl(307, 70%, 50%);
+  background: linear-gradient(0deg, hsl(307, 60%, 95%), hsl(337, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p631-v1 {
+  color: hsl(7, 70%, 50%);
+  background: linear-gradient(45deg, hsl(7, 60%, 95%), hsl(37, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p631-v2 {
+  color: hsl(67, 70%, 50%);
+  background: linear-gradient(90deg, hsl(67, 60%, 95%), hsl(97, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p631-v3 {
+  color: hsl(127, 70%, 50%);
+  background: linear-gradient(135deg, hsl(127, 60%, 95%), hsl(157, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p631-v4 {
+  color: hsl(187, 70%, 50%);
+  background: linear-gradient(180deg, hsl(187, 60%, 95%), hsl(217, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

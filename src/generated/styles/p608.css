@@ -1,0 +1,36 @@
+/* Page 608 Styles */
+
+.p608-v0 {
+  color: hsl(176, 70%, 50%);
+  background: linear-gradient(0deg, hsl(176, 60%, 95%), hsl(206, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p608-v1 {
+  color: hsl(236, 70%, 50%);
+  background: linear-gradient(45deg, hsl(236, 60%, 95%), hsl(266, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p608-v2 {
+  color: hsl(296, 70%, 50%);
+  background: linear-gradient(90deg, hsl(296, 60%, 95%), hsl(326, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p608-v3 {
+  color: hsl(356, 70%, 50%);
+  background: linear-gradient(135deg, hsl(356, 60%, 95%), hsl(26, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p608-v4 {
+  color: hsl(56, 70%, 50%);
+  background: linear-gradient(180deg, hsl(56, 60%, 95%), hsl(86, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

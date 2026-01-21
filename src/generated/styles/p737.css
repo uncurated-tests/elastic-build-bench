@@ -1,0 +1,36 @@
+/* Page 737 Styles */
+
+.p737-v0 {
+  color: hsl(269, 70%, 50%);
+  background: linear-gradient(0deg, hsl(269, 60%, 95%), hsl(299, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p737-v1 {
+  color: hsl(329, 70%, 50%);
+  background: linear-gradient(45deg, hsl(329, 60%, 95%), hsl(359, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p737-v2 {
+  color: hsl(29, 70%, 50%);
+  background: linear-gradient(90deg, hsl(29, 60%, 95%), hsl(59, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p737-v3 {
+  color: hsl(89, 70%, 50%);
+  background: linear-gradient(135deg, hsl(89, 60%, 95%), hsl(119, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p737-v4 {
+  color: hsl(149, 70%, 50%);
+  background: linear-gradient(180deg, hsl(149, 60%, 95%), hsl(179, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

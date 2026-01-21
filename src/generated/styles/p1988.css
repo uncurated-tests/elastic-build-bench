@@ -1,0 +1,36 @@
+/* Page 1988 Styles */
+
+.p1988-v0 {
+  color: hsl(116, 70%, 50%);
+  background: linear-gradient(0deg, hsl(116, 60%, 95%), hsl(146, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1988-v1 {
+  color: hsl(176, 70%, 50%);
+  background: linear-gradient(45deg, hsl(176, 60%, 95%), hsl(206, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1988-v2 {
+  color: hsl(236, 70%, 50%);
+  background: linear-gradient(90deg, hsl(236, 60%, 95%), hsl(266, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1988-v3 {
+  color: hsl(296, 70%, 50%);
+  background: linear-gradient(135deg, hsl(296, 60%, 95%), hsl(326, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1988-v4 {
+  color: hsl(356, 70%, 50%);
+  background: linear-gradient(180deg, hsl(356, 60%, 95%), hsl(26, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

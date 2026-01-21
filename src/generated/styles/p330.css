@@ -1,0 +1,36 @@
+/* Page 330 Styles */
+
+.p330-v0 {
+  color: hsl(330, 70%, 50%);
+  background: linear-gradient(0deg, hsl(330, 60%, 95%), hsl(0, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p330-v1 {
+  color: hsl(30, 70%, 50%);
+  background: linear-gradient(45deg, hsl(30, 60%, 95%), hsl(60, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p330-v2 {
+  color: hsl(90, 70%, 50%);
+  background: linear-gradient(90deg, hsl(90, 60%, 95%), hsl(120, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p330-v3 {
+  color: hsl(150, 70%, 50%);
+  background: linear-gradient(135deg, hsl(150, 60%, 95%), hsl(180, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p330-v4 {
+  color: hsl(210, 70%, 50%);
+  background: linear-gradient(180deg, hsl(210, 60%, 95%), hsl(240, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

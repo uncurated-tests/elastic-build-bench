@@ -1,0 +1,36 @@
+/* Page 538 Styles */
+
+.p538-v0 {
+  color: hsl(106, 70%, 50%);
+  background: linear-gradient(0deg, hsl(106, 60%, 95%), hsl(136, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p538-v1 {
+  color: hsl(166, 70%, 50%);
+  background: linear-gradient(45deg, hsl(166, 60%, 95%), hsl(196, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p538-v2 {
+  color: hsl(226, 70%, 50%);
+  background: linear-gradient(90deg, hsl(226, 60%, 95%), hsl(256, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p538-v3 {
+  color: hsl(286, 70%, 50%);
+  background: linear-gradient(135deg, hsl(286, 60%, 95%), hsl(316, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p538-v4 {
+  color: hsl(346, 70%, 50%);
+  background: linear-gradient(180deg, hsl(346, 60%, 95%), hsl(16, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

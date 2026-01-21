@@ -1,0 +1,36 @@
+/* Page 1478 Styles */
+
+.p1478-v0 {
+  color: hsl(326, 70%, 50%);
+  background: linear-gradient(0deg, hsl(326, 60%, 95%), hsl(356, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1478-v1 {
+  color: hsl(26, 70%, 50%);
+  background: linear-gradient(45deg, hsl(26, 60%, 95%), hsl(56, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1478-v2 {
+  color: hsl(86, 70%, 50%);
+  background: linear-gradient(90deg, hsl(86, 60%, 95%), hsl(116, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1478-v3 {
+  color: hsl(146, 70%, 50%);
+  background: linear-gradient(135deg, hsl(146, 60%, 95%), hsl(176, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1478-v4 {
+  color: hsl(206, 70%, 50%);
+  background: linear-gradient(180deg, hsl(206, 60%, 95%), hsl(236, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

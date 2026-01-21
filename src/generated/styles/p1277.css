@@ -1,0 +1,36 @@
+/* Page 1277 Styles */
+
+.p1277-v0 {
+  color: hsl(89, 70%, 50%);
+  background: linear-gradient(0deg, hsl(89, 60%, 95%), hsl(119, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1277-v1 {
+  color: hsl(149, 70%, 50%);
+  background: linear-gradient(45deg, hsl(149, 60%, 95%), hsl(179, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1277-v2 {
+  color: hsl(209, 70%, 50%);
+  background: linear-gradient(90deg, hsl(209, 60%, 95%), hsl(239, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1277-v3 {
+  color: hsl(269, 70%, 50%);
+  background: linear-gradient(135deg, hsl(269, 60%, 95%), hsl(299, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1277-v4 {
+  color: hsl(329, 70%, 50%);
+  background: linear-gradient(180deg, hsl(329, 60%, 95%), hsl(359, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

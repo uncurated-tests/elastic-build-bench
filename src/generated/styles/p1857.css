@@ -1,0 +1,36 @@
+/* Page 1857 Styles */
+
+.p1857-v0 {
+  color: hsl(309, 70%, 50%);
+  background: linear-gradient(0deg, hsl(309, 60%, 95%), hsl(339, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1857-v1 {
+  color: hsl(9, 70%, 50%);
+  background: linear-gradient(45deg, hsl(9, 60%, 95%), hsl(39, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1857-v2 {
+  color: hsl(69, 70%, 50%);
+  background: linear-gradient(90deg, hsl(69, 60%, 95%), hsl(99, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1857-v3 {
+  color: hsl(129, 70%, 50%);
+  background: linear-gradient(135deg, hsl(129, 60%, 95%), hsl(159, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1857-v4 {
+  color: hsl(189, 70%, 50%);
+  background: linear-gradient(180deg, hsl(189, 60%, 95%), hsl(219, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}

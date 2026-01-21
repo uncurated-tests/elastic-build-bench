@@ -1,37 +1,41 @@
-// Static SSG Page 1545 - v14
-import '@/generated/styles/p1545_m0.css';
-import '@/generated/styles/p1545_m1.css';
-import '@/generated/styles/p1545_m2.css';
-import '@/generated/styles/p1545_m3.css';
-import '@/generated/styles/p1545_m4.css';
-import '@/generated/styles/p1545_m5.css';
-import '@/generated/styles/p1545_m6.css';
-import '@/generated/styles/p1545_m7.css';
-import '@/generated/styles/p1545_m8.css';
-import '@/generated/styles/p1545_m9.css';
-import '@/generated/styles/p1545_m10.css';
-import '@/generated/styles/p1545_m11.css';
-import '@/generated/styles/p1545_m12.css';
-import '@/generated/styles/p1545_m13.css';
-import SharedComponent315 from '@/generated/components/SharedComponent315';
-import SharedComponent316 from '@/generated/components/SharedComponent316';
-import SharedComponent317 from '@/generated/components/SharedComponent317';
-import SharedComponent318 from '@/generated/components/SharedComponent318';
-import SharedComponent319 from '@/generated/components/SharedComponent319';
+// SSG Page 1545 - v15 (build-time CPU work)
+import '@/generated/styles/p1545.css';
+import SharedComponent15 from '@/generated/components/SharedComponent15';
+import SharedComponent16 from '@/generated/components/SharedComponent16';
+import SharedComponent17 from '@/generated/components/SharedComponent17';
+
+// Build-time CPU work - runs synchronously during static generation
+// This adds real CPU time to the build without hanging
+function buildTimeWork(iterations: number): number {
+  let result = 0;
+  for (let i = 0; i < iterations; i++) {
+    // Mix of operations to prevent optimization
+    result += Math.sin(i * 0.001) * Math.cos(i * 0.002);
+    result += Math.sqrt(Math.abs(result + i)) * 0.0001;
+    result = result % 1000000; // Prevent overflow
+  }
+  return result;
+}
+
+// generateMetadata runs at build time for SSG pages
+export async function generateMetadata() {
+  const workResult = buildTimeWork(187500);
+  
+  return {
+    title: `Page 1545 | Build Bench`,
+    description: `SSG page 1545 - CPU work result: ${workResult.toFixed(2)}`,
+  };
+}
 
 export default function SSGPage1545() {
   return (
-    <div className="p1545-m0-s0 p-4 min-h-screen">
+    <div className="p1545-v0 p-4 min-h-screen">
       <h1 className="text-lg font-bold mb-2">Page 1545</h1>
+      <p className="text-sm text-zinc-500 mb-4">v15 SSG with build-time CPU work</p>
       <div className="grid grid-cols-2 gap-1">
-        <SharedComponent315 id="1545-0" value={154500} label="S" />
-        <SharedComponent316 id="1545-1" value={154501} label="S" />
-        <SharedComponent317 id="1545-2" value={154502} label="S" />
-        <SharedComponent318 id="1545-3" value={154503} label="S" />
-        <SharedComponent319 id="1545-4" value={154504} label="S" />
-      </div>
-      <div className="mt-4 text-xs text-zinc-500">
-        v14: 14 CSS modules
+        <SharedComponent15 id="1545-0" value={154500} label="S" />
+        <SharedComponent16 id="1545-1" value={154501} label="S" />
+        <SharedComponent17 id="1545-2" value={154502} label="S" />
       </div>
     </div>
   );

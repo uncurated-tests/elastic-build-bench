@@ -1,0 +1,36 @@
+/* Page 1253 Styles */
+
+.p1253-v0 {
+  color: hsl(281, 70%, 50%);
+  background: linear-gradient(0deg, hsl(281, 60%, 95%), hsl(311, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1253-v1 {
+  color: hsl(341, 70%, 50%);
+  background: linear-gradient(45deg, hsl(341, 60%, 95%), hsl(11, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1253-v2 {
+  color: hsl(41, 70%, 50%);
+  background: linear-gradient(90deg, hsl(41, 60%, 95%), hsl(71, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1253-v3 {
+  color: hsl(101, 70%, 50%);
+  background: linear-gradient(135deg, hsl(101, 60%, 95%), hsl(131, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.p1253-v4 {
+  color: hsl(161, 70%, 50%);
+  background: linear-gradient(180deg, hsl(161, 60%, 95%), hsl(191, 60%, 90%));
+  padding: 1rem;
+  border-radius: 8px;
+}
