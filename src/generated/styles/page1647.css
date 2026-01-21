@@ -1,0 +1,22 @@
+/* Page 1647 styles */
+.page-1647 {
+  --page-index: 1647;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1647-header {
+  font-size: calc(1rem + 7px);
+  color: hsl(99, 70%, 50%);
+}
+
+.page-1647-content {
+  padding: 4rem;
+  background: linear-gradient(
+    315deg,
+    hsl(99, 70%, 95%),
+    hsl(279, 70%, 95%)
+  );
+  border-radius: 11px;
+}

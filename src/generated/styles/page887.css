@@ -1,0 +1,22 @@
+/* Page 887 styles */
+.page-887 {
+  --page-index: 887;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-887-header {
+  font-size: calc(1rem + 7px);
+  color: hsl(59, 70%, 50%);
+}
+
+.page-887-content {
+  padding: 4rem;
+  background: linear-gradient(
+    315deg,
+    hsl(59, 70%, 95%),
+    hsl(239, 70%, 95%)
+  );
+  border-radius: 11px;
+}

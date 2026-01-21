@@ -1,0 +1,22 @@
+/* Page 1108 styles */
+.page-1108 {
+  --page-index: 1108;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1108-header {
+  font-size: calc(1rem + 8px);
+  color: hsl(316, 70%, 50%);
+}
+
+.page-1108-content {
+  padding: 1rem;
+  background: linear-gradient(
+    180deg,
+    hsl(316, 70%, 95%),
+    hsl(136, 70%, 95%)
+  );
+  border-radius: 8px;
+}

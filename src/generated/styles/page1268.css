@@ -1,0 +1,22 @@
+/* Page 1268 styles */
+.page-1268 {
+  --page-index: 1268;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1268-header {
+  font-size: calc(1rem + 8px);
+  color: hsl(116, 70%, 50%);
+}
+
+.page-1268-content {
+  padding: 1rem;
+  background: linear-gradient(
+    180deg,
+    hsl(116, 70%, 95%),
+    hsl(296, 70%, 95%)
+  );
+  border-radius: 8px;
+}

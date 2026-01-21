@@ -1,0 +1,22 @@
+/* Page 1723 styles */
+.page-1723 {
+  --page-index: 1723;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1723-header {
+  font-size: calc(1rem + 3px);
+  color: hsl(31, 70%, 50%);
+}
+
+.page-1723-content {
+  padding: 4rem;
+  background: linear-gradient(
+    135deg,
+    hsl(31, 70%, 95%),
+    hsl(211, 70%, 95%)
+  );
+  border-radius: 7px;
+}

@@ -1,0 +1,22 @@
+/* Page 916 styles */
+.page-916 {
+  --page-index: 916;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-916-header {
+  font-size: calc(1rem + 6px);
+  color: hsl(52, 70%, 50%);
+}
+
+.page-916-content {
+  padding: 1rem;
+  background: linear-gradient(
+    180deg,
+    hsl(52, 70%, 95%),
+    hsl(232, 70%, 95%)
+  );
+  border-radius: 8px;
+}
