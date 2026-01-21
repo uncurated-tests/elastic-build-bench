@@ -130,17 +130,6 @@ let numTypeFiles = 30;
 // Fixed iteration count (doesn't affect build time significantly)
 const computationIterations = 10000;
 
-// Estimate actual build time
-const estimatedSecondsPerPage = BASE_SECONDS_PER_PAGE * (computationIterations / BASE_ITERATIONS);
-const estimatedSeconds = BASE_OVERHEAD + (numSSGPages * estimatedSecondsPerPage);
-console.log(`\nTarget: ${buildMinutes}min (${targetSeconds}s)`);
-console.log(`Estimated: ${(estimatedSeconds/60).toFixed(1)}min (${Math.round(estimatedSeconds)}s)`);
-console.log(`Computation intensity: ${computationIterations.toLocaleString()} iterations/page`);
-
-if (numSSGPages === MAX_SSG_PAGES && computationIterations > BASE_ITERATIONS) {
-  console.log(`Note: Using max pages (${MAX_SSG_PAGES}) with ${(computationIterations/BASE_ITERATIONS).toFixed(1)}x computation`);
-}
-
 // Minimal API routes (not for timing, just for realism)
 const numApiRoutes = 5;
 
