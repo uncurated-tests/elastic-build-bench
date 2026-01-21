@@ -1,0 +1,22 @@
+/* Page 1780 styles */
+.page-1780 {
+  --page-index: 1780;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1780-header {
+  font-size: calc(1rem + 0px);
+  color: hsl(340, 70%, 50%);
+}
+
+.page-1780-content {
+  padding: 1rem;
+  background: linear-gradient(
+    180deg,
+    hsl(340, 70%, 95%),
+    hsl(160, 70%, 95%)
+  );
+  border-radius: 8px;
+}

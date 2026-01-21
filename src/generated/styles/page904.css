@@ -1,0 +1,22 @@
+/* Page 904 styles */
+.page-904 {
+  --page-index: 904;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-904-header {
+  font-size: calc(1rem + 4px);
+  color: hsl(328, 70%, 50%);
+}
+
+.page-904-content {
+  padding: 1rem;
+  background: linear-gradient(
+    0deg,
+    hsl(328, 70%, 95%),
+    hsl(148, 70%, 95%)
+  );
+  border-radius: 4px;
+}

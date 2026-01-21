@@ -1,0 +1,22 @@
+/* Page 1757 styles */
+.page-1757 {
+  --page-index: 1757;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1757-header {
+  font-size: calc(1rem + 7px);
+  color: hsl(209, 70%, 50%);
+}
+
+.page-1757-content {
+  padding: 2rem;
+  background: linear-gradient(
+    225deg,
+    hsl(209, 70%, 95%),
+    hsl(29, 70%, 95%)
+  );
+  border-radius: 9px;
+}

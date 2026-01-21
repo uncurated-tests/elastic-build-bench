@@ -1,0 +1,22 @@
+/* Page 951 styles */
+.page-951 {
+  --page-index: 951;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-951-header {
+  font-size: calc(1rem + 1px);
+  color: hsl(267, 70%, 50%);
+}
+
+.page-951-content {
+  padding: 4rem;
+  background: linear-gradient(
+    315deg,
+    hsl(267, 70%, 95%),
+    hsl(87, 70%, 95%)
+  );
+  border-radius: 11px;
+}

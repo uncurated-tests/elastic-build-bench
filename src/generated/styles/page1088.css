@@ -1,0 +1,22 @@
+/* Page 1088 styles */
+.page-1088 {
+  --page-index: 1088;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1088-header {
+  font-size: calc(1rem + 8px);
+  color: hsl(296, 70%, 50%);
+}
+
+.page-1088-content {
+  padding: 1rem;
+  background: linear-gradient(
+    0deg,
+    hsl(296, 70%, 95%),
+    hsl(116, 70%, 95%)
+  );
+  border-radius: 4px;
+}
