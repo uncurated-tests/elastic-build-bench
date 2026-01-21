@@ -368,23 +368,13 @@ export default async function Home() {
                           })()}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-sm font-mono">
-                        <span className={`px-2 py-1 rounded text-xs ${
-                          record.durations.totalMs 
-                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
-                            : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500'
-                        }`}>
-                          {formatDuration(record.durations.totalMs)}
-                        </span>
+                      <td className="px-4 py-3 text-sm font-mono text-zinc-900 dark:text-zinc-100">
+                        {record.durations.totalMs ? formatDuration(record.durations.totalMs) : '-'}
                       </td>
                       <td className="px-4 py-3 text-sm font-mono">
                         <span className="inline-flex items-center gap-1.5">
-                          <span className={`px-2 py-1 rounded text-xs ${
-                            record.durations.totalWithDeploymentMs 
-                              ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' 
-                              : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500'
-                          }`}>
-                            {formatDuration(record.durations.totalWithDeploymentMs)}
+                          <span className="text-zinc-900 dark:text-zinc-100">
+                            {record.durations.totalWithDeploymentMs ? formatDuration(record.durations.totalWithDeploymentMs) : '-'}
                           </span>
                           {(() => {
                             const reduction = getBuildTimeReduction(record);
@@ -427,7 +417,7 @@ export default async function Home() {
                           
                           return (
                             <span className="inline-flex items-center gap-1.5">
-                              <span className="px-2 py-1 rounded text-xs bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
+                              <span className="text-zinc-900 dark:text-zinc-100">
                                 ${cost}
                               </span>
                               {costDelta !== null && (
