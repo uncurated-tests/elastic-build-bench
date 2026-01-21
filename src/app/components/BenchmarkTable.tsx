@@ -156,7 +156,9 @@ export default function BenchmarkTable({ records, standardE2EMap }: BenchmarkTab
                             ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
                             : 'bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-300'
                         }`}>
-                          {record.config.MachineType}
+                          {record.config.MachineType === 'Standard' && 'Standard - $0.014/min'}
+                          {record.config.MachineType === 'Enhanced' && 'Enhanced - $0.028/min'}
+                          {record.config.MachineType === 'Turbo' && 'Turbo - $0.105/min'}
                         </span>
                       </td>
                       <td className="px-3 py-2.5 text-sm font-mono whitespace-nowrap">

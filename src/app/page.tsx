@@ -348,7 +348,9 @@ export default async function Home() {
                       </td>
                       <td className="px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 font-medium">
                         <span className="inline-flex items-center gap-1.5">
-                          {record.config.MachineType}
+                          {record.config.MachineType === 'Standard' && 'Standard - $0.014/min'}
+                          {record.config.MachineType === 'Enhanced' && 'Enhanced - $0.028/min'}
+                          {record.config.MachineType === 'Turbo' && 'Turbo - $0.105/min'}
                           {(() => {
                             const url = getDeploymentUrl(record);
                             if (!url) return null;
