@@ -2,12 +2,14 @@
 /**
  * Generate synthetic load for build time testing
  * 
- * v10 Strategy: Barrel Imports + SSG Pages
+ * v11 Strategy: SSG Pages + Controlled Prebuild Delay
  * - SSG pages drive base build time (~0.13s per page + 19s overhead)
- * - Heavy barrel-file imports (MUI Icons, React Icons, Lucide) add compile time
- * - Each barrel import is used in multiple components to ensure it's bundled
- * - Complex TypeScript types for additional overhead
+ * - Max ~2000 pages before OOM (~260s or 4.3min of page time)
+ * - For builds > 4.3min, use controlled prebuild delay for remaining time
+ * - No heavy icon library imports (they hang Turbopack)
  * - No MDX (incompatible with Turbopack)
+ * 
+ * This is a pragmatic approach that produces PREDICTABLE build times.
  * 
  * Usage: node scripts/generate-load.mjs <buildMinutes> <e2eMultiplier>
  * Example: node scripts/generate-load.mjs 4 2  # 4min build, 2x E2E (8min total)
@@ -26,142 +28,77 @@ const buildMinutes = parseFloat(process.argv[2] || '1');
 const e2eMultiplier = parseFloat(process.argv[3] || '2');
 
 console.log(`\n========================================`);
-console.log(`v10 Load Generator: Barrel Imports Strategy`);
+console.log(`v11 Load Generator: SSG + Prebuild Delay`);
 console.log(`========================================`);
 console.log(`Target: ${buildMinutes}min build, ${e2eMultiplier}x E2E multiplier`);
 
 // =============================================================================
-// v10 CALIBRATION - Based on v8 learnings + barrel import strategy
+// v11 CALIBRATION - Based on empirical data from v8
 // =============================================================================
 // 
 // Build time components (on Standard 4 vCPU):
 //   1. Base overhead: ~19s (Next.js startup, compile setup)
 //   2. SSG pages: ~0.13s per page (up to 2000 pages max due to OOM)
-//   3. Heavy barrel imports: Each import forces parsing all exports
-//      - @mui/icons-material: ~11,000 icons - adds ~20-40s when used widely
-//      - react-icons: ~40,000 icons across subpackages - adds ~15-30s  
-//      - lucide-react: ~1,500 icons - adds ~10-20s
-//   4. Component complexity: More components using icons = more build time
+//   3. Prebuild delay: For builds > 4.5min, sleep for remaining time
 //
-// Key insight: Barrel imports add the most time when:
-//   - Used with `import * as X from 'package'` pattern
-//   - Used across MANY components (forces repeated parsing/bundling)
-//   - Each component that imports adds incremental overhead
+// Empirical results from v8:
+//   - 1min target (315 pages): 57-59s actual ✅
+//   - 2min target (785 pages): 114-119s actual ✅
+//   - 4min target (1720 pages): 231-233s actual ✅
+//   - 5min+ targets: plateaued at ~270s due to hitting 2000 page limit
 //
-// Strategy by target:
-//   1-4min: SSG pages only (proven linear scaling)
-//   5-7min: SSG pages + MUI icons barrel in many components
-//   8-10min: SSG pages + MUI + React Icons barrels
-//   10-20min: All barrels + max SSG pages + more icon-heavy components
+// v11 approach:
+//   - Calculate SSG pages needed (capped at 2000)
+//   - If target > what pages can provide, add prebuild delay
+//   - Prebuild delay runs BEFORE Next.js build starts
 //
 // =============================================================================
 
-const BASE_OVERHEAD = 19;           // seconds
+const BASE_OVERHEAD = 19;           // seconds (Next.js startup)
 const MAX_SSG_PAGES = 2000;         // Cap to avoid OOM errors
 const SECONDS_PER_PAGE = 0.13;      // Empirical from v8
-const MAX_PAGE_TIME = MAX_SSG_PAGES * SECONDS_PER_PAGE; // ~260s or 4.3min
-
-// Barrel import overhead (when used across many components)
-// These add time by forcing the bundler to parse and process large export lists
-const BARREL_IMPORT_OVERHEAD = {
-  muiIcons: 25,       // @mui/icons-material - 11k icons
-  reactIcons: 20,     // react-icons - multiple sub-packages
-  lucide: 12,         // lucide-react - 1.5k icons
-};
-
-// Components using barrel imports add incremental time
-const SECONDS_PER_BARREL_COMPONENT = 0.15;
+const MAX_PAGE_BUILD_TIME = MAX_SSG_PAGES * SECONDS_PER_PAGE; // ~260s
 
 // Target build time in seconds
 const targetSeconds = buildMinutes * 60;
 const targetE2EMinutes = buildMinutes * e2eMultiplier;
 
-// =============================================================================
-// Calculate load composition based on target
-// =============================================================================
+// Calculate how much time SSG pages can provide
+const maxTimeFromPages = BASE_OVERHEAD + MAX_PAGE_BUILD_TIME; // ~279s or ~4.65min
 
-let remainingTime = targetSeconds - BASE_OVERHEAD;
-
-// Determine barrel import strategy based on target
-let useBarrelImports = {
-  muiIcons: false,
-  reactIcons: false,
-  lucide: false,
-};
-
-let barrelComponentCounts = {
-  muiIcons: 0,
-  reactIcons: 0,
-  lucide: 0,
-};
-
-// For 5+ min builds, start using barrel imports
-if (buildMinutes >= 5) {
-  useBarrelImports.muiIcons = true;
-  remainingTime -= BARREL_IMPORT_OVERHEAD.muiIcons;
-  // Use barrel imports in many components to maximize overhead
-  barrelComponentCounts.muiIcons = Math.min(Math.ceil((buildMinutes - 4) * 30), 200);
-  remainingTime -= barrelComponentCounts.muiIcons * SECONDS_PER_BARREL_COMPONENT;
+// Calculate prebuild delay needed (if any)
+let prebuildDelaySeconds = 0;
+if (targetSeconds > maxTimeFromPages) {
+  prebuildDelaySeconds = Math.ceil(targetSeconds - maxTimeFromPages);
 }
 
-if (buildMinutes >= 8) {
-  useBarrelImports.reactIcons = true;
-  remainingTime -= BARREL_IMPORT_OVERHEAD.reactIcons;
-  barrelComponentCounts.reactIcons = Math.min(Math.ceil((buildMinutes - 7) * 25), 150);
-  remainingTime -= barrelComponentCounts.reactIcons * SECONDS_PER_BARREL_COMPONENT;
+// Calculate SSG pages needed
+let numSSGPages;
+if (prebuildDelaySeconds > 0) {
+  // If we need delay, use max pages
+  numSSGPages = MAX_SSG_PAGES;
+} else {
+  // Calculate pages needed for target
+  const timeForPages = targetSeconds - BASE_OVERHEAD;
+  numSSGPages = Math.ceil(timeForPages / SECONDS_PER_PAGE);
+  numSSGPages = Math.max(100, Math.min(numSSGPages, MAX_SSG_PAGES));
 }
 
-if (buildMinutes >= 10) {
-  useBarrelImports.lucide = true;
-  remainingTime -= BARREL_IMPORT_OVERHEAD.lucide;
-  barrelComponentCounts.lucide = Math.min(Math.ceil((buildMinutes - 9) * 20), 100);
-  remainingTime -= barrelComponentCounts.lucide * SECONDS_PER_BARREL_COMPONENT;
-}
-
-// For very long builds (15+min), increase barrel component usage significantly
-if (buildMinutes >= 15) {
-  barrelComponentCounts.muiIcons = Math.min(barrelComponentCounts.muiIcons + 100, 400);
-  barrelComponentCounts.reactIcons = Math.min(barrelComponentCounts.reactIcons + 80, 300);
-  barrelComponentCounts.lucide = Math.min(barrelComponentCounts.lucide + 60, 200);
-  remainingTime -= 80 * SECONDS_PER_BARREL_COMPONENT; // Additional overhead
-}
-
-// Calculate SSG pages from remaining time
-let numSSGPages = Math.ceil(Math.max(0, remainingTime) / SECONDS_PER_PAGE);
-numSSGPages = Math.min(numSSGPages, MAX_SSG_PAGES);
-numSSGPages = Math.max(100, numSSGPages); // Minimum 100 pages
-
-// Complex TypeScript types (scaled by build target, adds modest overhead)
-const numComplexTypes = Math.min(30 + Math.floor(buildMinutes * 8), 150);
+// Calculate expected build time
+const expectedBuildTime = BASE_OVERHEAD + (numSSGPages * SECONDS_PER_PAGE) + prebuildDelaySeconds;
 
 // Fixed values
+const numSharedComponents = 500;
 const numApiRoutes = 5;
-const numSharedComponents = 500; // Base component pool
 
-// Calculate total barrel components
-const totalBarrelComponents = 
-  barrelComponentCounts.muiIcons + 
-  barrelComponentCounts.reactIcons + 
-  barrelComponentCounts.lucide;
-
-console.log(`\nv10 Load Composition:`);
+console.log(`\nv11 Load Composition:`);
+console.log(`  Target: ${targetSeconds}s (${buildMinutes}min)`);
 console.log(`  Base overhead: ${BASE_OVERHEAD}s`);
 console.log(`  SSG pages: ${numSSGPages} (~${Math.round(numSSGPages * SECONDS_PER_PAGE)}s)`);
-console.log(`  Barrel imports:`);
-if (useBarrelImports.muiIcons) {
-  console.log(`    - MUI Icons: ${barrelComponentCounts.muiIcons} components (~${Math.round(BARREL_IMPORT_OVERHEAD.muiIcons + barrelComponentCounts.muiIcons * SECONDS_PER_BARREL_COMPONENT)}s)`);
+if (prebuildDelaySeconds > 0) {
+  console.log(`  Prebuild delay: ${prebuildDelaySeconds}s (to reach target beyond page limit)`);
 }
-if (useBarrelImports.reactIcons) {
-  console.log(`    - React Icons: ${barrelComponentCounts.reactIcons} components (~${Math.round(BARREL_IMPORT_OVERHEAD.reactIcons + barrelComponentCounts.reactIcons * SECONDS_PER_BARREL_COMPONENT)}s)`);
-}
-if (useBarrelImports.lucide) {
-  console.log(`    - Lucide: ${barrelComponentCounts.lucide} components (~${Math.round(BARREL_IMPORT_OVERHEAD.lucide + barrelComponentCounts.lucide * SECONDS_PER_BARREL_COMPONENT)}s)`);
-}
-if (!useBarrelImports.muiIcons && !useBarrelImports.reactIcons && !useBarrelImports.lucide) {
-  console.log(`    (none - using SSG pages only for <5min builds)`);
-}
-console.log(`  Complex types: ${numComplexTypes}`);
-console.log(`  Expected total: ~${targetSeconds}s`);
+console.log(`  Expected total: ~${Math.round(expectedBuildTime)}s`);
 
 // =============================================================================
 // Clean up previous generated files
@@ -173,8 +110,6 @@ if (existsSync(generatedDir)) {
 }
 mkdirSync(generatedDir, { recursive: true });
 mkdirSync(join(generatedDir, 'components'), { recursive: true });
-mkdirSync(join(generatedDir, 'barrel-components'), { recursive: true });
-mkdirSync(join(generatedDir, 'types'), { recursive: true });
 mkdirSync(join(generatedDir, 'styles'), { recursive: true });
 
 const apiGeneratedDir = join(projectRoot, 'src', 'app', 'api', 'generated');
@@ -187,182 +122,21 @@ if (existsSync(ssgDir)) {
   rmSync(ssgDir, { recursive: true });
 }
 
-// Clean up old MDX directories if they exist
-const mdxDir = join(generatedDir, 'mdx');
-if (existsSync(mdxDir)) {
-  rmSync(mdxDir, { recursive: true });
-}
-const docsDir = join(projectRoot, 'src', 'app', 'docs');
-if (existsSync(docsDir)) {
-  rmSync(docsDir, { recursive: true });
-}
-
-// =============================================================================
-// Complex TypeScript Types (Deep Inference)
-// =============================================================================
-
-function generateComplexTypeFile(index) {
-  const depth = 8 + (index % 6);
-  const unionSize = 10 + (index % 20);
-  
-  const unionMembers = Array.from({ length: unionSize }, (_, i) => 
-    `'option_${index}_${i}'`
-  ).join(' | ');
-  
-  return `// Complex type file ${index} - Deep inference and conditional types
-type Prev = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-
-type DeepNested_${index}<T, D extends number = ${depth}> = D extends 0
-  ? T
-  : {
-      value: T;
-      meta: { index: ${index}; depth: D };
-      nested: DeepNested_${index}<T, Prev[D]>;
-      sibling: D extends 1 ? T : DeepNested_${index}<T, Prev[D]>;
-    };
-
-type Distributed_${index}<T> = T extends string
-  ? { type: 'string'; value: T; index: ${index} }
-  : T extends number
-  ? { type: 'number'; value: T; computed: \`value_\${T}\` }
-  : T extends boolean
-  ? { type: 'boolean'; flag: T }
-  : { type: 'unknown'; raw: T };
-
-type OptionKey_${index} = ${unionMembers};
-type OptionMap_${index} = {
-  [K in OptionKey_${index}]: {
-    key: K;
-    index: ${index};
-    handler: (input: K) => Distributed_${index}<K>;
-  };
-};
-
-type ExtractReturn_${index}<T> = T extends (...args: infer A) => infer R
-  ? { args: A; return: R; arity: A['length'] }
-  : never;
-
-type EventName_${index} = \`on\$\{Capitalize<OptionKey_${index}>\}Change\`;
-
-export type {
-  DeepNested_${index},
-  Distributed_${index},
-  OptionKey_${index},
-  OptionMap_${index},
-  ExtractReturn_${index},
-  EventName_${index},
-};
-`;
+// Clean up old directories from previous strategies
+const oldDirs = [
+  join(generatedDir, 'barrel-components'),
+  join(generatedDir, 'types'),
+  join(generatedDir, 'mdx'),
+  join(projectRoot, 'src', 'app', 'docs'),
+];
+for (const dir of oldDirs) {
+  if (existsSync(dir)) {
+    rmSync(dir, { recursive: true });
+  }
 }
 
 // =============================================================================
-// Barrel Import Components (MUI Icons, React Icons, Lucide)
-// These components use `import * as X` pattern to force full barrel parsing
-// =============================================================================
-
-function generateMuiIconsComponent(index) {
-  // Use wildcard import to force parsing all 11k icons
-  return `'use client';
-import React, { memo } from 'react';
-import * as MuiIcons from '@mui/icons-material';
-
-// This component forces the bundler to parse all MUI icons
-const iconNames = Object.keys(MuiIcons);
-const IconComponent = (MuiIcons as Record<string, React.ComponentType>)[iconNames[${index} % iconNames.length]];
-
-interface Props {
-  size?: number;
-  color?: string;
-}
-
-const MuiIconComponent${index} = memo(function MuiIconComponent${index}({ size = 24, color }: Props) {
-  const selectedIconName = iconNames[${index} % iconNames.length];
-  const randomIndex = (${index} * 17 + 13) % iconNames.length;
-  const SecondIcon = (MuiIcons as Record<string, React.ComponentType>)[iconNames[randomIndex]];
-  
-  return (
-    <div className="flex items-center gap-2 p-2">
-      <span className="text-sm text-zinc-500">#{${index}}</span>
-      {IconComponent && <IconComponent style={{ fontSize: size, color }} />}
-      {SecondIcon && <SecondIcon style={{ fontSize: size * 0.8, color }} />}
-      <span className="text-xs">{selectedIconName}</span>
-    </div>
-  );
-});
-
-MuiIconComponent${index}.displayName = 'MuiIconComponent${index}';
-export default MuiIconComponent${index};
-`;
-}
-
-function generateReactIconsComponent(index) {
-  // Use multiple react-icons subpackages to maximize overhead
-  const subpackages = ['fa', 'md', 'io', 'gi', 'fi', 'ai', 'bs', 'bi'];
-  const pkg = subpackages[index % subpackages.length];
-  
-  return `'use client';
-import React, { memo } from 'react';
-import * as Icons from 'react-icons/${pkg}';
-
-// This component forces the bundler to parse react-icons/${pkg}
-const iconNames = Object.keys(Icons).filter(k => typeof (Icons as Record<string, unknown>)[k] === 'function');
-const IconComponent = (Icons as Record<string, React.ComponentType>)[iconNames[${index} % Math.max(1, iconNames.length)]];
-
-interface Props {
-  size?: number;
-  color?: string;
-}
-
-const ReactIconComponent${index} = memo(function ReactIconComponent${index}({ size = 24, color }: Props) {
-  const selectedName = iconNames[${index} % Math.max(1, iconNames.length)];
-  
-  return (
-    <div className="flex items-center gap-2 p-2">
-      <span className="text-sm text-zinc-500">ri#${index}</span>
-      {IconComponent && <IconComponent size={size} color={color} />}
-      <span className="text-xs">{selectedName}</span>
-    </div>
-  );
-});
-
-ReactIconComponent${index}.displayName = 'ReactIconComponent${index}';
-export default ReactIconComponent${index};
-`;
-}
-
-function generateLucideComponent(index) {
-  return `'use client';
-import React, { memo } from 'react';
-import * as LucideIcons from 'lucide-react';
-
-// This component forces the bundler to parse all lucide icons
-const iconEntries = Object.entries(LucideIcons).filter(([, v]) => typeof v === 'function' && v.toString().includes('createElement'));
-const IconComponent = iconEntries[${index} % Math.max(1, iconEntries.length)]?.[1] as React.ComponentType<{ size?: number; color?: string }> | undefined;
-
-interface Props {
-  size?: number;
-  color?: string;
-}
-
-const LucideComponent${index} = memo(function LucideComponent${index}({ size = 24, color }: Props) {
-  const [iconName] = iconEntries[${index} % Math.max(1, iconEntries.length)] || ['Unknown'];
-  
-  return (
-    <div className="flex items-center gap-2 p-2">
-      <span className="text-sm text-zinc-500">lu#${index}</span>
-      {IconComponent && <IconComponent size={size} color={color} />}
-      <span className="text-xs">{iconName}</span>
-    </div>
-  );
-});
-
-LucideComponent${index}.displayName = 'LucideComponent${index}';
-export default LucideComponent${index};
-`;
-}
-
-// =============================================================================
-// Shared Components (simple, no heavy imports)
+// Shared Components (simple)
 // =============================================================================
 
 function generateSharedComponent(index) {
@@ -420,7 +194,7 @@ function generateCssFile(index) {
 // SSG Pages
 // =============================================================================
 
-function generateSSGPage(pageIndex, useBarrelImports, barrelComponentCounts) {
+function generateSSGPage(pageIndex) {
   const imports = [];
   const componentUses = [];
   
@@ -431,23 +205,6 @@ function generateSSGPage(pageIndex, useBarrelImports, barrelComponentCounts) {
     const compIdx = (startIdx + i) % numSharedComponents;
     imports.push(`import SharedComponent${compIdx} from '@/generated/components/SharedComponent${compIdx}';`);
     componentUses.push(`<SharedComponent${compIdx} id="${pageIndex}-${i}" value={${pageIndex * 100 + i}} label="Item" />`);
-  }
-  
-  // For pages that use barrel components, import them
-  // Spread barrel component usage across pages
-  if (useBarrelImports.muiIcons && pageIndex < barrelComponentCounts.muiIcons) {
-    imports.push(`import MuiIconComponent${pageIndex} from '@/generated/barrel-components/MuiIconComponent${pageIndex}';`);
-    componentUses.push(`<MuiIconComponent${pageIndex} size={20} color="#1976d2" />`);
-  }
-  
-  if (useBarrelImports.reactIcons && pageIndex < barrelComponentCounts.reactIcons) {
-    imports.push(`import ReactIconComponent${pageIndex} from '@/generated/barrel-components/ReactIconComponent${pageIndex}';`);
-    componentUses.push(`<ReactIconComponent${pageIndex} size={20} color="#61dafb" />`);
-  }
-  
-  if (useBarrelImports.lucide && pageIndex < barrelComponentCounts.lucide) {
-    imports.push(`import LucideComponent${pageIndex} from '@/generated/barrel-components/LucideComponent${pageIndex}';`);
-    componentUses.push(`<LucideComponent${pageIndex} size={20} color="#f97316" />`);
   }
   
   return `// SSG Page ${pageIndex}
@@ -499,14 +256,9 @@ function updateBuildConfig() {
     MachineType: "Standard",
     ssgPages: numSSGPages,
     sharedComponents: numSharedComponents,
-    barrelComponents: {
-      muiIcons: barrelComponentCounts.muiIcons,
-      reactIcons: barrelComponentCounts.reactIcons,
-      lucide: barrelComponentCounts.lucide,
-    },
-    complexTypes: numComplexTypes,
     apiRoutes: numApiRoutes,
-    strategy: "barrel-imports-v10",
+    prebuildDelaySeconds: prebuildDelaySeconds,
+    strategy: "ssg-plus-delay-v11",
     generatedAt: new Date().toISOString(),
     buildId: randomUUID(),
   };
@@ -521,19 +273,8 @@ function updateBuildConfig() {
 // Generate All Files
 // =============================================================================
 
-// 1. Generate complex type files
-console.log('\n1. Generating complex TypeScript types...');
-const typeExports = [];
-for (let i = 0; i < numComplexTypes; i++) {
-  const typePath = join(generatedDir, 'types', `complex${i}.ts`);
-  writeFileSync(typePath, generateComplexTypeFile(i));
-  typeExports.push(`export * from './complex${i}';`);
-}
-writeFileSync(join(generatedDir, 'types', 'index.ts'), typeExports.join('\n'));
-console.log(`   Generated ${numComplexTypes} complex type files`);
-
-// 2. Generate shared components
-console.log('\n2. Generating shared components...');
+// 1. Generate shared components
+console.log('\n1. Generating shared components...');
 for (let i = 0; i < numSharedComponents; i++) {
   const componentPath = join(generatedDir, 'components', `SharedComponent${i}.tsx`);
   writeFileSync(componentPath, generateSharedComponent(i));
@@ -544,43 +285,8 @@ for (let i = 0; i < numSharedComponents; i++) {
 }
 console.log(`   Generated ${numSharedComponents} shared components`);
 
-// 3. Generate barrel import components
-console.log('\n3. Generating barrel import components...');
-let barrelCount = 0;
-
-if (useBarrelImports.muiIcons) {
-  for (let i = 0; i < barrelComponentCounts.muiIcons; i++) {
-    const path = join(generatedDir, 'barrel-components', `MuiIconComponent${i}.tsx`);
-    writeFileSync(path, generateMuiIconsComponent(i));
-    barrelCount++;
-  }
-  console.log(`   Generated ${barrelComponentCounts.muiIcons} MUI Icons components`);
-}
-
-if (useBarrelImports.reactIcons) {
-  for (let i = 0; i < barrelComponentCounts.reactIcons; i++) {
-    const path = join(generatedDir, 'barrel-components', `ReactIconComponent${i}.tsx`);
-    writeFileSync(path, generateReactIconsComponent(i));
-    barrelCount++;
-  }
-  console.log(`   Generated ${barrelComponentCounts.reactIcons} React Icons components`);
-}
-
-if (useBarrelImports.lucide) {
-  for (let i = 0; i < barrelComponentCounts.lucide; i++) {
-    const path = join(generatedDir, 'barrel-components', `LucideComponent${i}.tsx`);
-    writeFileSync(path, generateLucideComponent(i));
-    barrelCount++;
-  }
-  console.log(`   Generated ${barrelComponentCounts.lucide} Lucide components`);
-}
-
-if (barrelCount === 0) {
-  console.log(`   (skipped - barrel imports not needed for <5min builds)`);
-}
-
-// 4. Generate CSS files
-console.log('\n4. Generating CSS files...');
+// 2. Generate CSS files
+console.log('\n2. Generating CSS files...');
 for (let i = 0; i < numSSGPages; i++) {
   const cssPath = join(generatedDir, 'styles', `page${i}.css`);
   writeFileSync(cssPath, generateCssFile(i));
@@ -591,13 +297,13 @@ for (let i = 0; i < numSSGPages; i++) {
 }
 console.log(`   Generated ${numSSGPages} CSS files`);
 
-// 5. Generate SSG pages
-console.log('\n5. Generating SSG pages...');
+// 3. Generate SSG pages
+console.log('\n3. Generating SSG pages...');
 mkdirSync(ssgDir, { recursive: true });
 for (let i = 0; i < numSSGPages; i++) {
   const pageDir = join(ssgDir, `page${i}`);
   mkdirSync(pageDir, { recursive: true });
-  writeFileSync(join(pageDir, 'page.tsx'), generateSSGPage(i, useBarrelImports, barrelComponentCounts));
+  writeFileSync(join(pageDir, 'page.tsx'), generateSSGPage(i));
   
   if ((i + 1) % 500 === 0) {
     console.log(`   Generated ${i + 1}/${numSSGPages} SSG pages`);
@@ -605,8 +311,8 @@ for (let i = 0; i < numSSGPages; i++) {
 }
 console.log(`   Generated ${numSSGPages} SSG pages`);
 
-// 6. Generate API routes
-console.log('\n6. Generating API routes...');
+// 4. Generate API routes
+console.log('\n4. Generating API routes...');
 mkdirSync(apiGeneratedDir, { recursive: true });
 for (let i = 0; i < numApiRoutes; i++) {
   const routeDir = join(apiGeneratedDir, `route${i}`);
@@ -621,7 +327,10 @@ updateBuildConfig();
 console.log('\n========================================');
 console.log('Generation complete!');
 console.log('========================================');
-console.log(`Strategy: Barrel Imports v10`);
+console.log(`Strategy: SSG + Prebuild Delay v11`);
 console.log(`Expected build time on Standard: ~${buildMinutes} min`);
+if (prebuildDelaySeconds > 0) {
+  console.log(`  (includes ${prebuildDelaySeconds}s prebuild delay)`);
+}
 console.log(`Expected E2E time on Standard: ~${targetE2EMinutes} min`);
 console.log('');

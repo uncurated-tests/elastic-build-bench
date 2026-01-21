@@ -425,6 +425,15 @@ async function main() {
     console.log(`[TIMING]    This adds CPU work during PostCSS processing`);
   }
 
+  // v11: Execute prebuild delay if configured
+  const prebuildDelaySeconds = configFromFile.prebuildDelaySeconds || 0;
+  if (prebuildDelaySeconds > 0) {
+    console.log(`\n[TIMING] 2.5. PREBUILD DELAY`);
+    console.log(`[TIMING]    Sleeping for ${prebuildDelaySeconds}s to reach target build time...`);
+    await new Promise(resolve => setTimeout(resolve, prebuildDelaySeconds * 1000));
+    console.log(`[TIMING]    Prebuild delay complete.`);
+  }
+
   // Phase 3: Run Next.js build (compilation)
   runCommand('next build', 'Running Next.js compilation');
   
