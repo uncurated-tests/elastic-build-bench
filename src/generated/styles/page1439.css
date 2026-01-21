@@ -1,0 +1,17 @@
+/* Page 1439 styles */
+.page-1439 {
+  --page-index: 1439;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1439-header {
+  font-size: calc(1rem + 9px);
+  color: hsl(323, 70%, 50%);
+}
+
+.page-1439-content {
+  padding: 4rem;
+  border-radius: 11px;
+}
