@@ -2,25 +2,30 @@
  * CPU Burn Worker
  * Performs CPU-intensive work for a specified duration
  * Used by build-with-timing.mjs for multi-threaded prebuild CPU burn
+ * 
+ * v20: Work is now DIVIDED among workers so more cores = faster builds
+ * The total work is calibrated for Standard (4 cores), then divided by actual core count
  */
 
 import { parentPort, workerData } from 'worker_threads';
-import { cpus } from 'os';
 
-const { targetSeconds, workerId, totalWorkers } = workerData;
+const { targetSeconds, workerId, totalWorkers, standardCores } = workerData;
 
-// Calibration: iterations per second on a single Vercel Standard core
-// Vercel Standard has 4 vCPU, each running at ~2.5GHz
-// v17: 2.5M (builds ran 2x faster than expected)
-// v18: 5M (20min build took 32min - 1.7x slower than expected)
-// v19: 8.5M (5M * 1.7 correction factor)
-const ITERATIONS_PER_SECOND = 8_500_000;
+// Calibration: iterations per second on a single core
+// This determines how much TOTAL work we need for the target time on Standard
+const ITERATIONS_PER_SECOND_PER_CORE = 8_500_000;
 
-// Each worker runs for the FULL target time (all cores burn in parallel)
-// This ensures wall-clock time = targetSeconds
-const iterationsPerWorker = Math.ceil(targetSeconds * ITERATIONS_PER_SECOND);
+// Standard machine has 4 cores - this is our baseline
+const STANDARD_CORES = standardCores || 4;
 
-console.log(`[CPU-BURN] Worker ${workerId}/${totalWorkers}: Starting ${iterationsPerWorker.toLocaleString()} iterations`);
+// Total work needed = targetSeconds worth of work on Standard (4 cores running in parallel)
+// We multiply by STANDARD_CORES because all 4 cores work simultaneously
+const totalIterations = targetSeconds * ITERATIONS_PER_SECOND_PER_CORE * STANDARD_CORES;
+
+// Divide work among actual workers - more workers = less work per worker = faster completion
+const iterationsPerWorker = Math.ceil(totalIterations / totalWorkers);
+
+console.log(`[CPU-BURN] Worker ${workerId}/${totalWorkers}: Starting ${iterationsPerWorker.toLocaleString()} iterations (total work divided by ${totalWorkers} cores)`);
 
 const startTime = Date.now();
 let result = workerId; // Seed with worker ID for uniqueness

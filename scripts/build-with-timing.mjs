@@ -273,12 +273,16 @@ async function runMultiThreadedCpuBurn(targetSeconds, numWorkers) {
   const workers = [];
   const promises = [];
   
+  // Standard machine has 4 cores - this is our baseline for calibration
+  const STANDARD_CORES = 4;
+  
   for (let i = 0; i < numWorkers; i++) {
     const worker = new Worker(workerPath, {
       workerData: {
         targetSeconds,
         workerId: i + 1,
-        totalWorkers: numWorkers
+        totalWorkers: numWorkers,
+        standardCores: STANDARD_CORES
       }
     });
     
