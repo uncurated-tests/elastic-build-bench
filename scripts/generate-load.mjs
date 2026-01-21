@@ -15,6 +15,7 @@
 import { writeFileSync, mkdirSync, rmSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { randomUUID } from 'crypto';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, '..');
@@ -327,6 +328,9 @@ function updateBuildConfig() {
     postcssCpuBurnIterations: postcssCpuBurnIterations,
     apiRoutes: numApiRoutes,
     strategy: "postcss-cpu-burn-v8",
+    // Cache-busting fields - unique per generation to ensure no build cache hits
+    generatedAt: new Date().toISOString(),
+    buildId: randomUUID(),
   };
   writeFileSync(
     join(projectRoot, 'build-config.json'),
