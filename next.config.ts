@@ -1,7 +1,5 @@
 import type { NextConfig } from "next";
 import createMDX from "@next/mdx";
-import remarkGfm from "remark-gfm";
-import rehypeSlug from "rehype-slug";
 
 const nextConfig: NextConfig = {
   // Generate unique build IDs to prevent cache reuse
@@ -21,11 +19,7 @@ const nextConfig: NextConfig = {
   ],
 };
 
-const withMDX = createMDX({
-  options: {
-    remarkPlugins: [remarkGfm],
-    rehypePlugins: [rehypeSlug],
-  },
-});
+// Use MDX without custom plugins to avoid Turbopack serialization issues
+const withMDX = createMDX({});
 
 export default withMDX(nextConfig);
