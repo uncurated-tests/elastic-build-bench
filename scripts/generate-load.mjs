@@ -73,11 +73,14 @@ const BASE_COMPONENTS = 500;  // Shared component pool
 //  20min (1200s): 2600 types, 19200 pages → 20+390+960=1370s
 // =============================================================================
 
-const TYPE_FILES_PER_MINUTE = 130;  // ~130 type files per minute of build time
-const SSG_PAGES_PER_MINUTE = 960;   // ~960 SSG pages per minute of build time
+// Calibration v3: Based on measured 2x overshoot with v2 settings
+// v2 had 130 types/min and 960 pages/min → ~2x target time
+// v3: Halve the values to hit target times on Standard
+const TYPE_FILES_PER_MINUTE = 65;   // ~65 type files per minute of build time
+const SSG_PAGES_PER_MINUTE = 480;   // ~480 SSG pages per minute of build time
 
-const numTypeFiles = Math.max(50, Math.floor(buildMinutes * TYPE_FILES_PER_MINUTE));
-const numSSGPages = Math.max(200, Math.floor(buildMinutes * SSG_PAGES_PER_MINUTE));
+const numTypeFiles = Math.max(30, Math.floor(buildMinutes * TYPE_FILES_PER_MINUTE));
+const numSSGPages = Math.max(100, Math.floor(buildMinutes * SSG_PAGES_PER_MINUTE));
 
 // Minimal API routes (not for timing, just for realism)
 const numApiRoutes = 5;
