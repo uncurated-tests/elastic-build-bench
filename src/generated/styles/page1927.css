@@ -1,0 +1,22 @@
+/* Page 1927 styles */
+.page-1927 {
+  --page-index: 1927;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1927-header {
+  font-size: calc(1rem + 7px);
+  color: hsl(19, 70%, 50%);
+}
+
+.page-1927-content {
+  padding: 4rem;
+  background: linear-gradient(
+    315deg,
+    hsl(19, 70%, 95%),
+    hsl(199, 70%, 95%)
+  );
+  border-radius: 11px;
+}

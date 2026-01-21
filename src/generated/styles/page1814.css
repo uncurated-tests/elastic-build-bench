@@ -1,0 +1,22 @@
+/* Page 1814 styles */
+.page-1814 {
+  --page-index: 1814;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1814-header {
+  font-size: calc(1rem + 4px);
+  color: hsl(158, 70%, 50%);
+}
+
+.page-1814-content {
+  padding: 3rem;
+  background: linear-gradient(
+    270deg,
+    hsl(158, 70%, 95%),
+    hsl(338, 70%, 95%)
+  );
+  border-radius: 10px;
+}

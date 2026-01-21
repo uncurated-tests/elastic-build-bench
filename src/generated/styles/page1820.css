@@ -1,0 +1,22 @@
+/* Page 1820 styles */
+.page-1820 {
+  --page-index: 1820;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1820-header {
+  font-size: calc(1rem + 0px);
+  color: hsl(20, 70%, 50%);
+}
+
+.page-1820-content {
+  padding: 1rem;
+  background: linear-gradient(
+    180deg,
+    hsl(20, 70%, 95%),
+    hsl(200, 70%, 95%)
+  );
+  border-radius: 8px;
+}

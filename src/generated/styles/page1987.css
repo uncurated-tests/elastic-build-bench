@@ -1,0 +1,22 @@
+/* Page 1987 styles */
+.page-1987 {
+  --page-index: 1987;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1987-header {
+  font-size: calc(1rem + 7px);
+  color: hsl(79, 70%, 50%);
+}
+
+.page-1987-content {
+  padding: 4rem;
+  background: linear-gradient(
+    135deg,
+    hsl(79, 70%, 95%),
+    hsl(259, 70%, 95%)
+  );
+  border-radius: 7px;
+}

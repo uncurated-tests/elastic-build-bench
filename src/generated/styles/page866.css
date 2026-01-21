@@ -1,0 +1,22 @@
+/* Page 866 styles */
+.page-866 {
+  --page-index: 866;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-866-header {
+  font-size: calc(1rem + 6px);
+  color: hsl(2, 70%, 50%);
+}
+
+.page-866-content {
+  padding: 3rem;
+  background: linear-gradient(
+    90deg,
+    hsl(2, 70%, 95%),
+    hsl(182, 70%, 95%)
+  );
+  border-radius: 6px;
+}

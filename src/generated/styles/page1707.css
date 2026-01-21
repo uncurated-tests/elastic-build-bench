@@ -1,0 +1,22 @@
+/* Page 1707 styles */
+.page-1707 {
+  --page-index: 1707;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1707-header {
+  font-size: calc(1rem + 7px);
+  color: hsl(159, 70%, 50%);
+}
+
+.page-1707-content {
+  padding: 4rem;
+  background: linear-gradient(
+    135deg,
+    hsl(159, 70%, 95%),
+    hsl(339, 70%, 95%)
+  );
+  border-radius: 7px;
+}

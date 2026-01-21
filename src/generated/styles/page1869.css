@@ -1,0 +1,22 @@
+/* Page 1869 styles */
+.page-1869 {
+  --page-index: 1869;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1869-header {
+  font-size: calc(1rem + 9px);
+  color: hsl(33, 70%, 50%);
+}
+
+.page-1869-content {
+  padding: 2rem;
+  background: linear-gradient(
+    225deg,
+    hsl(33, 70%, 95%),
+    hsl(213, 70%, 95%)
+  );
+  border-radius: 9px;
+}

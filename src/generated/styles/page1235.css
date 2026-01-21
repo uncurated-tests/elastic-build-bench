@@ -1,0 +1,22 @@
+/* Page 1235 styles */
+.page-1235 {
+  --page-index: 1235;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1235-header {
+  font-size: calc(1rem + 5px);
+  color: hsl(335, 70%, 50%);
+}
+
+.page-1235-content {
+  padding: 4rem;
+  background: linear-gradient(
+    135deg,
+    hsl(335, 70%, 95%),
+    hsl(155, 70%, 95%)
+  );
+  border-radius: 7px;
+}

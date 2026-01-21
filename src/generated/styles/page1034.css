@@ -1,0 +1,22 @@
+/* Page 1034 styles */
+.page-1034 {
+  --page-index: 1034;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1034-header {
+  font-size: calc(1rem + 4px);
+  color: hsl(98, 70%, 50%);
+}
+
+.page-1034-content {
+  padding: 3rem;
+  background: linear-gradient(
+    90deg,
+    hsl(98, 70%, 95%),
+    hsl(278, 70%, 95%)
+  );
+  border-radius: 6px;
+}
