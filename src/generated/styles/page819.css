@@ -1,0 +1,22 @@
+/* Page 819 styles */
+.page-819 {
+  --page-index: 819;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-819-header {
+  font-size: calc(1rem + 9px);
+  color: hsl(63, 70%, 50%);
+}
+
+.page-819-content {
+  padding: 4rem;
+  background: linear-gradient(
+    135deg,
+    hsl(63, 70%, 95%),
+    hsl(243, 70%, 95%)
+  );
+  border-radius: 7px;
+}

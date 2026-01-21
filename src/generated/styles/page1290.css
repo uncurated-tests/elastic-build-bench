@@ -1,0 +1,22 @@
+/* Page 1290 styles */
+.page-1290 {
+  --page-index: 1290;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1290-header {
+  font-size: calc(1rem + 0px);
+  color: hsl(210, 70%, 50%);
+}
+
+.page-1290-content {
+  padding: 3rem;
+  background: linear-gradient(
+    90deg,
+    hsl(210, 70%, 95%),
+    hsl(30, 70%, 95%)
+  );
+  border-radius: 6px;
+}

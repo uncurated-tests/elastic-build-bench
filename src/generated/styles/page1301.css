@@ -1,0 +1,22 @@
+/* Page 1301 styles */
+.page-1301 {
+  --page-index: 1301;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1301-header {
+  font-size: calc(1rem + 1px);
+  color: hsl(257, 70%, 50%);
+}
+
+.page-1301-content {
+  padding: 2rem;
+  background: linear-gradient(
+    225deg,
+    hsl(257, 70%, 95%),
+    hsl(77, 70%, 95%)
+  );
+  border-radius: 9px;
+}

@@ -1,0 +1,22 @@
+/* Page 1048 styles */
+.page-1048 {
+  --page-index: 1048;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1048-header {
+  font-size: calc(1rem + 8px);
+  color: hsl(256, 70%, 50%);
+}
+
+.page-1048-content {
+  padding: 1rem;
+  background: linear-gradient(
+    0deg,
+    hsl(256, 70%, 95%),
+    hsl(76, 70%, 95%)
+  );
+  border-radius: 4px;
+}

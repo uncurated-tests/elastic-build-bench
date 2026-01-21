@@ -1,0 +1,22 @@
+/* Page 1639 styles */
+.page-1639 {
+  --page-index: 1639;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1639-header {
+  font-size: calc(1rem + 9px);
+  color: hsl(163, 70%, 50%);
+}
+
+.page-1639-content {
+  padding: 4rem;
+  background: linear-gradient(
+    315deg,
+    hsl(163, 70%, 95%),
+    hsl(343, 70%, 95%)
+  );
+  border-radius: 11px;
+}
