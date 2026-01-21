@@ -28,7 +28,7 @@ const buildMinutes = parseFloat(process.argv[2] || '1');
 const e2eMultiplier = parseFloat(process.argv[3] || '2');
 
 console.log(`\n========================================`);
-console.log(`v20 Load Generator: SSG + Multi-threaded CPU Burn`);
+console.log(`v21 Load Generator: SSG + Multi-threaded CPU Burn`);
 console.log(`========================================`);
 console.log(`Target: ${buildMinutes}min build, ${e2eMultiplier}x E2E multiplier`);
 
@@ -92,7 +92,7 @@ const expectedBuildTime = BASE_OVERHEAD + (numSSGPages * SECONDS_PER_PAGE) + pre
 const numSharedComponents = 500;
 const numApiRoutes = 5;
 
-console.log(`\nv20 Load Composition:`);
+console.log(`\nv21 Load Composition:`);
 console.log(`  Target: ${targetSeconds}s (${buildMinutes}min)`);
 console.log(`  Base overhead: ${BASE_OVERHEAD}s`);
 console.log(`  SSG pages: ${numSSGPages} (~${Math.round(numSSGPages * SECONDS_PER_PAGE)}s)`);
@@ -259,7 +259,7 @@ function updateBuildConfig() {
     sharedComponents: numSharedComponents,
     apiRoutes: numApiRoutes,
     prebuildCpuBurnSeconds: prebuildCpuBurnSeconds,
-    strategy: "ssg-cpu-burn-v20",
+    strategy: "ssg-cpu-burn-v21",
     generatedAt: new Date().toISOString(),
     buildId: randomUUID(),
   };
@@ -328,7 +328,7 @@ updateBuildConfig();
 console.log('\n========================================');
 console.log('Generation complete!');
 console.log('========================================');
-console.log(`Strategy: SSG + Multi-threaded CPU Burn v20`);
+console.log(`Strategy: SSG + Multi-threaded CPU Burn v21`);
 console.log(`Expected build time on Standard: ~${buildMinutes} min`);
 if (prebuildCpuBurnSeconds > 0) {
   console.log(`  (includes ${prebuildCpuBurnSeconds}s multi-threaded CPU burn)`);
