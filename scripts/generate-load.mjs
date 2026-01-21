@@ -74,34 +74,22 @@ const BASE_COMPONENTS = 500;  // Shared component pool
 // =============================================================================
 
 // =============================================================================
-// Calibration v6: Measured deficit compensation with prebuild delay
+// Calibration v7: Corrected rates from v6 measurements
 // =============================================================================
-// EMPIRICAL DATA from actual Vercel Standard builds:
-//   1min (60s) target: 46s actual → need +14s 
-//   2min (120s) target: 78s actual → need +42s
-//   4min (240s) target: 146s actual → need +94s
-//   5min+ targets: ~155-174s actual → need significant delays
+// EMPIRICAL DATA from v6 builds on Standard:
+//   600 pages, 0 delay → 93s actual → 0.13s/page
+//   1400 pages, 0 delay → 186s actual → 0.12s/page  
+//   2000 pages, 75s delay → 341s actual → 266s nextjs → 0.125s/page
+//   2000 pages, 135s delay → 398s actual → 263s nextjs → 0.124s/page
 //
-// The Next.js build with 2000 pages caps at ~165s on Standard.
-// For all targets, we use max pages (2000) and add prebuild delay to hit target.
+// Corrected formula: nextjsTime = 15 + (pages * 0.125)
+// Max with 2000 pages: 15 + (2000 * 0.125) = 265s
 //
-// Strategy: 
-//   1. Always use 2000 pages (maximizes parallelized Next.js work)
-//   2. Calculate expected Next.js build time from page count
-//   3. Add prebuild delay = target - expected Next.js time
-//
-// Expected Next.js build times based on empirical data:
-//   100 pages → ~25s
-//   500 pages → ~50s
-//   1000 pages → ~85s
-//   1500 pages → ~120s
-//   2000 pages → ~165s
-//
-// Formula: nextjsTime = 15 + (pages * 0.075)
+// For targets > 265s, add prebuild delay
 // =============================================================================
 const BASE_OVERHEAD = 15;           // seconds (Next.js startup)
 const MAX_SSG_PAGES = 2000;         // Cap to avoid OOM errors
-const SECONDS_PER_PAGE = 0.075;     // Empirically measured rate
+const SECONDS_PER_PAGE = 0.125;     // Corrected rate from v6 measurements
 
 // Calculate target build time
 const targetSeconds = buildMinutes * 60;
