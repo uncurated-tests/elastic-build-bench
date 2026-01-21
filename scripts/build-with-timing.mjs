@@ -417,6 +417,23 @@ async function main() {
   console.log(`[TIMING]    Dependency phase duration: ${timingData.durations.dependencyPhaseMs}ms`);
   await uploadTimingData('dependencies_ready');
 
+  // Phase 2.5: Prebuild delay (if configured)
+  const prebuildDelaySeconds = configFromFile.prebuildDelaySeconds || 0;
+  if (prebuildDelaySeconds > 0) {
+    console.log(`\n[TIMING] 2.5. PREBUILD DELAY: ${prebuildDelaySeconds}s`);
+    console.log(`[TIMING]    This delay is used to hit longer build time targets`);
+    
+    // Use synchronous sleep to add exact delay
+    const startDelay = Date.now();
+    while (Date.now() - startDelay < prebuildDelaySeconds * 1000) {
+      // Busy wait - this is intentional to consume build time
+      // Do some computation to prevent optimization
+      Math.sin(Math.random() * Math.PI);
+    }
+    const actualDelay = Date.now() - startDelay;
+    console.log(`[TIMING]    Prebuild delay completed: ${actualDelay}ms`);
+  }
+
   // Phase 3: Run Next.js build (compilation)
   runCommand('next build', 'Running Next.js compilation');
   

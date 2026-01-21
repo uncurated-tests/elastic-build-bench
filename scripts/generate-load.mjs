@@ -74,57 +74,61 @@ const BASE_COMPONENTS = 500;  // Shared component pool
 // =============================================================================
 
 // =============================================================================
-// Calibration v5: Heavy SSG computation strategy
+// Calibration v6: Measured deficit compensation with prebuild delay
 // =============================================================================
-// Problem v4: Type files don't contribute to Turbopack builds
-// Finding: Only SSG page count drives build time, but >2000 pages = OOM
-// Solution: Make each SSG page do MORE computation for longer builds
+// EMPIRICAL DATA from actual Vercel Standard builds:
+//   1min (60s) target: 46s actual → need +14s 
+//   2min (120s) target: 78s actual → need +42s
+//   4min (240s) target: 146s actual → need +94s
+//   5min+ targets: ~155-174s actual → need significant delays
 //
-// Empirical data from Standard builds:
-//   480 pages (light) = 75s   → 0.156s/page
-//   960 pages (light) = 139s  → 0.145s/page
-//   1920 pages (light) = 246s → 0.128s/page
-//   2000 pages (light) = ~260s → 0.130s/page
+// The Next.js build with 2000 pages caps at ~165s on Standard.
+// For all targets, we use max pages (2000) and add prebuild delay to hit target.
 //
-// New strategy: Scale computation intensity per page
-//   Base: 10,000 iterations = ~0.13s/page  
-//   For longer builds: increase iterations proportionally
+// Strategy: 
+//   1. Always use 2000 pages (maximizes parallelized Next.js work)
+//   2. Calculate expected Next.js build time from page count
+//   3. Add prebuild delay = target - expected Next.js time
 //
-// Target formula: buildTime = 18 + (pages * secondsPerPage)
-//   where secondsPerPage scales with computation intensity
+// Expected Next.js build times based on empirical data:
+//   100 pages → ~25s
+//   500 pages → ~50s
+//   1000 pages → ~85s
+//   1500 pages → ~120s
+//   2000 pages → ~165s
+//
+// Formula: nextjsTime = 15 + (pages * 0.075)
 // =============================================================================
-const BASE_OVERHEAD = 18;           // seconds
+const BASE_OVERHEAD = 15;           // seconds (Next.js startup)
 const MAX_SSG_PAGES = 2000;         // Cap to avoid OOM errors
-const BASE_ITERATIONS = 10000;      // Baseline iterations per page
-const BASE_SECONDS_PER_PAGE = 0.13; // Time per page with base iterations
+const SECONDS_PER_PAGE = 0.075;     // Empirically measured rate
 
-// Calculate target build time and required page time
+// Calculate target build time
 const targetSeconds = buildMinutes * 60;
-const availableSeconds = targetSeconds - BASE_OVERHEAD;
 
-// For builds up to ~4min, use more pages with base computation
-// For builds >4min, use max pages with heavier computation
-let numSSGPages;
-let computationIterations;
-
-if (availableSeconds <= MAX_SSG_PAGES * BASE_SECONDS_PER_PAGE) {
-  // Short builds: scale pages, use base computation
-  numSSGPages = Math.floor(availableSeconds / BASE_SECONDS_PER_PAGE);
-  computationIterations = BASE_ITERATIONS;
-} else {
-  // Long builds: use max pages, scale computation intensity
-  numSSGPages = MAX_SSG_PAGES;
-  const requiredSecondsPerPage = availableSeconds / MAX_SSG_PAGES;
-  const scaleFactor = requiredSecondsPerPage / BASE_SECONDS_PER_PAGE;
-  computationIterations = Math.floor(BASE_ITERATIONS * scaleFactor);
-}
-
-// Ensure minimum values
+// Calculate optimal page count (don't need full 2000 for short builds)
+let numSSGPages = Math.ceil((targetSeconds - BASE_OVERHEAD) / SECONDS_PER_PAGE);
+numSSGPages = Math.min(numSSGPages, MAX_SSG_PAGES);
 numSSGPages = Math.max(100, numSSGPages);
-computationIterations = Math.max(BASE_ITERATIONS, computationIterations);
+
+// Calculate expected Next.js build time with these pages
+const expectedNextjsTime = BASE_OVERHEAD + (numSSGPages * SECONDS_PER_PAGE);
+
+// Calculate prebuild delay needed to hit target
+let prebuildDelaySeconds = Math.max(0, Math.round(targetSeconds - expectedNextjsTime));
+
+console.log(`\nv6 Calibration:`);
+console.log(`  Target: ${buildMinutes}min (${targetSeconds}s)`);
+console.log(`  Pages: ${numSSGPages}`);
+console.log(`  Expected Next.js time: ${Math.round(expectedNextjsTime)}s`);
+console.log(`  Prebuild delay: ${prebuildDelaySeconds}s`);
+console.log(`  Total expected: ${Math.round(expectedNextjsTime + prebuildDelaySeconds)}s`);
 
 // Minimal type files (just for TypeScript project realism)
 let numTypeFiles = 30;
+
+// Fixed iteration count (doesn't affect build time significantly)
+const computationIterations = 10000;
 
 // Estimate actual build time
 const estimatedSecondsPerPage = BASE_SECONDS_PER_PAGE * (computationIterations / BASE_ITERATIONS);
@@ -434,8 +438,9 @@ function updateBuildConfig() {
     typeFiles: numTypeFiles,
     ssgPages: numSSGPages,
     computationIterations: computationIterations,
+    prebuildDelaySeconds: prebuildDelaySeconds,
     apiRoutes: numApiRoutes,
-    strategy: "heavy-ssg-v5",
+    strategy: "prebuild-delay-v6",
   };
   writeFileSync(
     join(projectRoot, 'build-config.json'),
