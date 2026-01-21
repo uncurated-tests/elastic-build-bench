@@ -1,0 +1,22 @@
+/* Page 112 styles */
+.page-112 {
+  --page-index: 112;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-112-header {
+  font-size: calc(1rem + 2px);
+  color: hsl(184, 70%, 50%);
+}
+
+.page-112-content {
+  padding: 1rem;
+  background: linear-gradient(
+    0deg,
+    hsl(184, 70%, 95%),
+    hsl(4, 70%, 95%)
+  );
+  border-radius: 4px;
+}

@@ -1,4 +1,5 @@
-// SSG Page 2 - Pre-rendered at build time
+// SSG Page 2
+import '@/generated/styles/page2.css';
 import SharedComponent14 from '@/generated/components/SharedComponent14';
 import SharedComponent15 from '@/generated/components/SharedComponent15';
 import SharedComponent16 from '@/generated/components/SharedComponent16';
@@ -20,18 +21,15 @@ import SharedComponent31 from '@/generated/components/SharedComponent31';
 import SharedComponent32 from '@/generated/components/SharedComponent32';
 import SharedComponent33 from '@/generated/components/SharedComponent33';
 
-// Server-side computation during SSG
 function computePageData(pageId: number) {
   let result = pageId;
-  // Intentionally expensive computation during build
-  for (let i = 0; i < 10000; i++) {
+  for (let i = 0; i < 1000; i++) {
     result = Math.sin(result + i * 0.001) * Math.cos(result) + Math.sqrt(Math.abs(result) + 1);
   }
   return {
     pageId,
     checksum: result,
     generatedAt: new Date().toISOString(),
-    componentCount: 20,
   };
 }
 
@@ -45,14 +43,14 @@ export default async function SSGPage2() {
   }));
   
   return (
-    <div className="p-6 min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <h1 className="text-xl font-bold mb-4 text-zinc-900 dark:text-zinc-100">
+    <div className="page-2 p-6 min-h-screen bg-zinc-50 dark:bg-zinc-950">
+      <h1 className="page-2-header text-xl font-bold mb-4 text-zinc-900 dark:text-zinc-100">
         SSG Page 2
       </h1>
       <p className="text-sm text-zinc-500 mb-4">
         Generated: {data.generatedAt} | Checksum: {data.checksum.toFixed(4)}
       </p>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+      <div className="page-2-content grid grid-cols-2 md:grid-cols-4 gap-2">
         {[SharedComponent14, SharedComponent15, SharedComponent16, SharedComponent17, SharedComponent18, SharedComponent19, SharedComponent20, SharedComponent21, SharedComponent22, SharedComponent23, SharedComponent24, SharedComponent25, SharedComponent26, SharedComponent27, SharedComponent28, SharedComponent29, SharedComponent30, SharedComponent31, SharedComponent32, SharedComponent33].map((Component, idx) => (
           <Component key={idx} {...items[idx]} />
         ))}

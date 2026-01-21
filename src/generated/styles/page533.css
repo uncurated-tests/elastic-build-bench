@@ -1,0 +1,22 @@
+/* Page 533 styles */
+.page-533 {
+  --page-index: 533;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-533-header {
+  font-size: calc(1rem + 3px);
+  color: hsl(281, 70%, 50%);
+}
+
+.page-533-content {
+  padding: 2rem;
+  background: linear-gradient(
+    225deg,
+    hsl(281, 70%, 95%),
+    hsl(101, 70%, 95%)
+  );
+  border-radius: 9px;
+}

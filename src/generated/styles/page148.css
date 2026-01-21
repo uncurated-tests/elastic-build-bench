@@ -1,0 +1,22 @@
+/* Page 148 styles */
+.page-148 {
+  --page-index: 148;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-148-header {
+  font-size: calc(1rem + 8px);
+  color: hsl(76, 70%, 50%);
+}
+
+.page-148-content {
+  padding: 1rem;
+  background: linear-gradient(
+    180deg,
+    hsl(76, 70%, 95%),
+    hsl(256, 70%, 95%)
+  );
+  border-radius: 8px;
+}

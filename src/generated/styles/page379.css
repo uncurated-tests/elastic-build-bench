@@ -1,0 +1,22 @@
+/* Page 379 styles */
+.page-379 {
+  --page-index: 379;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-379-header {
+  font-size: calc(1rem + 9px);
+  color: hsl(343, 70%, 50%);
+}
+
+.page-379-content {
+  padding: 4rem;
+  background: linear-gradient(
+    135deg,
+    hsl(343, 70%, 95%),
+    hsl(163, 70%, 95%)
+  );
+  border-radius: 7px;
+}

@@ -1,0 +1,22 @@
+/* Page 525 styles */
+.page-525 {
+  --page-index: 525;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-525-header {
+  font-size: calc(1rem + 5px);
+  color: hsl(345, 70%, 50%);
+}
+
+.page-525-content {
+  padding: 2rem;
+  background: linear-gradient(
+    225deg,
+    hsl(345, 70%, 95%),
+    hsl(165, 70%, 95%)
+  );
+  border-radius: 9px;
+}

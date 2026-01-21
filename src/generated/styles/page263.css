@@ -1,0 +1,22 @@
+/* Page 263 styles */
+.page-263 {
+  --page-index: 263;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-263-header {
+  font-size: calc(1rem + 3px);
+  color: hsl(11, 70%, 50%);
+}
+
+.page-263-content {
+  padding: 4rem;
+  background: linear-gradient(
+    315deg,
+    hsl(11, 70%, 95%),
+    hsl(191, 70%, 95%)
+  );
+  border-radius: 11px;
+}

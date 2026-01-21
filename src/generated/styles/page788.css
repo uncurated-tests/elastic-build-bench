@@ -1,0 +1,22 @@
+/* Page 788 styles */
+.page-788 {
+  --page-index: 788;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-788-header {
+  font-size: calc(1rem + 8px);
+  color: hsl(356, 70%, 50%);
+}
+
+.page-788-content {
+  padding: 1rem;
+  background: linear-gradient(
+    180deg,
+    hsl(356, 70%, 95%),
+    hsl(176, 70%, 95%)
+  );
+  border-radius: 8px;
+}

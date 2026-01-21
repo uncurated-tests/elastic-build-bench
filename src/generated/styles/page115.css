@@ -1,0 +1,22 @@
+/* Page 115 styles */
+.page-115 {
+  --page-index: 115;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-115-header {
+  font-size: calc(1rem + 5px);
+  color: hsl(295, 70%, 50%);
+}
+
+.page-115-content {
+  padding: 4rem;
+  background: linear-gradient(
+    135deg,
+    hsl(295, 70%, 95%),
+    hsl(115, 70%, 95%)
+  );
+  border-radius: 7px;
+}

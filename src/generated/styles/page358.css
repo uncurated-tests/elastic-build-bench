@@ -1,0 +1,22 @@
+/* Page 358 styles */
+.page-358 {
+  --page-index: 358;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-358-header {
+  font-size: calc(1rem + 8px);
+  color: hsl(286, 70%, 50%);
+}
+
+.page-358-content {
+  padding: 3rem;
+  background: linear-gradient(
+    270deg,
+    hsl(286, 70%, 95%),
+    hsl(106, 70%, 95%)
+  );
+  border-radius: 10px;
+}

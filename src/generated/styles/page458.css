@@ -1,0 +1,22 @@
+/* Page 458 styles */
+.page-458 {
+  --page-index: 458;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-458-header {
+  font-size: calc(1rem + 8px);
+  color: hsl(26, 70%, 50%);
+}
+
+.page-458-content {
+  padding: 3rem;
+  background: linear-gradient(
+    90deg,
+    hsl(26, 70%, 95%),
+    hsl(206, 70%, 95%)
+  );
+  border-radius: 6px;
+}

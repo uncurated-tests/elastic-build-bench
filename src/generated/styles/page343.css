@@ -1,0 +1,22 @@
+/* Page 343 styles */
+.page-343 {
+  --page-index: 343;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-343-header {
+  font-size: calc(1rem + 3px);
+  color: hsl(91, 70%, 50%);
+}
+
+.page-343-content {
+  padding: 4rem;
+  background: linear-gradient(
+    315deg,
+    hsl(91, 70%, 95%),
+    hsl(271, 70%, 95%)
+  );
+  border-radius: 11px;
+}

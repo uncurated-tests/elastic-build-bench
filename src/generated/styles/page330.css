@@ -1,0 +1,22 @@
+/* Page 330 styles */
+.page-330 {
+  --page-index: 330;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-330-header {
+  font-size: calc(1rem + 0px);
+  color: hsl(330, 70%, 50%);
+}
+
+.page-330-content {
+  padding: 3rem;
+  background: linear-gradient(
+    90deg,
+    hsl(330, 70%, 95%),
+    hsl(150, 70%, 95%)
+  );
+  border-radius: 6px;
+}

@@ -1,0 +1,22 @@
+/* Page 174 styles */
+.page-174 {
+  --page-index: 174;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-174-header {
+  font-size: calc(1rem + 4px);
+  color: hsl(318, 70%, 50%);
+}
+
+.page-174-content {
+  padding: 3rem;
+  background: linear-gradient(
+    270deg,
+    hsl(318, 70%, 95%),
+    hsl(138, 70%, 95%)
+  );
+  border-radius: 10px;
+}

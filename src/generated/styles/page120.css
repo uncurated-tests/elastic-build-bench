@@ -1,0 +1,22 @@
+/* Page 120 styles */
+.page-120 {
+  --page-index: 120;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-120-header {
+  font-size: calc(1rem + 0px);
+  color: hsl(120, 70%, 50%);
+}
+
+.page-120-content {
+  padding: 1rem;
+  background: linear-gradient(
+    0deg,
+    hsl(120, 70%, 95%),
+    hsl(300, 70%, 95%)
+  );
+  border-radius: 4px;
+}

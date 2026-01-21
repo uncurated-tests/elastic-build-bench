@@ -1,0 +1,22 @@
+/* Page 375 styles */
+.page-375 {
+  --page-index: 375;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-375-header {
+  font-size: calc(1rem + 5px);
+  color: hsl(195, 70%, 50%);
+}
+
+.page-375-content {
+  padding: 4rem;
+  background: linear-gradient(
+    315deg,
+    hsl(195, 70%, 95%),
+    hsl(15, 70%, 95%)
+  );
+  border-radius: 11px;
+}

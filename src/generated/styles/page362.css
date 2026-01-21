@@ -1,0 +1,22 @@
+/* Page 362 styles */
+.page-362 {
+  --page-index: 362;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-362-header {
+  font-size: calc(1rem + 2px);
+  color: hsl(74, 70%, 50%);
+}
+
+.page-362-content {
+  padding: 3rem;
+  background: linear-gradient(
+    90deg,
+    hsl(74, 70%, 95%),
+    hsl(254, 70%, 95%)
+  );
+  border-radius: 6px;
+}

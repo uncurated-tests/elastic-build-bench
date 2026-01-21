@@ -1,0 +1,22 @@
+/* Page 378 styles */
+.page-378 {
+  --page-index: 378;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-378-header {
+  font-size: calc(1rem + 8px);
+  color: hsl(306, 70%, 50%);
+}
+
+.page-378-content {
+  padding: 3rem;
+  background: linear-gradient(
+    90deg,
+    hsl(306, 70%, 95%),
+    hsl(126, 70%, 95%)
+  );
+  border-radius: 6px;
+}

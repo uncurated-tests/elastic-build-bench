@@ -1,0 +1,22 @@
+/* Page 314 styles */
+.page-314 {
+  --page-index: 314;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-314-header {
+  font-size: calc(1rem + 4px);
+  color: hsl(98, 70%, 50%);
+}
+
+.page-314-content {
+  padding: 3rem;
+  background: linear-gradient(
+    90deg,
+    hsl(98, 70%, 95%),
+    hsl(278, 70%, 95%)
+  );
+  border-radius: 6px;
+}

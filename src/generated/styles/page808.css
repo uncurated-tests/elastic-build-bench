@@ -1,0 +1,22 @@
+/* Page 808 styles */
+.page-808 {
+  --page-index: 808;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-808-header {
+  font-size: calc(1rem + 8px);
+  color: hsl(16, 70%, 50%);
+}
+
+.page-808-content {
+  padding: 1rem;
+  background: linear-gradient(
+    0deg,
+    hsl(16, 70%, 95%),
+    hsl(196, 70%, 95%)
+  );
+  border-radius: 4px;
+}

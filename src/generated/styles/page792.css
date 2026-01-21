@@ -1,0 +1,22 @@
+/* Page 792 styles */
+.page-792 {
+  --page-index: 792;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-792-header {
+  font-size: calc(1rem + 2px);
+  color: hsl(144, 70%, 50%);
+}
+
+.page-792-content {
+  padding: 1rem;
+  background: linear-gradient(
+    0deg,
+    hsl(144, 70%, 95%),
+    hsl(324, 70%, 95%)
+  );
+  border-radius: 4px;
+}

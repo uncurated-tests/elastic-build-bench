@@ -1,0 +1,22 @@
+/* Page 563 styles */
+.page-563 {
+  --page-index: 563;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-563-header {
+  font-size: calc(1rem + 3px);
+  color: hsl(311, 70%, 50%);
+}
+
+.page-563-content {
+  padding: 4rem;
+  background: linear-gradient(
+    135deg,
+    hsl(311, 70%, 95%),
+    hsl(131, 70%, 95%)
+  );
+  border-radius: 7px;
+}

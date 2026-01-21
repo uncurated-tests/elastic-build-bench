@@ -1,0 +1,22 @@
+/* Page 242 styles */
+.page-242 {
+  --page-index: 242;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-242-header {
+  font-size: calc(1rem + 2px);
+  color: hsl(314, 70%, 50%);
+}
+
+.page-242-content {
+  padding: 3rem;
+  background: linear-gradient(
+    90deg,
+    hsl(314, 70%, 95%),
+    hsl(134, 70%, 95%)
+  );
+  border-radius: 6px;
+}

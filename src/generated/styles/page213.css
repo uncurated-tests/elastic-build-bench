@@ -1,0 +1,22 @@
+/* Page 213 styles */
+.page-213 {
+  --page-index: 213;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-213-header {
+  font-size: calc(1rem + 3px);
+  color: hsl(321, 70%, 50%);
+}
+
+.page-213-content {
+  padding: 2rem;
+  background: linear-gradient(
+    225deg,
+    hsl(321, 70%, 95%),
+    hsl(141, 70%, 95%)
+  );
+  border-radius: 9px;
+}

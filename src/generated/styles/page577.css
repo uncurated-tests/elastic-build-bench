@@ -1,0 +1,22 @@
+/* Page 577 styles */
+.page-577 {
+  --page-index: 577;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-577-header {
+  font-size: calc(1rem + 7px);
+  color: hsl(109, 70%, 50%);
+}
+
+.page-577-content {
+  padding: 2rem;
+  background: linear-gradient(
+    45deg,
+    hsl(109, 70%, 95%),
+    hsl(289, 70%, 95%)
+  );
+  border-radius: 5px;
+}

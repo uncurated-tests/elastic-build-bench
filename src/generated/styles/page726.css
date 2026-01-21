@@ -1,0 +1,22 @@
+/* Page 726 styles */
+.page-726 {
+  --page-index: 726;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-726-header {
+  font-size: calc(1rem + 6px);
+  color: hsl(222, 70%, 50%);
+}
+
+.page-726-content {
+  padding: 3rem;
+  background: linear-gradient(
+    270deg,
+    hsl(222, 70%, 95%),
+    hsl(42, 70%, 95%)
+  );
+  border-radius: 10px;
+}

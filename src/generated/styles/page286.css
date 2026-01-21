@@ -1,0 +1,22 @@
+/* Page 286 styles */
+.page-286 {
+  --page-index: 286;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-286-header {
+  font-size: calc(1rem + 6px);
+  color: hsl(142, 70%, 50%);
+}
+
+.page-286-content {
+  padding: 3rem;
+  background: linear-gradient(
+    270deg,
+    hsl(142, 70%, 95%),
+    hsl(322, 70%, 95%)
+  );
+  border-radius: 10px;
+}

@@ -1,0 +1,22 @@
+/* Page 729 styles */
+.page-729 {
+  --page-index: 729;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-729-header {
+  font-size: calc(1rem + 9px);
+  color: hsl(333, 70%, 50%);
+}
+
+.page-729-content {
+  padding: 2rem;
+  background: linear-gradient(
+    45deg,
+    hsl(333, 70%, 95%),
+    hsl(153, 70%, 95%)
+  );
+  border-radius: 5px;
+}

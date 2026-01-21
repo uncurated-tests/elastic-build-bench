@@ -1,0 +1,22 @@
+/* Page 460 styles */
+.page-460 {
+  --page-index: 460;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-460-header {
+  font-size: calc(1rem + 0px);
+  color: hsl(100, 70%, 50%);
+}
+
+.page-460-content {
+  padding: 1rem;
+  background: linear-gradient(
+    180deg,
+    hsl(100, 70%, 95%),
+    hsl(280, 70%, 95%)
+  );
+  border-radius: 8px;
+}
