@@ -1,5 +1,18 @@
-// Static SSG Page 581 - v13
+// Static SSG Page 581 - v14
 import '@/generated/styles/p581_m0.css';
+import '@/generated/styles/p581_m1.css';
+import '@/generated/styles/p581_m2.css';
+import '@/generated/styles/p581_m3.css';
+import '@/generated/styles/p581_m4.css';
+import '@/generated/styles/p581_m5.css';
+import '@/generated/styles/p581_m6.css';
+import '@/generated/styles/p581_m7.css';
+import '@/generated/styles/p581_m8.css';
+import '@/generated/styles/p581_m9.css';
+import '@/generated/styles/p581_m10.css';
+import '@/generated/styles/p581_m11.css';
+import '@/generated/styles/p581_m12.css';
+import '@/generated/styles/p581_m13.css';
 import SharedComponent67 from '@/generated/components/SharedComponent67';
 import SharedComponent68 from '@/generated/components/SharedComponent68';
 import SharedComponent69 from '@/generated/components/SharedComponent69';
@@ -9,13 +22,16 @@ import SharedComponent71 from '@/generated/components/SharedComponent71';
 export default function SSGPage581() {
   return (
     <div className="p581-m0-s0 p-4 min-h-screen">
-      <h1 className="text-lg font-bold mb-2">Static Page 581</h1>
+      <h1 className="text-lg font-bold mb-2">Page 581</h1>
       <div className="grid grid-cols-2 gap-1">
         <SharedComponent67 id="581-0" value={58100} label="S" />
         <SharedComponent68 id="581-1" value={58101} label="S" />
         <SharedComponent69 id="581-2" value={58102} label="S" />
         <SharedComponent70 id="581-3" value={58103} label="S" />
         <SharedComponent71 id="581-4" value={58104} label="S" />
+      </div>
+      <div className="mt-4 text-xs text-zinc-500">
+        v14: 14 CSS modules
       </div>
     </div>
   );

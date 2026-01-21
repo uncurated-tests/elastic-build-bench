@@ -3,15 +3,13 @@
   "FullTimeOnStandard": "10min",
   "MachineType": "Standard",
   "staticSsgPages": 2000,
-  "dynamicRoutes": 10,
-  "dynamicPagesPerRoute": 500,
-  "totalDynamicPages": 5000,
   "sharedComponents": 500,
-  "cssModulesPerPage": 1,
+  "cssModulesPerPage": 14,
+  "totalCSSModules": 28000,
   "apiRoutes": 5,
   "prebuildDelaySeconds": 0,
-  "strategy": "ssg-css-v13",
-  "expectedBuildTime": 625,
-  "generatedAt": "2026-01-21T15:51:26.008Z",
-  "buildId": "2b55234d-0c58-4da0-b6f3-d39cd935a014"
+  "strategy": "ssg-css-v14",
+  "expectedBuildTime": 615,
+  "generatedAt": "2026-01-21T16:09:48.773Z",
+  "buildId": "ea34726d-15f4-4ccc-b826-2aa01b34e4df"
 }

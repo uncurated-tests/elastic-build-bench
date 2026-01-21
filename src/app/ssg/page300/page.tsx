@@ -1,5 +1,18 @@
-// Static SSG Page 300 - v13
+// Static SSG Page 300 - v14
 import '@/generated/styles/p300_m0.css';
+import '@/generated/styles/p300_m1.css';
+import '@/generated/styles/p300_m2.css';
+import '@/generated/styles/p300_m3.css';
+import '@/generated/styles/p300_m4.css';
+import '@/generated/styles/p300_m5.css';
+import '@/generated/styles/p300_m6.css';
+import '@/generated/styles/p300_m7.css';
+import '@/generated/styles/p300_m8.css';
+import '@/generated/styles/p300_m9.css';
+import '@/generated/styles/p300_m10.css';
+import '@/generated/styles/p300_m11.css';
+import '@/generated/styles/p300_m12.css';
+import '@/generated/styles/p300_m13.css';
 import SharedComponent100 from '@/generated/components/SharedComponent100';
 import SharedComponent101 from '@/generated/components/SharedComponent101';
 import SharedComponent102 from '@/generated/components/SharedComponent102';
@@ -9,13 +22,16 @@ import SharedComponent104 from '@/generated/components/SharedComponent104';
 export default function SSGPage300() {
   return (
     <div className="p300-m0-s0 p-4 min-h-screen">
-      <h1 className="text-lg font-bold mb-2">Static Page 300</h1>
+      <h1 className="text-lg font-bold mb-2">Page 300</h1>
       <div className="grid grid-cols-2 gap-1">
         <SharedComponent100 id="300-0" value={30000} label="S" />
         <SharedComponent101 id="300-1" value={30001} label="S" />
         <SharedComponent102 id="300-2" value={30002} label="S" />
         <SharedComponent103 id="300-3" value={30003} label="S" />
         <SharedComponent104 id="300-4" value={30004} label="S" />
+      </div>
+      <div className="mt-4 text-xs text-zinc-500">
+        v14: 14 CSS modules
       </div>
     </div>
   );
