@@ -1,0 +1,26 @@
+// SSG Page 836 - v12
+import '@/generated/styles/p836_m0.css';
+import SharedComponent352 from '@/generated/components/SharedComponent352';
+import SharedComponent353 from '@/generated/components/SharedComponent353';
+import SharedComponent354 from '@/generated/components/SharedComponent354';
+import SharedComponent355 from '@/generated/components/SharedComponent355';
+import SharedComponent356 from '@/generated/components/SharedComponent356';
+import HeavyComponent9196 from '@/generated/heavy/HeavyComponent9196';
+import HeavyComponent9197 from '@/generated/heavy/HeavyComponent9197';
+
+export default function SSGPage836() {
+  return (
+    <div className="p836-m0-v0 p-4 min-h-screen">
+      <h1 className="text-lg font-bold mb-2">Page 836</h1>
+      <div className="grid grid-cols-2 gap-1">
+        <SharedComponent352 id="836-0" value={83600} label="S" />
+        <SharedComponent353 id="836-1" value={83601} label="S" />
+        <SharedComponent354 id="836-2" value={83602} label="S" />
+        <SharedComponent355 id="836-3" value={83603} label="S" />
+        <SharedComponent356 id="836-4" value={83604} label="S" />
+        <HeavyComponent9196 config={{ level1: { level2: { level3: { value: "p836", count: 836, enabled: true, items: [] }}}}} />
+        <HeavyComponent9197 config={{ level1: { level2: { level3: { value: "p836", count: 836, enabled: true, items: [] }}}}} />
+      </div>
+    </div>
+  );
+}

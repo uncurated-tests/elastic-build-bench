@@ -1,59 +1,25 @@
-// SSG Page 31
-import '@/generated/styles/page31.css';
+// SSG Page 31 - v12
+import '@/generated/styles/p31_m0.css';
 import SharedComponent217 from '@/generated/components/SharedComponent217';
 import SharedComponent218 from '@/generated/components/SharedComponent218';
 import SharedComponent219 from '@/generated/components/SharedComponent219';
 import SharedComponent220 from '@/generated/components/SharedComponent220';
 import SharedComponent221 from '@/generated/components/SharedComponent221';
-import SharedComponent222 from '@/generated/components/SharedComponent222';
-import SharedComponent223 from '@/generated/components/SharedComponent223';
-import SharedComponent224 from '@/generated/components/SharedComponent224';
-import SharedComponent225 from '@/generated/components/SharedComponent225';
-import SharedComponent226 from '@/generated/components/SharedComponent226';
-import SharedComponent227 from '@/generated/components/SharedComponent227';
-import SharedComponent228 from '@/generated/components/SharedComponent228';
-import SharedComponent229 from '@/generated/components/SharedComponent229';
-import SharedComponent230 from '@/generated/components/SharedComponent230';
-import SharedComponent231 from '@/generated/components/SharedComponent231';
-import SharedComponent232 from '@/generated/components/SharedComponent232';
-import SharedComponent233 from '@/generated/components/SharedComponent233';
-import SharedComponent234 from '@/generated/components/SharedComponent234';
-import SharedComponent235 from '@/generated/components/SharedComponent235';
-import SharedComponent236 from '@/generated/components/SharedComponent236';
+import HeavyComponent341 from '@/generated/heavy/HeavyComponent341';
+import HeavyComponent342 from '@/generated/heavy/HeavyComponent342';
 
-function computePageData(pageId: number) {
-  let result = pageId;
-  for (let i = 0; i < 1000; i++) {
-    result = Math.sin(result + i * 0.001) * Math.cos(result) + Math.sqrt(Math.abs(result) + 1);
-  }
-  return {
-    pageId,
-    checksum: result,
-    generatedAt: new Date().toISOString(),
-  };
-}
-
-export default async function SSGPage31() {
-  const data = computePageData(31);
-  
-  const items = Array.from({ length: 20 }, (_, i) => ({
-    id: `${31}-${i}`,
-    value: 31 * 100 + i,
-    label: `Page 31 Item`,
-  }));
-  
+export default function SSGPage31() {
   return (
-    <div className="page-31 p-6 min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <h1 className="page-31-header text-xl font-bold mb-4 text-zinc-900 dark:text-zinc-100">
-        SSG Page 31
-      </h1>
-      <p className="text-sm text-zinc-500 mb-4">
-        Generated: {data.generatedAt} | Checksum: {data.checksum.toFixed(4)}
-      </p>
-      <div className="page-31-content grid grid-cols-2 md:grid-cols-4 gap-2">
-        {[SharedComponent217, SharedComponent218, SharedComponent219, SharedComponent220, SharedComponent221, SharedComponent222, SharedComponent223, SharedComponent224, SharedComponent225, SharedComponent226, SharedComponent227, SharedComponent228, SharedComponent229, SharedComponent230, SharedComponent231, SharedComponent232, SharedComponent233, SharedComponent234, SharedComponent235, SharedComponent236].map((Component, idx) => (
-          <Component key={idx} {...items[idx]} />
-        ))}
+    <div className="p31-m0-v0 p-4 min-h-screen">
+      <h1 className="text-lg font-bold mb-2">Page 31</h1>
+      <div className="grid grid-cols-2 gap-1">
+        <SharedComponent217 id="31-0" value={3100} label="S" />
+        <SharedComponent218 id="31-1" value={3101} label="S" />
+        <SharedComponent219 id="31-2" value={3102} label="S" />
+        <SharedComponent220 id="31-3" value={3103} label="S" />
+        <SharedComponent221 id="31-4" value={3104} label="S" />
+        <HeavyComponent341 config={{ level1: { level2: { level3: { value: "p31", count: 31, enabled: true, items: [] }}}}} />
+        <HeavyComponent342 config={{ level1: { level2: { level3: { value: "p31", count: 31, enabled: true, items: [] }}}}} />
       </div>
     </div>
   );

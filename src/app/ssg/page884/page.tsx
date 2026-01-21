@@ -1,0 +1,26 @@
+// SSG Page 884 - v12
+import '@/generated/styles/p884_m0.css';
+import SharedComponent188 from '@/generated/components/SharedComponent188';
+import SharedComponent189 from '@/generated/components/SharedComponent189';
+import SharedComponent190 from '@/generated/components/SharedComponent190';
+import SharedComponent191 from '@/generated/components/SharedComponent191';
+import SharedComponent192 from '@/generated/components/SharedComponent192';
+import HeavyComponent349 from '@/generated/heavy/HeavyComponent349';
+import HeavyComponent350 from '@/generated/heavy/HeavyComponent350';
+
+export default function SSGPage884() {
+  return (
+    <div className="p884-m0-v0 p-4 min-h-screen">
+      <h1 className="text-lg font-bold mb-2">Page 884</h1>
+      <div className="grid grid-cols-2 gap-1">
+        <SharedComponent188 id="884-0" value={88400} label="S" />
+        <SharedComponent189 id="884-1" value={88401} label="S" />
+        <SharedComponent190 id="884-2" value={88402} label="S" />
+        <SharedComponent191 id="884-3" value={88403} label="S" />
+        <SharedComponent192 id="884-4" value={88404} label="S" />
+        <HeavyComponent349 config={{ level1: { level2: { level3: { value: "p884", count: 884, enabled: true, items: [] }}}}} />
+        <HeavyComponent350 config={{ level1: { level2: { level3: { value: "p884", count: 884, enabled: true, items: [] }}}}} />
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,26 @@
+// SSG Page 1895 - v12
+import '@/generated/styles/p1895_m0.css';
+import SharedComponent265 from '@/generated/components/SharedComponent265';
+import SharedComponent266 from '@/generated/components/SharedComponent266';
+import SharedComponent267 from '@/generated/components/SharedComponent267';
+import SharedComponent268 from '@/generated/components/SharedComponent268';
+import SharedComponent269 from '@/generated/components/SharedComponent269';
+import HeavyComponent2095 from '@/generated/heavy/HeavyComponent2095';
+import HeavyComponent2096 from '@/generated/heavy/HeavyComponent2096';
+
+export default function SSGPage1895() {
+  return (
+    <div className="p1895-m0-v0 p-4 min-h-screen">
+      <h1 className="text-lg font-bold mb-2">Page 1895</h1>
+      <div className="grid grid-cols-2 gap-1">
+        <SharedComponent265 id="1895-0" value={189500} label="S" />
+        <SharedComponent266 id="1895-1" value={189501} label="S" />
+        <SharedComponent267 id="1895-2" value={189502} label="S" />
+        <SharedComponent268 id="1895-3" value={189503} label="S" />
+        <SharedComponent269 id="1895-4" value={189504} label="S" />
+        <HeavyComponent2095 config={{ level1: { level2: { level3: { value: "p1895", count: 1895, enabled: true, items: [] }}}}} />
+        <HeavyComponent2096 config={{ level1: { level2: { level3: { value: "p1895", count: 1895, enabled: true, items: [] }}}}} />
+      </div>
+    </div>
+  );
+}

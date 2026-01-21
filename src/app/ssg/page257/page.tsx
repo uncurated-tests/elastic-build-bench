@@ -1,59 +1,25 @@
-// SSG Page 257
-import '@/generated/styles/page257.css';
+// SSG Page 257 - v12
+import '@/generated/styles/p257_m0.css';
 import SharedComponent299 from '@/generated/components/SharedComponent299';
 import SharedComponent300 from '@/generated/components/SharedComponent300';
 import SharedComponent301 from '@/generated/components/SharedComponent301';
 import SharedComponent302 from '@/generated/components/SharedComponent302';
 import SharedComponent303 from '@/generated/components/SharedComponent303';
-import SharedComponent304 from '@/generated/components/SharedComponent304';
-import SharedComponent305 from '@/generated/components/SharedComponent305';
-import SharedComponent306 from '@/generated/components/SharedComponent306';
-import SharedComponent307 from '@/generated/components/SharedComponent307';
-import SharedComponent308 from '@/generated/components/SharedComponent308';
-import SharedComponent309 from '@/generated/components/SharedComponent309';
-import SharedComponent310 from '@/generated/components/SharedComponent310';
-import SharedComponent311 from '@/generated/components/SharedComponent311';
-import SharedComponent312 from '@/generated/components/SharedComponent312';
-import SharedComponent313 from '@/generated/components/SharedComponent313';
-import SharedComponent314 from '@/generated/components/SharedComponent314';
-import SharedComponent315 from '@/generated/components/SharedComponent315';
-import SharedComponent316 from '@/generated/components/SharedComponent316';
-import SharedComponent317 from '@/generated/components/SharedComponent317';
-import SharedComponent318 from '@/generated/components/SharedComponent318';
+import HeavyComponent2827 from '@/generated/heavy/HeavyComponent2827';
+import HeavyComponent2828 from '@/generated/heavy/HeavyComponent2828';
 
-function computePageData(pageId: number) {
-  let result = pageId;
-  for (let i = 0; i < 1000; i++) {
-    result = Math.sin(result + i * 0.001) * Math.cos(result) + Math.sqrt(Math.abs(result) + 1);
-  }
-  return {
-    pageId,
-    checksum: result,
-    generatedAt: new Date().toISOString(),
-  };
-}
-
-export default async function SSGPage257() {
-  const data = computePageData(257);
-  
-  const items = Array.from({ length: 20 }, (_, i) => ({
-    id: `${257}-${i}`,
-    value: 257 * 100 + i,
-    label: `Page 257 Item`,
-  }));
-  
+export default function SSGPage257() {
   return (
-    <div className="page-257 p-6 min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <h1 className="page-257-header text-xl font-bold mb-4 text-zinc-900 dark:text-zinc-100">
-        SSG Page 257
-      </h1>
-      <p className="text-sm text-zinc-500 mb-4">
-        Generated: {data.generatedAt} | Checksum: {data.checksum.toFixed(4)}
-      </p>
-      <div className="page-257-content grid grid-cols-2 md:grid-cols-4 gap-2">
-        {[SharedComponent299, SharedComponent300, SharedComponent301, SharedComponent302, SharedComponent303, SharedComponent304, SharedComponent305, SharedComponent306, SharedComponent307, SharedComponent308, SharedComponent309, SharedComponent310, SharedComponent311, SharedComponent312, SharedComponent313, SharedComponent314, SharedComponent315, SharedComponent316, SharedComponent317, SharedComponent318].map((Component, idx) => (
-          <Component key={idx} {...items[idx]} />
-        ))}
+    <div className="p257-m0-v0 p-4 min-h-screen">
+      <h1 className="text-lg font-bold mb-2">Page 257</h1>
+      <div className="grid grid-cols-2 gap-1">
+        <SharedComponent299 id="257-0" value={25700} label="S" />
+        <SharedComponent300 id="257-1" value={25701} label="S" />
+        <SharedComponent301 id="257-2" value={25702} label="S" />
+        <SharedComponent302 id="257-3" value={25703} label="S" />
+        <SharedComponent303 id="257-4" value={25704} label="S" />
+        <HeavyComponent2827 config={{ level1: { level2: { level3: { value: "p257", count: 257, enabled: true, items: [] }}}}} />
+        <HeavyComponent2828 config={{ level1: { level2: { level3: { value: "p257", count: 257, enabled: true, items: [] }}}}} />
       </div>
     </div>
   );

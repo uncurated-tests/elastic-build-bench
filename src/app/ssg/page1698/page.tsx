@@ -1,0 +1,26 @@
+// SSG Page 1698 - v12
+import '@/generated/styles/p1698_m0.css';
+import SharedComponent386 from '@/generated/components/SharedComponent386';
+import SharedComponent387 from '@/generated/components/SharedComponent387';
+import SharedComponent388 from '@/generated/components/SharedComponent388';
+import SharedComponent389 from '@/generated/components/SharedComponent389';
+import SharedComponent390 from '@/generated/components/SharedComponent390';
+import HeavyComponent9303 from '@/generated/heavy/HeavyComponent9303';
+import HeavyComponent9304 from '@/generated/heavy/HeavyComponent9304';
+
+export default function SSGPage1698() {
+  return (
+    <div className="p1698-m0-v0 p-4 min-h-screen">
+      <h1 className="text-lg font-bold mb-2">Page 1698</h1>
+      <div className="grid grid-cols-2 gap-1">
+        <SharedComponent386 id="1698-0" value={169800} label="S" />
+        <SharedComponent387 id="1698-1" value={169801} label="S" />
+        <SharedComponent388 id="1698-2" value={169802} label="S" />
+        <SharedComponent389 id="1698-3" value={169803} label="S" />
+        <SharedComponent390 id="1698-4" value={169804} label="S" />
+        <HeavyComponent9303 config={{ level1: { level2: { level3: { value: "p1698", count: 1698, enabled: true, items: [] }}}}} />
+        <HeavyComponent9304 config={{ level1: { level2: { level3: { value: "p1698", count: 1698, enabled: true, items: [] }}}}} />
+      </div>
+    </div>
+  );
+}

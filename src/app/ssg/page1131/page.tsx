@@ -1,0 +1,26 @@
+// SSG Page 1131 - v12
+import '@/generated/styles/p1131_m0.css';
+import SharedComponent417 from '@/generated/components/SharedComponent417';
+import SharedComponent418 from '@/generated/components/SharedComponent418';
+import SharedComponent419 from '@/generated/components/SharedComponent419';
+import SharedComponent420 from '@/generated/components/SharedComponent420';
+import SharedComponent421 from '@/generated/components/SharedComponent421';
+import HeavyComponent3066 from '@/generated/heavy/HeavyComponent3066';
+import HeavyComponent3067 from '@/generated/heavy/HeavyComponent3067';
+
+export default function SSGPage1131() {
+  return (
+    <div className="p1131-m0-v0 p-4 min-h-screen">
+      <h1 className="text-lg font-bold mb-2">Page 1131</h1>
+      <div className="grid grid-cols-2 gap-1">
+        <SharedComponent417 id="1131-0" value={113100} label="S" />
+        <SharedComponent418 id="1131-1" value={113101} label="S" />
+        <SharedComponent419 id="1131-2" value={113102} label="S" />
+        <SharedComponent420 id="1131-3" value={113103} label="S" />
+        <SharedComponent421 id="1131-4" value={113104} label="S" />
+        <HeavyComponent3066 config={{ level1: { level2: { level3: { value: "p1131", count: 1131, enabled: true, items: [] }}}}} />
+        <HeavyComponent3067 config={{ level1: { level2: { level3: { value: "p1131", count: 1131, enabled: true, items: [] }}}}} />
+      </div>
+    </div>
+  );
+}

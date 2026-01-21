@@ -1,0 +1,26 @@
+// SSG Page 1022 - v12
+import '@/generated/styles/p1022_m0.css';
+import SharedComponent154 from '@/generated/components/SharedComponent154';
+import SharedComponent155 from '@/generated/components/SharedComponent155';
+import SharedComponent156 from '@/generated/components/SharedComponent156';
+import SharedComponent157 from '@/generated/components/SharedComponent157';
+import SharedComponent158 from '@/generated/components/SharedComponent158';
+import HeavyComponent1867 from '@/generated/heavy/HeavyComponent1867';
+import HeavyComponent1868 from '@/generated/heavy/HeavyComponent1868';
+
+export default function SSGPage1022() {
+  return (
+    <div className="p1022-m0-v0 p-4 min-h-screen">
+      <h1 className="text-lg font-bold mb-2">Page 1022</h1>
+      <div className="grid grid-cols-2 gap-1">
+        <SharedComponent154 id="1022-0" value={102200} label="S" />
+        <SharedComponent155 id="1022-1" value={102201} label="S" />
+        <SharedComponent156 id="1022-2" value={102202} label="S" />
+        <SharedComponent157 id="1022-3" value={102203} label="S" />
+        <SharedComponent158 id="1022-4" value={102204} label="S" />
+        <HeavyComponent1867 config={{ level1: { level2: { level3: { value: "p1022", count: 1022, enabled: true, items: [] }}}}} />
+        <HeavyComponent1868 config={{ level1: { level2: { level3: { value: "p1022", count: 1022, enabled: true, items: [] }}}}} />
+      </div>
+    </div>
+  );
+}

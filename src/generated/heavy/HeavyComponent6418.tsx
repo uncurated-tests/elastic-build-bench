@@ -1,0 +1,79 @@
+'use client';
+import React, { memo, useMemo } from 'react';
+
+// Complex recursive type definitions to increase TypeScript compilation time
+type DeepReadonly6418<T> = T extends (infer U)[]
+  ? DeepReadonlyArray6418<U>
+  : T extends object
+  ? DeepReadonlyObject6418<T>
+  : T;
+
+interface DeepReadonlyArray6418<T> extends ReadonlyArray<DeepReadonly6418<T>> {}
+
+type DeepReadonlyObject6418<T> = {
+  readonly [P in keyof T]: DeepReadonly6418<T[P]>;
+};
+
+type UnionToIntersection6418<U> = (U extends unknown ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
+
+type LastOf6418<T> = UnionToIntersection6418<T extends unknown ? () => T : never> extends () => infer R ? R : never;
+
+type Push6418<T extends unknown[], V> = [...T, V];
+
+type TuplifyUnion6418<T, L = LastOf6418<T>, N = [T] extends [never] ? true : false> = true extends N
+  ? []
+  : Push6418<TuplifyUnion6418<Exclude<T, L>>, L>;
+
+type DeepPartial6418<T> = T extends object
+  ? { [P in keyof T]?: DeepPartial6418<T[P]> }
+  : T;
+
+type Paths6418<T, D extends number = 10> = [D] extends [never]
+  ? never
+  : T extends object
+  ? { [K in keyof T]-?: K extends string | number ? `${K}` | Join6418<K, Paths6418<T[K], Prev6418[D]>> : never }[keyof T]
+  : never;
+
+type Prev6418 = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+type Join6418<K, P> = K extends string | number
+  ? P extends string | number
+    ? `${K}.${P}`
+    : never
+  : never;
+
+interface NestedConfig6418 {
+  level1: {
+    level2: {
+      level3: {
+        value: string;
+        count: number;
+        enabled: boolean;
+        items: Array<{ id: number; name: string }>;
+      };
+    };
+  };
+}
+
+type ConfigPaths6418 = Paths6418<NestedConfig6418>;
+
+interface HeavyProps6418 {
+  config: DeepPartial6418<NestedConfig6418>;
+  path?: ConfigPaths6418;
+}
+
+const HeavyComponent6418 = memo(function HeavyComponent6418({ config }: HeavyProps6418) {
+  const computed = useMemo(() => {
+    const depth = JSON.stringify(config || {}).length;
+    return Math.sin(depth * 6418) * Math.cos(depth);
+  }, [config]);
+
+  return (
+    <div className="heavy-6418 p-1 text-xs bg-zinc-100 dark:bg-zinc-800 rounded">
+      <span>H6418: {computed.toFixed(2)}</span>
+    </div>
+  );
+});
+
+HeavyComponent6418.displayName = 'HeavyComponent6418';
+export default HeavyComponent6418;

@@ -1,0 +1,79 @@
+'use client';
+import React, { memo, useMemo } from 'react';
+
+// Complex recursive type definitions to increase TypeScript compilation time
+type DeepReadonly2391<T> = T extends (infer U)[]
+  ? DeepReadonlyArray2391<U>
+  : T extends object
+  ? DeepReadonlyObject2391<T>
+  : T;
+
+interface DeepReadonlyArray2391<T> extends ReadonlyArray<DeepReadonly2391<T>> {}
+
+type DeepReadonlyObject2391<T> = {
+  readonly [P in keyof T]: DeepReadonly2391<T[P]>;
+};
+
+type UnionToIntersection2391<U> = (U extends unknown ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
+
+type LastOf2391<T> = UnionToIntersection2391<T extends unknown ? () => T : never> extends () => infer R ? R : never;
+
+type Push2391<T extends unknown[], V> = [...T, V];
+
+type TuplifyUnion2391<T, L = LastOf2391<T>, N = [T] extends [never] ? true : false> = true extends N
+  ? []
+  : Push2391<TuplifyUnion2391<Exclude<T, L>>, L>;
+
+type DeepPartial2391<T> = T extends object
+  ? { [P in keyof T]?: DeepPartial2391<T[P]> }
+  : T;
+
+type Paths2391<T, D extends number = 10> = [D] extends [never]
+  ? never
+  : T extends object
+  ? { [K in keyof T]-?: K extends string | number ? `${K}` | Join2391<K, Paths2391<T[K], Prev2391[D]>> : never }[keyof T]
+  : never;
+
+type Prev2391 = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+type Join2391<K, P> = K extends string | number
+  ? P extends string | number
+    ? `${K}.${P}`
+    : never
+  : never;
+
+interface NestedConfig2391 {
+  level1: {
+    level2: {
+      level3: {
+        value: string;
+        count: number;
+        enabled: boolean;
+        items: Array<{ id: number; name: string }>;
+      };
+    };
+  };
+}
+
+type ConfigPaths2391 = Paths2391<NestedConfig2391>;
+
+interface HeavyProps2391 {
+  config: DeepPartial2391<NestedConfig2391>;
+  path?: ConfigPaths2391;
+}
+
+const HeavyComponent2391 = memo(function HeavyComponent2391({ config }: HeavyProps2391) {
+  const computed = useMemo(() => {
+    const depth = JSON.stringify(config || {}).length;
+    return Math.sin(depth * 2391) * Math.cos(depth);
+  }, [config]);
+
+  return (
+    <div className="heavy-2391 p-1 text-xs bg-zinc-100 dark:bg-zinc-800 rounded">
+      <span>H2391: {computed.toFixed(2)}</span>
+    </div>
+  );
+});
+
+HeavyComponent2391.displayName = 'HeavyComponent2391';
+export default HeavyComponent2391;

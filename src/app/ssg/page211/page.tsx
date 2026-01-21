@@ -1,59 +1,25 @@
-// SSG Page 211
-import '@/generated/styles/page211.css';
+// SSG Page 211 - v12
+import '@/generated/styles/p211_m0.css';
 import SharedComponent477 from '@/generated/components/SharedComponent477';
 import SharedComponent478 from '@/generated/components/SharedComponent478';
 import SharedComponent479 from '@/generated/components/SharedComponent479';
 import SharedComponent480 from '@/generated/components/SharedComponent480';
 import SharedComponent481 from '@/generated/components/SharedComponent481';
-import SharedComponent482 from '@/generated/components/SharedComponent482';
-import SharedComponent483 from '@/generated/components/SharedComponent483';
-import SharedComponent484 from '@/generated/components/SharedComponent484';
-import SharedComponent485 from '@/generated/components/SharedComponent485';
-import SharedComponent486 from '@/generated/components/SharedComponent486';
-import SharedComponent487 from '@/generated/components/SharedComponent487';
-import SharedComponent488 from '@/generated/components/SharedComponent488';
-import SharedComponent489 from '@/generated/components/SharedComponent489';
-import SharedComponent490 from '@/generated/components/SharedComponent490';
-import SharedComponent491 from '@/generated/components/SharedComponent491';
-import SharedComponent492 from '@/generated/components/SharedComponent492';
-import SharedComponent493 from '@/generated/components/SharedComponent493';
-import SharedComponent494 from '@/generated/components/SharedComponent494';
-import SharedComponent495 from '@/generated/components/SharedComponent495';
-import SharedComponent496 from '@/generated/components/SharedComponent496';
+import HeavyComponent2321 from '@/generated/heavy/HeavyComponent2321';
+import HeavyComponent2322 from '@/generated/heavy/HeavyComponent2322';
 
-function computePageData(pageId: number) {
-  let result = pageId;
-  for (let i = 0; i < 1000; i++) {
-    result = Math.sin(result + i * 0.001) * Math.cos(result) + Math.sqrt(Math.abs(result) + 1);
-  }
-  return {
-    pageId,
-    checksum: result,
-    generatedAt: new Date().toISOString(),
-  };
-}
-
-export default async function SSGPage211() {
-  const data = computePageData(211);
-  
-  const items = Array.from({ length: 20 }, (_, i) => ({
-    id: `${211}-${i}`,
-    value: 211 * 100 + i,
-    label: `Page 211 Item`,
-  }));
-  
+export default function SSGPage211() {
   return (
-    <div className="page-211 p-6 min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <h1 className="page-211-header text-xl font-bold mb-4 text-zinc-900 dark:text-zinc-100">
-        SSG Page 211
-      </h1>
-      <p className="text-sm text-zinc-500 mb-4">
-        Generated: {data.generatedAt} | Checksum: {data.checksum.toFixed(4)}
-      </p>
-      <div className="page-211-content grid grid-cols-2 md:grid-cols-4 gap-2">
-        {[SharedComponent477, SharedComponent478, SharedComponent479, SharedComponent480, SharedComponent481, SharedComponent482, SharedComponent483, SharedComponent484, SharedComponent485, SharedComponent486, SharedComponent487, SharedComponent488, SharedComponent489, SharedComponent490, SharedComponent491, SharedComponent492, SharedComponent493, SharedComponent494, SharedComponent495, SharedComponent496].map((Component, idx) => (
-          <Component key={idx} {...items[idx]} />
-        ))}
+    <div className="p211-m0-v0 p-4 min-h-screen">
+      <h1 className="text-lg font-bold mb-2">Page 211</h1>
+      <div className="grid grid-cols-2 gap-1">
+        <SharedComponent477 id="211-0" value={21100} label="S" />
+        <SharedComponent478 id="211-1" value={21101} label="S" />
+        <SharedComponent479 id="211-2" value={21102} label="S" />
+        <SharedComponent480 id="211-3" value={21103} label="S" />
+        <SharedComponent481 id="211-4" value={21104} label="S" />
+        <HeavyComponent2321 config={{ level1: { level2: { level3: { value: "p211", count: 211, enabled: true, items: [] }}}}} />
+        <HeavyComponent2322 config={{ level1: { level2: { level3: { value: "p211", count: 211, enabled: true, items: [] }}}}} />
       </div>
     </div>
   );

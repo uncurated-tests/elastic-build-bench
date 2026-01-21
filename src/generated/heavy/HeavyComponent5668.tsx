@@ -1,0 +1,79 @@
+'use client';
+import React, { memo, useMemo } from 'react';
+
+// Complex recursive type definitions to increase TypeScript compilation time
+type DeepReadonly5668<T> = T extends (infer U)[]
+  ? DeepReadonlyArray5668<U>
+  : T extends object
+  ? DeepReadonlyObject5668<T>
+  : T;
+
+interface DeepReadonlyArray5668<T> extends ReadonlyArray<DeepReadonly5668<T>> {}
+
+type DeepReadonlyObject5668<T> = {
+  readonly [P in keyof T]: DeepReadonly5668<T[P]>;
+};
+
+type UnionToIntersection5668<U> = (U extends unknown ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
+
+type LastOf5668<T> = UnionToIntersection5668<T extends unknown ? () => T : never> extends () => infer R ? R : never;
+
+type Push5668<T extends unknown[], V> = [...T, V];
+
+type TuplifyUnion5668<T, L = LastOf5668<T>, N = [T] extends [never] ? true : false> = true extends N
+  ? []
+  : Push5668<TuplifyUnion5668<Exclude<T, L>>, L>;
+
+type DeepPartial5668<T> = T extends object
+  ? { [P in keyof T]?: DeepPartial5668<T[P]> }
+  : T;
+
+type Paths5668<T, D extends number = 10> = [D] extends [never]
+  ? never
+  : T extends object
+  ? { [K in keyof T]-?: K extends string | number ? `${K}` | Join5668<K, Paths5668<T[K], Prev5668[D]>> : never }[keyof T]
+  : never;
+
+type Prev5668 = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+type Join5668<K, P> = K extends string | number
+  ? P extends string | number
+    ? `${K}.${P}`
+    : never
+  : never;
+
+interface NestedConfig5668 {
+  level1: {
+    level2: {
+      level3: {
+        value: string;
+        count: number;
+        enabled: boolean;
+        items: Array<{ id: number; name: string }>;
+      };
+    };
+  };
+}
+
+type ConfigPaths5668 = Paths5668<NestedConfig5668>;
+
+interface HeavyProps5668 {
+  config: DeepPartial5668<NestedConfig5668>;
+  path?: ConfigPaths5668;
+}
+
+const HeavyComponent5668 = memo(function HeavyComponent5668({ config }: HeavyProps5668) {
+  const computed = useMemo(() => {
+    const depth = JSON.stringify(config || {}).length;
+    return Math.sin(depth * 5668) * Math.cos(depth);
+  }, [config]);
+
+  return (
+    <div className="heavy-5668 p-1 text-xs bg-zinc-100 dark:bg-zinc-800 rounded">
+      <span>H5668: {computed.toFixed(2)}</span>
+    </div>
+  );
+});
+
+HeavyComponent5668.displayName = 'HeavyComponent5668';
+export default HeavyComponent5668;

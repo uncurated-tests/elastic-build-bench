@@ -1,59 +1,25 @@
-// SSG Page 228
-import '@/generated/styles/page228.css';
+// SSG Page 228 - v12
+import '@/generated/styles/p228_m0.css';
 import SharedComponent96 from '@/generated/components/SharedComponent96';
 import SharedComponent97 from '@/generated/components/SharedComponent97';
 import SharedComponent98 from '@/generated/components/SharedComponent98';
 import SharedComponent99 from '@/generated/components/SharedComponent99';
 import SharedComponent100 from '@/generated/components/SharedComponent100';
-import SharedComponent101 from '@/generated/components/SharedComponent101';
-import SharedComponent102 from '@/generated/components/SharedComponent102';
-import SharedComponent103 from '@/generated/components/SharedComponent103';
-import SharedComponent104 from '@/generated/components/SharedComponent104';
-import SharedComponent105 from '@/generated/components/SharedComponent105';
-import SharedComponent106 from '@/generated/components/SharedComponent106';
-import SharedComponent107 from '@/generated/components/SharedComponent107';
-import SharedComponent108 from '@/generated/components/SharedComponent108';
-import SharedComponent109 from '@/generated/components/SharedComponent109';
-import SharedComponent110 from '@/generated/components/SharedComponent110';
-import SharedComponent111 from '@/generated/components/SharedComponent111';
-import SharedComponent112 from '@/generated/components/SharedComponent112';
-import SharedComponent113 from '@/generated/components/SharedComponent113';
-import SharedComponent114 from '@/generated/components/SharedComponent114';
-import SharedComponent115 from '@/generated/components/SharedComponent115';
+import HeavyComponent2508 from '@/generated/heavy/HeavyComponent2508';
+import HeavyComponent2509 from '@/generated/heavy/HeavyComponent2509';
 
-function computePageData(pageId: number) {
-  let result = pageId;
-  for (let i = 0; i < 1000; i++) {
-    result = Math.sin(result + i * 0.001) * Math.cos(result) + Math.sqrt(Math.abs(result) + 1);
-  }
-  return {
-    pageId,
-    checksum: result,
-    generatedAt: new Date().toISOString(),
-  };
-}
-
-export default async function SSGPage228() {
-  const data = computePageData(228);
-  
-  const items = Array.from({ length: 20 }, (_, i) => ({
-    id: `${228}-${i}`,
-    value: 228 * 100 + i,
-    label: `Page 228 Item`,
-  }));
-  
+export default function SSGPage228() {
   return (
-    <div className="page-228 p-6 min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <h1 className="page-228-header text-xl font-bold mb-4 text-zinc-900 dark:text-zinc-100">
-        SSG Page 228
-      </h1>
-      <p className="text-sm text-zinc-500 mb-4">
-        Generated: {data.generatedAt} | Checksum: {data.checksum.toFixed(4)}
-      </p>
-      <div className="page-228-content grid grid-cols-2 md:grid-cols-4 gap-2">
-        {[SharedComponent96, SharedComponent97, SharedComponent98, SharedComponent99, SharedComponent100, SharedComponent101, SharedComponent102, SharedComponent103, SharedComponent104, SharedComponent105, SharedComponent106, SharedComponent107, SharedComponent108, SharedComponent109, SharedComponent110, SharedComponent111, SharedComponent112, SharedComponent113, SharedComponent114, SharedComponent115].map((Component, idx) => (
-          <Component key={idx} {...items[idx]} />
-        ))}
+    <div className="p228-m0-v0 p-4 min-h-screen">
+      <h1 className="text-lg font-bold mb-2">Page 228</h1>
+      <div className="grid grid-cols-2 gap-1">
+        <SharedComponent96 id="228-0" value={22800} label="S" />
+        <SharedComponent97 id="228-1" value={22801} label="S" />
+        <SharedComponent98 id="228-2" value={22802} label="S" />
+        <SharedComponent99 id="228-3" value={22803} label="S" />
+        <SharedComponent100 id="228-4" value={22804} label="S" />
+        <HeavyComponent2508 config={{ level1: { level2: { level3: { value: "p228", count: 228, enabled: true, items: [] }}}}} />
+        <HeavyComponent2509 config={{ level1: { level2: { level3: { value: "p228", count: 228, enabled: true, items: [] }}}}} />
       </div>
     </div>
   );
