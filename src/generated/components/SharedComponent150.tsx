@@ -1,5 +1,6 @@
 'use client';
 import React, { memo } from 'react';
+import * as MuiIcons from '@mui/icons-material';
 
 interface Props {
   id: string;
@@ -9,6 +10,8 @@ interface Props {
 
 const SharedComponent150 = memo(function SharedComponent150({ id, value, label }: Props) {
   const computed = Math.sin(value * 151) * Math.cos(value);
+  
+      const IconComponent = Object.values(MuiIcons)[150 % Object.keys(MuiIcons).length] as React.ComponentType;
   
   return (
     <div className="p-2 border border-zinc-200 dark:border-zinc-700 rounded">

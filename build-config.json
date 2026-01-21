@@ -1,12 +1,19 @@
 {
-  "BuildTimeOnStandard": "2min",
-  "FullTimeOnStandard": "4min",
+  "BuildTimeOnStandard": "5min",
+  "FullTimeOnStandard": "10min",
   "MachineType": "Standard",
   "components": 500,
-  "typeFiles": 30,
-  "ssgPages": 815,
-  "computationIterations": 1000,
-  "postcssCpuBurnIterations": 0,
+  "ssgPages": 1465,
+  "mdxFiles": 232,
+  "codeBlocks": 464,
+  "complexTypes": 80,
   "apiRoutes": 5,
-  "strategy": "postcss-cpu-burn-v8"
+  "heavyImports": {
+    "muiIcons": true,
+    "reactIcons": false,
+    "lucide": false
+  },
+  "strategy": "realistic-complex-app-v9",
+  "generatedAt": "2026-01-21T04:55:54.360Z",
+  "buildId": "4be51bea-7d3b-4499-a750-c3cdaa7cd46f"
 }

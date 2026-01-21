@@ -1,0 +1,49 @@
+// Complex type file 47 - Deep inference and conditional types
+type Prev = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+// Recursive object type requiring deep inference
+type DeepNested_47<T, D extends number = 13> = D extends 0
+  ? T
+  : {
+      value: T;
+      meta: { index: 47; depth: D };
+      nested: DeepNested_47<T, Prev[D]>;
+      sibling: D extends 1 ? T : DeepNested_47<T, Prev[D]>;
+    };
+
+// Conditional type with union distribution
+type Distributed_47<T> = T extends string
+  ? { type: 'string'; value: T; index: 47 }
+  : T extends number
+  ? { type: 'number'; value: T; computed: `value_${T}` }
+  : T extends boolean
+  ? { type: 'boolean'; flag: T }
+  : { type: 'unknown'; raw: T };
+
+// Mapped type over union
+type OptionKey_47 = 'option_47_0' | 'option_47_1' | 'option_47_2' | 'option_47_3' | 'option_47_4' | 'option_47_5' | 'option_47_6' | 'option_47_7' | 'option_47_8' | 'option_47_9' | 'option_47_10' | 'option_47_11' | 'option_47_12' | 'option_47_13' | 'option_47_14' | 'option_47_15' | 'option_47_16';
+type OptionMap_47 = {
+  [K in OptionKey_47]: {
+    key: K;
+    index: 47;
+    handler: (input: K) => Distributed_47<K>;
+  };
+};
+
+// Infer from complex function signatures  
+type ExtractReturn_47<T> = T extends (...args: infer A) => infer R
+  ? { args: A; return: R; arity: A['length'] }
+  : never;
+
+// Template literal types
+type EventName_47 = `on${Capitalize<OptionKey_47>}Change`;
+
+// Export all types
+export type {
+  DeepNested_47,
+  Distributed_47,
+  OptionKey_47,
+  OptionMap_47,
+  ExtractReturn_47,
+  EventName_47,
+};

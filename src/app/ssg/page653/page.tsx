@@ -21,20 +21,11 @@ import SharedComponent88 from '@/generated/components/SharedComponent88';
 import SharedComponent89 from '@/generated/components/SharedComponent89';
 import SharedComponent90 from '@/generated/components/SharedComponent90';
 
-function computePageData(pageId: number) {
-  let result = pageId;
-  for (let i = 0; i < 1000; i++) {
-    result = Math.sin(result + i * 0.001) * Math.cos(result) + Math.sqrt(Math.abs(result) + 1);
-  }
-  return {
-    pageId,
-    checksum: result,
+export default async function SSGPage653() {
+  const data = {
+    pageId: 653,
     generatedAt: new Date().toISOString(),
   };
-}
-
-export default async function SSGPage653() {
-  const data = computePageData(653);
   
   const items = Array.from({ length: 20 }, (_, i) => ({
     id: `${653}-${i}`,
@@ -45,10 +36,10 @@ export default async function SSGPage653() {
   return (
     <div className="page-653 p-6 min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <h1 className="page-653-header text-xl font-bold mb-4 text-zinc-900 dark:text-zinc-100">
-        SSG Page 653
+        SSG Page 653 
       </h1>
       <p className="text-sm text-zinc-500 mb-4">
-        Generated: {data.generatedAt} | Checksum: {data.checksum.toFixed(4)}
+        Generated: {data.generatedAt}
       </p>
       <div className="page-653-content grid grid-cols-2 md:grid-cols-4 gap-2">
         {[SharedComponent71, SharedComponent72, SharedComponent73, SharedComponent74, SharedComponent75, SharedComponent76, SharedComponent77, SharedComponent78, SharedComponent79, SharedComponent80, SharedComponent81, SharedComponent82, SharedComponent83, SharedComponent84, SharedComponent85, SharedComponent86, SharedComponent87, SharedComponent88, SharedComponent89, SharedComponent90].map((Component, idx) => (
