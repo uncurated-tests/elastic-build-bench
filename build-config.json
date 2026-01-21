@@ -1,12 +1,17 @@
 {
-  "BuildTimeOnStandard": "2min",
-  "FullTimeOnStandard": "4min",
+  "BuildTimeOnStandard": "5min",
+  "FullTimeOnStandard": "10min",
   "MachineType": "Standard",
-  "components": 500,
-  "typeFiles": 30,
-  "ssgPages": 815,
-  "computationIterations": 1000,
-  "postcssCpuBurnIterations": 0,
+  "ssgPages": 1935,
+  "sharedComponents": 500,
+  "barrelComponents": {
+    "muiIcons": 30,
+    "reactIcons": 0,
+    "lucide": 0
+  },
+  "complexTypes": 70,
   "apiRoutes": 5,
-  "strategy": "postcss-cpu-burn-v8"
+  "strategy": "barrel-imports-v10",
+  "generatedAt": "2026-01-21T05:02:48.373Z",
+  "buildId": "275c9ad2-0000-4502-b92d-bdf9da83fd08"
 }

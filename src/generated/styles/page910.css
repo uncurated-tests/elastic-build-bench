@@ -1,0 +1,17 @@
+/* Page 910 styles */
+.page-910 {
+  --page-index: 910;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-910-header {
+  font-size: calc(1rem + 0px);
+  color: hsl(190, 70%, 50%);
+}
+
+.page-910-content {
+  padding: 3rem;
+  border-radius: 10px;
+}

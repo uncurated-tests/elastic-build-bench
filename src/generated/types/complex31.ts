@@ -1,0 +1,43 @@
+// Complex type file 31 - Deep inference and conditional types
+type Prev = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+type DeepNested_31<T, D extends number = 9> = D extends 0
+  ? T
+  : {
+      value: T;
+      meta: { index: 31; depth: D };
+      nested: DeepNested_31<T, Prev[D]>;
+      sibling: D extends 1 ? T : DeepNested_31<T, Prev[D]>;
+    };
+
+type Distributed_31<T> = T extends string
+  ? { type: 'string'; value: T; index: 31 }
+  : T extends number
+  ? { type: 'number'; value: T; computed: `value_${T}` }
+  : T extends boolean
+  ? { type: 'boolean'; flag: T }
+  : { type: 'unknown'; raw: T };
+
+type OptionKey_31 = 'option_31_0' | 'option_31_1' | 'option_31_2' | 'option_31_3' | 'option_31_4' | 'option_31_5' | 'option_31_6' | 'option_31_7' | 'option_31_8' | 'option_31_9' | 'option_31_10' | 'option_31_11' | 'option_31_12' | 'option_31_13' | 'option_31_14' | 'option_31_15' | 'option_31_16' | 'option_31_17' | 'option_31_18' | 'option_31_19' | 'option_31_20';
+type OptionMap_31 = {
+  [K in OptionKey_31]: {
+    key: K;
+    index: 31;
+    handler: (input: K) => Distributed_31<K>;
+  };
+};
+
+type ExtractReturn_31<T> = T extends (...args: infer A) => infer R
+  ? { args: A; return: R; arity: A['length'] }
+  : never;
+
+type EventName_31 = `on${Capitalize<OptionKey_31>}Change`;
+
+export type {
+  DeepNested_31,
+  Distributed_31,
+  OptionKey_31,
+  OptionMap_31,
+  ExtractReturn_31,
+  EventName_31,
+};

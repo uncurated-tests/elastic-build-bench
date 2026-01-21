@@ -10,50 +10,26 @@ import SharedComponent62 from '@/generated/components/SharedComponent62';
 import SharedComponent63 from '@/generated/components/SharedComponent63';
 import SharedComponent64 from '@/generated/components/SharedComponent64';
 import SharedComponent65 from '@/generated/components/SharedComponent65';
-import SharedComponent66 from '@/generated/components/SharedComponent66';
-import SharedComponent67 from '@/generated/components/SharedComponent67';
-import SharedComponent68 from '@/generated/components/SharedComponent68';
-import SharedComponent69 from '@/generated/components/SharedComponent69';
-import SharedComponent70 from '@/generated/components/SharedComponent70';
-import SharedComponent71 from '@/generated/components/SharedComponent71';
-import SharedComponent72 from '@/generated/components/SharedComponent72';
-import SharedComponent73 from '@/generated/components/SharedComponent73';
-import SharedComponent74 from '@/generated/components/SharedComponent74';
-import SharedComponent75 from '@/generated/components/SharedComponent75';
-
-function computePageData(pageId: number) {
-  let result = pageId;
-  for (let i = 0; i < 1000; i++) {
-    result = Math.sin(result + i * 0.001) * Math.cos(result) + Math.sqrt(Math.abs(result) + 1);
-  }
-  return {
-    pageId,
-    checksum: result,
-    generatedAt: new Date().toISOString(),
-  };
-}
+import MuiIconComponent8 from '@/generated/barrel-components/MuiIconComponent8';
 
 export default async function SSGPage8() {
-  const data = computePageData(8);
-  
-  const items = Array.from({ length: 20 }, (_, i) => ({
-    id: `${8}-${i}`,
-    value: 8 * 100 + i,
-    label: `Page 8 Item`,
-  }));
-  
   return (
     <div className="page-8 p-6 min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <h1 className="page-8-header text-xl font-bold mb-4 text-zinc-900 dark:text-zinc-100">
         SSG Page 8
       </h1>
-      <p className="text-sm text-zinc-500 mb-4">
-        Generated: {data.generatedAt} | Checksum: {data.checksum.toFixed(4)}
-      </p>
       <div className="page-8-content grid grid-cols-2 md:grid-cols-4 gap-2">
-        {[SharedComponent56, SharedComponent57, SharedComponent58, SharedComponent59, SharedComponent60, SharedComponent61, SharedComponent62, SharedComponent63, SharedComponent64, SharedComponent65, SharedComponent66, SharedComponent67, SharedComponent68, SharedComponent69, SharedComponent70, SharedComponent71, SharedComponent72, SharedComponent73, SharedComponent74, SharedComponent75].map((Component, idx) => (
-          <Component key={idx} {...items[idx]} />
-        ))}
+        <SharedComponent56 id="8-0" value={800} label="Item" />
+        <SharedComponent57 id="8-1" value={801} label="Item" />
+        <SharedComponent58 id="8-2" value={802} label="Item" />
+        <SharedComponent59 id="8-3" value={803} label="Item" />
+        <SharedComponent60 id="8-4" value={804} label="Item" />
+        <SharedComponent61 id="8-5" value={805} label="Item" />
+        <SharedComponent62 id="8-6" value={806} label="Item" />
+        <SharedComponent63 id="8-7" value={807} label="Item" />
+        <SharedComponent64 id="8-8" value={808} label="Item" />
+        <SharedComponent65 id="8-9" value={809} label="Item" />
+        <MuiIconComponent8 size={20} color="#1976d2" />
       </div>
     </div>
   );
