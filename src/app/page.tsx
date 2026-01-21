@@ -5,6 +5,8 @@ interface TimingRecord {
   runId: string;
   gitCommit: string;
   gitBranch: string;
+  deploymentId?: string | null;
+  vercelProjectName?: string | null;
   config: {
     BuildTimeOnStandard: string;
     FullTimeOnStandard: string;
@@ -235,6 +237,24 @@ export default async function Home() {
     }
   }
 
+  // Helper function to get deployment inspection URL
+  const getDeploymentUrl = (record: TimingRecord): string | null => {
+    if (record.deploymentId && record.vercelProjectName) {
+      return `https://vercel.com/uncurated-tests/${record.vercelProjectName}/${record.deploymentId}`;
+    }
+    // Fallback: link to project deployments filtered by branch
+    const projectNameMap: Record<string, string> = {
+      'Standard': 'elastic-build-bench',
+      'Enhanced': 'elastic-build-bench-enhanced',
+      'Turbo': 'elastic-build-bench-turbo',
+    };
+    const projectName = projectNameMap[record.config.MachineType];
+    if (projectName && record.gitBranch) {
+      return `https://vercel.com/uncurated-tests/${projectName}/deployments?branch=${encodeURIComponent(record.gitBranch)}`;
+    }
+    return null;
+  };
+
   // Helper function to calculate build time reduction percentage
   const getBuildTimeReduction = (record: TimingRecord): string => {
     if (record.config.MachineType === 'Standard') {
@@ -319,7 +339,24 @@ export default async function Home() {
                         {record.config.FullTimeOnStandard}
                       </td>
                       <td className="px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 font-medium">
-                        {record.config.MachineType}
+                        <span className="inline-flex items-center gap-1.5">
+                          {record.config.MachineType}
+                          {(() => {
+                            const url = getDeploymentUrl(record);
+                            if (!url) return null;
+                            return (
+                              <a
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-zinc-400 hover:text-blue-500 dark:text-zinc-500 dark:hover:text-blue-400 transition-colors"
+                                title="View deployment on Vercel"
+                              >
+                                🔗
+                              </a>
+                            );
+                          })()}
+                        </span>
                       </td>
                       <td className="px-4 py-3 text-sm font-mono">
                         <span className={`px-2 py-1 rounded text-xs ${
@@ -375,8 +412,23 @@ export default async function Home() {
                 >
                   <div className="flex justify-between items-start mb-3">
                     <div>
-                      <span className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                      <span className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 inline-flex items-center gap-1.5">
                         {record.config.MachineType}
+                        {(() => {
+                          const url = getDeploymentUrl(record);
+                          if (!url) return null;
+                          return (
+                            <a
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-zinc-400 hover:text-blue-500 dark:text-zinc-500 dark:hover:text-blue-400 transition-colors"
+                              title="View deployment on Vercel"
+                            >
+                              🔗
+                            </a>
+                          );
+                        })()}
                       </span>
                       <p className="text-xs text-zinc-500 dark:text-zinc-500 font-mono mt-1">
                         {record.gitBranch}

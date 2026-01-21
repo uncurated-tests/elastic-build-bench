@@ -275,12 +275,27 @@ config.MachineType = machineType;
 const runId = `build-${Date.now()}`;
 const gitCommit = getGitCommit();
 const gitBranch = getGitBranch();
+const deploymentId = process.env.VERCEL_DEPLOYMENT_ID || null;
+
+// Get Vercel project name for constructing inspection URLs
+function getVercelProjectName() {
+  // VERCEL_PROJECT_PRODUCTION_URL format: "project-name.vercel.app"
+  const productionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL || '';
+  if (productionUrl) {
+    return productionUrl.replace('.vercel.app', '');
+  }
+  return null;
+}
+
+const vercelProjectName = getVercelProjectName();
 
 // Timing data structure
 const timingData = {
   runId,
   gitCommit,
   gitBranch,
+  deploymentId,
+  vercelProjectName,
   config: {
     BuildTimeOnStandard: config.BuildTimeOnStandard,
     FullTimeOnStandard: config.FullTimeOnStandard,
@@ -381,6 +396,8 @@ async function main() {
   console.log(`[TIMING] Run ID: ${runId}`);
   console.log(`[TIMING] Git Commit: ${gitCommit}`);
   console.log(`[TIMING] Git Branch: ${gitBranch}`);
+  console.log(`[TIMING] Deployment ID: ${deploymentId || 'not available'}`);
+  console.log(`[TIMING] Project Name: ${vercelProjectName || 'not available'}`);
   console.log(`[TIMING] Config:`, JSON.stringify(config, null, 2));
   console.log('='.repeat(60));
 
