@@ -2,7 +2,5 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "node scripts/build-with-timing.mjs",
   "devCommand": "next dev",
-  "framework": "nextjs",
-  "crons": [],
-  "cache": false
+  "framework": "nextjs"
 }
