@@ -28,7 +28,7 @@ const buildMinutes = parseFloat(process.argv[2] || '1');
 const e2eMultiplier = parseFloat(process.argv[3] || '2');
 
 console.log(`\n========================================`);
-console.log(`v11 Load Generator: SSG + Prebuild Delay`);
+console.log(`v17 Load Generator: SSG + Multi-threaded CPU Burn`);
 console.log(`========================================`);
 console.log(`Target: ${buildMinutes}min build, ${e2eMultiplier}x E2E multiplier`);
 
@@ -66,16 +66,17 @@ const targetE2EMinutes = buildMinutes * e2eMultiplier;
 // Calculate how much time SSG pages can provide
 const maxTimeFromPages = BASE_OVERHEAD + MAX_PAGE_BUILD_TIME; // ~279s or ~4.65min
 
-// Calculate prebuild delay needed (if any)
-let prebuildDelaySeconds = 0;
+// Calculate prebuild CPU burn needed (if any)
+// This is REAL CPU work, not sleep delay
+let prebuildCpuBurnSeconds = 0;
 if (targetSeconds > maxTimeFromPages) {
-  prebuildDelaySeconds = Math.ceil(targetSeconds - maxTimeFromPages);
+  prebuildCpuBurnSeconds = Math.ceil(targetSeconds - maxTimeFromPages);
 }
 
 // Calculate SSG pages needed
 let numSSGPages;
-if (prebuildDelaySeconds > 0) {
-  // If we need delay, use max pages
+if (prebuildCpuBurnSeconds > 0) {
+  // If we need CPU burn, use max pages
   numSSGPages = MAX_SSG_PAGES;
 } else {
   // Calculate pages needed for target
@@ -85,18 +86,18 @@ if (prebuildDelaySeconds > 0) {
 }
 
 // Calculate expected build time
-const expectedBuildTime = BASE_OVERHEAD + (numSSGPages * SECONDS_PER_PAGE) + prebuildDelaySeconds;
+const expectedBuildTime = BASE_OVERHEAD + (numSSGPages * SECONDS_PER_PAGE) + prebuildCpuBurnSeconds;
 
 // Fixed values
 const numSharedComponents = 500;
 const numApiRoutes = 5;
 
-console.log(`\nv11 Load Composition:`);
+console.log(`\nv17 Load Composition:`);
 console.log(`  Target: ${targetSeconds}s (${buildMinutes}min)`);
 console.log(`  Base overhead: ${BASE_OVERHEAD}s`);
 console.log(`  SSG pages: ${numSSGPages} (~${Math.round(numSSGPages * SECONDS_PER_PAGE)}s)`);
-if (prebuildDelaySeconds > 0) {
-  console.log(`  Prebuild delay: ${prebuildDelaySeconds}s (to reach target beyond page limit)`);
+if (prebuildCpuBurnSeconds > 0) {
+  console.log(`  Prebuild CPU burn: ${prebuildCpuBurnSeconds}s (real multi-threaded CPU work)`);
 }
 console.log(`  Expected total: ~${Math.round(expectedBuildTime)}s`);
 
@@ -257,8 +258,8 @@ function updateBuildConfig() {
     ssgPages: numSSGPages,
     sharedComponents: numSharedComponents,
     apiRoutes: numApiRoutes,
-    prebuildDelaySeconds: prebuildDelaySeconds,
-    strategy: "ssg-plus-delay-v11",
+    prebuildCpuBurnSeconds: prebuildCpuBurnSeconds,
+    strategy: "ssg-cpu-burn-v17",
     generatedAt: new Date().toISOString(),
     buildId: randomUUID(),
   };
@@ -327,10 +328,10 @@ updateBuildConfig();
 console.log('\n========================================');
 console.log('Generation complete!');
 console.log('========================================');
-console.log(`Strategy: SSG + Prebuild Delay v11`);
+console.log(`Strategy: SSG + Multi-threaded CPU Burn v17`);
 console.log(`Expected build time on Standard: ~${buildMinutes} min`);
-if (prebuildDelaySeconds > 0) {
-  console.log(`  (includes ${prebuildDelaySeconds}s prebuild delay)`);
+if (prebuildCpuBurnSeconds > 0) {
+  console.log(`  (includes ${prebuildCpuBurnSeconds}s multi-threaded CPU burn)`);
 }
 console.log(`Expected E2E time on Standard: ~${targetE2EMinutes} min`);
 console.log('');

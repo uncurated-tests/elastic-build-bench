@@ -13,6 +13,8 @@ import { execSync } from 'child_process';
 import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync, readdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { Worker } from 'worker_threads';
+import { cpus } from 'os';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, '..');
@@ -249,6 +251,90 @@ export default function BenchPage${index}() {
 `;
 }
 
+/**
+ * Multi-threaded CPU burn using worker threads
+ * Each worker performs CPU-intensive calculations to consume real CPU time
+ * 
+ * @param {number} targetSeconds - Target duration in seconds
+ * @param {number} numWorkers - Number of worker threads to spawn
+ * @returns {Promise<void>}
+ */
+async function runMultiThreadedCpuBurn(targetSeconds, numWorkers) {
+  const workerPath = join(__dirname, 'cpu-burn-worker.mjs');
+  
+  // Check if worker file exists
+  if (!existsSync(workerPath)) {
+    console.log(`[CPU-BURN] Worker file not found, using inline CPU burn`);
+    // Fallback to inline single-threaded burn
+    await runInlineCpuBurn(targetSeconds);
+    return;
+  }
+  
+  const workers = [];
+  const promises = [];
+  
+  for (let i = 0; i < numWorkers; i++) {
+    const worker = new Worker(workerPath, {
+      workerData: {
+        targetSeconds,
+        workerId: i + 1,
+        totalWorkers: numWorkers
+      }
+    });
+    
+    workers.push(worker);
+    
+    promises.push(new Promise((resolve, reject) => {
+      worker.on('message', resolve);
+      worker.on('error', reject);
+      worker.on('exit', (code) => {
+        if (code !== 0) {
+          reject(new Error(`Worker ${i + 1} exited with code ${code}`));
+        }
+      });
+    }));
+  }
+  
+  // Wait for all workers to complete
+  const results = await Promise.all(promises);
+  
+  // Log summary
+  const totalIterations = results.reduce((sum, r) => sum + r.iterations, 0);
+  const maxElapsed = Math.max(...results.map(r => r.elapsed));
+  console.log(`[CPU-BURN] All ${numWorkers} workers complete`);
+  console.log(`[CPU-BURN] Total iterations: ${totalIterations.toLocaleString()}`);
+  console.log(`[CPU-BURN] Wall clock time: ${(maxElapsed / 1000).toFixed(2)}s`);
+}
+
+/**
+ * Fallback inline CPU burn (single-threaded)
+ * Used when worker file is not available
+ */
+async function runInlineCpuBurn(targetSeconds) {
+  const ITERATIONS_PER_SECOND = 2_500_000;
+  const totalIterations = targetSeconds * ITERATIONS_PER_SECOND;
+  
+  console.log(`[CPU-BURN] Running inline burn: ${totalIterations.toLocaleString()} iterations`);
+  
+  const startTime = Date.now();
+  let result = 0;
+  
+  for (let i = 0; i < totalIterations; i++) {
+    result += Math.sin(i * 0.001 + result * 0.0001) * Math.cos(i * 0.002 - result * 0.0001);
+    result += Math.sqrt(Math.abs(result + i)) * 0.0001;
+    result = Math.atan2(result, i + 1) + Math.log(Math.abs(result) + 1);
+    result = result % 1000000;
+    
+    if (i > 0 && i % Math.floor(totalIterations / 10) === 0) {
+      const progress = Math.floor((i / totalIterations) * 100);
+      console.log(`[CPU-BURN] Progress: ${progress}%`);
+    }
+  }
+  
+  const elapsed = (Date.now() - startTime) / 1000;
+  console.log(`[CPU-BURN] Inline burn complete: ${elapsed.toFixed(2)}s, result: ${result.toFixed(4)}`);
+}
+
 // Detect machine type from Vercel project name
 function detectMachineType() {
   // VERCEL_PROJECT_PRODUCTION_URL contains the project name
@@ -425,10 +511,26 @@ async function main() {
     console.log(`[TIMING]    This adds CPU work during PostCSS processing`);
   }
 
-  // v11: Execute prebuild delay if configured
+  // v17: Execute prebuild CPU burn if configured (multi-threaded, real work)
+  const prebuildCpuBurnSeconds = configFromFile.prebuildCpuBurnSeconds || 0;
+  if (prebuildCpuBurnSeconds > 0) {
+    console.log(`\n[TIMING] 2.5. PREBUILD CPU BURN (Multi-threaded)`);
+    const numCpus = cpus().length;
+    console.log(`[TIMING]    Target duration: ${prebuildCpuBurnSeconds}s`);
+    console.log(`[TIMING]    Available CPUs: ${numCpus}`);
+    console.log(`[TIMING]    Starting ${numCpus} workers for real CPU work...`);
+    
+    const cpuBurnStart = Date.now();
+    await runMultiThreadedCpuBurn(prebuildCpuBurnSeconds, numCpus);
+    const cpuBurnDuration = (Date.now() - cpuBurnStart) / 1000;
+    
+    console.log(`[TIMING]    Prebuild CPU burn complete in ${cpuBurnDuration.toFixed(2)}s`);
+  }
+  
+  // v11 fallback: Execute prebuild delay if configured (sleep-based, for backwards compatibility)
   const prebuildDelaySeconds = configFromFile.prebuildDelaySeconds || 0;
-  if (prebuildDelaySeconds > 0) {
-    console.log(`\n[TIMING] 2.5. PREBUILD DELAY`);
+  if (prebuildDelaySeconds > 0 && prebuildCpuBurnSeconds === 0) {
+    console.log(`\n[TIMING] 2.5. PREBUILD DELAY (Sleep-based fallback)`);
     console.log(`[TIMING]    Sleeping for ${prebuildDelaySeconds}s to reach target build time...`);
     await new Promise(resolve => setTimeout(resolve, prebuildDelaySeconds * 1000));
     console.log(`[TIMING]    Prebuild delay complete.`);
