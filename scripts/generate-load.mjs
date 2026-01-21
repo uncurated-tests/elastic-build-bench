@@ -28,7 +28,7 @@ const buildMinutes = parseFloat(process.argv[2] || '1');
 const e2eMultiplier = parseFloat(process.argv[3] || '2');
 
 console.log(`\n========================================`);
-console.log(`v17 Load Generator: SSG + Multi-threaded CPU Burn`);
+console.log(`v18 Load Generator: SSG + Multi-threaded CPU Burn`);
 console.log(`========================================`);
 console.log(`Target: ${buildMinutes}min build, ${e2eMultiplier}x E2E multiplier`);
 
@@ -56,8 +56,8 @@ console.log(`Target: ${buildMinutes}min build, ${e2eMultiplier}x E2E multiplier`
 
 const BASE_OVERHEAD = 19;           // seconds (Next.js startup)
 const MAX_SSG_PAGES = 2000;         // Cap to avoid OOM errors
-const SECONDS_PER_PAGE = 0.13;      // Empirical from v8
-const MAX_PAGE_BUILD_TIME = MAX_SSG_PAGES * SECONDS_PER_PAGE; // ~260s
+const SECONDS_PER_PAGE = 0.045;     // v18: Recalibrated from v17 results (was 0.13)
+const MAX_PAGE_BUILD_TIME = MAX_SSG_PAGES * SECONDS_PER_PAGE; // ~90s
 
 // Target build time in seconds
 const targetSeconds = buildMinutes * 60;
@@ -92,7 +92,7 @@ const expectedBuildTime = BASE_OVERHEAD + (numSSGPages * SECONDS_PER_PAGE) + pre
 const numSharedComponents = 500;
 const numApiRoutes = 5;
 
-console.log(`\nv17 Load Composition:`);
+console.log(`\nv18 Load Composition:`);
 console.log(`  Target: ${targetSeconds}s (${buildMinutes}min)`);
 console.log(`  Base overhead: ${BASE_OVERHEAD}s`);
 console.log(`  SSG pages: ${numSSGPages} (~${Math.round(numSSGPages * SECONDS_PER_PAGE)}s)`);
@@ -259,7 +259,7 @@ function updateBuildConfig() {
     sharedComponents: numSharedComponents,
     apiRoutes: numApiRoutes,
     prebuildCpuBurnSeconds: prebuildCpuBurnSeconds,
-    strategy: "ssg-cpu-burn-v17",
+    strategy: "ssg-cpu-burn-v18",
     generatedAt: new Date().toISOString(),
     buildId: randomUUID(),
   };
@@ -328,7 +328,7 @@ updateBuildConfig();
 console.log('\n========================================');
 console.log('Generation complete!');
 console.log('========================================');
-console.log(`Strategy: SSG + Multi-threaded CPU Burn v17`);
+console.log(`Strategy: SSG + Multi-threaded CPU Burn v18`);
 console.log(`Expected build time on Standard: ~${buildMinutes} min`);
 if (prebuildCpuBurnSeconds > 0) {
   console.log(`  (includes ${prebuildCpuBurnSeconds}s multi-threaded CPU burn)`);

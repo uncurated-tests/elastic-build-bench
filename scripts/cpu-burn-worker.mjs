@@ -11,8 +11,9 @@ const { targetSeconds, workerId, totalWorkers } = workerData;
 
 // Calibration: iterations per second on a single Vercel Standard core
 // Vercel Standard has 4 vCPU, each running at ~2.5GHz
-// Empirically calibrated: ~2,500,000 iterations = 1 second of CPU time per core
-const ITERATIONS_PER_SECOND = 2_500_000;
+// v17 calibration was 2.5M, but actual builds ran 2x faster
+// v18 calibration: doubled to 5M iterations = 1 second of CPU time per core
+const ITERATIONS_PER_SECOND = 5_000_000;
 
 // Each worker runs for the FULL target time (all cores burn in parallel)
 // This ensures wall-clock time = targetSeconds
