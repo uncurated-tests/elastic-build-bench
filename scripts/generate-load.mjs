@@ -55,15 +55,29 @@ const targetE2EMinutes = buildMinutes * e2eMultiplier;
 // These are shared components imported by SSG pages
 const BASE_COMPONENTS = 500;  // Shared component pool
 
-// Complex type files for CPU-intensive type checking
-// Each file contains deeply nested generics that take ~2-3s to check
-const TYPE_FILES_PER_MINUTE = 20;  // ~20 files ≈ 1 minute of type checking
-const numTypeFiles = Math.max(10, Math.floor(buildMinutes * TYPE_FILES_PER_MINUTE));
+// =============================================================================
+// CALIBRATION (based on empirical measurements on Standard machine)
+// =============================================================================
+// Base overhead: ~20 seconds
+// Type file cost: ~0.15 seconds each (CPU-intensive type checking)
+// SSG page cost: ~0.05 seconds each (server-side computation)
+//
+// Formula: buildTime = 20 + (0.15 * numTypeFiles) + (0.05 * numSSGPages)
+//
+// Calibrated settings for targets on Standard:
+//   1min (60s):   100 types,  800 pages → 20+15+40=75s (buffer for variance)
+//   2min (120s):  200 types, 1800 pages → 20+30+90=140s
+//   4min (240s):  500 types, 3800 pages → 20+75+190=285s
+//   8min (480s): 1000 types, 7600 pages → 20+150+380=550s
+//  10min (600s): 1300 types, 9600 pages → 20+195+480=695s
+//  20min (1200s): 2600 types, 19200 pages → 20+390+960=1370s
+// =============================================================================
 
-// SSG pages for additional build work (memory efficient)
-// Each page imports from shared components and does server-side computation
-const SSG_PAGES_PER_MINUTE = 50;  // ~50 pages ≈ 1 minute of SSG
-const numSSGPages = Math.max(20, Math.floor(buildMinutes * SSG_PAGES_PER_MINUTE));
+const TYPE_FILES_PER_MINUTE = 130;  // ~130 type files per minute of build time
+const SSG_PAGES_PER_MINUTE = 960;   // ~960 SSG pages per minute of build time
+
+const numTypeFiles = Math.max(50, Math.floor(buildMinutes * TYPE_FILES_PER_MINUTE));
+const numSSGPages = Math.max(200, Math.floor(buildMinutes * SSG_PAGES_PER_MINUTE));
 
 // Minimal API routes (not for timing, just for realism)
 const numApiRoutes = 5;
