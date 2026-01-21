@@ -1,0 +1,17 @@
+/* Page 931 styles */
+.page-931 {
+  --page-index: 931;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-931-header {
+  font-size: calc(1rem + 1px);
+  color: hsl(247, 70%, 50%);
+}
+
+.page-931-content {
+  padding: 4rem;
+  border-radius: 7px;
+}
