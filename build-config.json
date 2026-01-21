@@ -6,9 +6,10 @@
   "typeFiles": 30,
   "ssgPages": 2000,
   "computationIterations": 1000,
-  "postcssCpuBurnIterations": 47143,
+  "postcssCpuBurnIterations": 0,
+  "prebuildDelaySeconds": 140,
   "apiRoutes": 5,
-  "strategy": "postcss-cpu-burn-v8",
-  "generatedAt": "2026-01-21T04:37:24.120Z",
-  "buildId": "6819c279-729b-4d2f-aa5a-a2f131550af4"
+  "strategy": "prebuild-delay-v9",
+  "generatedAt": "2026-01-21T13:57:10.747Z",
+  "buildId": "fix-5min-target-001"
 }
