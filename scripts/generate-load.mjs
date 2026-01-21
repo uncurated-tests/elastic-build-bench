@@ -54,9 +54,9 @@ console.log(`Target: ${buildMinutes}min build, ${e2eMultiplier}x E2E multiplier`
 //
 // =============================================================================
 
-const BASE_OVERHEAD = 19;           // seconds (Next.js startup)
+const BASE_OVERHEAD = 25;           // seconds (Next.js startup) - recalibrated from v11
 const MAX_SSG_PAGES = 2000;         // Cap to avoid OOM errors
-const SECONDS_PER_PAGE = 0.13;      // Empirical from v8
+const SECONDS_PER_PAGE = 0.10;      // Empirical from v11 (was 0.13)
 const MAX_PAGE_BUILD_TIME = MAX_SSG_PAGES * SECONDS_PER_PAGE; // ~260s
 
 // Target build time in seconds
