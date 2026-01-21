@@ -73,14 +73,60 @@ const BASE_COMPONENTS = 500;  // Shared component pool
 //  20min (1200s): 2600 types, 19200 pages → 20+390+960=1370s
 // =============================================================================
 
-// Calibration v3: Based on measured 2x overshoot with v2 settings
-// v2 had 130 types/min and 960 pages/min → ~2x target time
-// v3: Halve the values to hit target times on Standard
-const TYPE_FILES_PER_MINUTE = 65;   // ~65 type files per minute of build time
-const SSG_PAGES_PER_MINUTE = 480;   // ~480 SSG pages per minute of build time
+// =============================================================================
+// Calibration v4: Fixed OOM issue + Empirically calibrated rates
+// =============================================================================
+// Problem: Builds with 2400+ pages fail with "invalid_output" error
+// Solution: Cap pages at 2000 and increase type files for longer builds
+//
+// Empirically measured rates from successful Standard builds:
+//   Base overhead: 18s
+//   Per type file: 0.3s  
+//   Per SSG page:  0.08s
+//
+// Formula: buildTime = 18 + (0.3 * types) + (0.08 * pages)
+// =============================================================================
+const BASE_OVERHEAD = 18;           // seconds
+const SECONDS_PER_TYPE = 0.3;       // seconds per type file
+const SECONDS_PER_PAGE = 0.08;      // seconds per SSG page
+const MAX_SSG_PAGES = 2000;         // Cap to avoid OOM errors
 
-const numTypeFiles = Math.max(30, Math.floor(buildMinutes * TYPE_FILES_PER_MINUTE));
-const numSSGPages = Math.max(100, Math.floor(buildMinutes * SSG_PAGES_PER_MINUTE));
+// Calculate target build time
+const targetSeconds = buildMinutes * 60;
+const availableSeconds = targetSeconds - BASE_OVERHEAD;
+
+// Strategy: Allocate ~60% of time to pages, ~40% to types (more balanced)
+// This distributes load more evenly and avoids extreme values
+const pageTimeAllocation = 0.6;
+const typeTimeAllocation = 0.4;
+
+let pageSeconds = availableSeconds * pageTimeAllocation;
+let typeSeconds = availableSeconds * typeTimeAllocation;
+
+// Calculate initial values
+let numSSGPages = Math.floor(pageSeconds / SECONDS_PER_PAGE);
+let numTypeFiles = Math.ceil(typeSeconds / SECONDS_PER_TYPE);
+
+// Apply page cap and redistribute excess to types
+if (numSSGPages > MAX_SSG_PAGES) {
+  const excessPages = numSSGPages - MAX_SSG_PAGES;
+  const excessTime = excessPages * SECONDS_PER_PAGE;
+  numSSGPages = MAX_SSG_PAGES;
+  numTypeFiles += Math.ceil(excessTime / SECONDS_PER_TYPE);
+}
+
+// Ensure minimum values
+numSSGPages = Math.max(100, numSSGPages);
+numTypeFiles = Math.max(30, numTypeFiles);
+
+// Estimate actual build time
+const estimatedSeconds = BASE_OVERHEAD + (SECONDS_PER_TYPE * numTypeFiles) + (SECONDS_PER_PAGE * numSSGPages);
+console.log(`\nTarget: ${buildMinutes}min (${targetSeconds}s)`);
+console.log(`Estimated: ${(estimatedSeconds/60).toFixed(1)}min (${Math.round(estimatedSeconds)}s)`);
+
+if (numSSGPages === MAX_SSG_PAGES) {
+  console.log(`Note: Capped pages at ${MAX_SSG_PAGES} to avoid OOM, using ${numTypeFiles} type files`);
+}
 
 // Minimal API routes (not for timing, just for realism)
 const numApiRoutes = 5;
