@@ -1,0 +1,22 @@
+/* Page 1326 styles */
+.page-1326 {
+  --page-index: 1326;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1326-header {
+  font-size: calc(1rem + 6px);
+  color: hsl(102, 70%, 50%);
+}
+
+.page-1326-content {
+  padding: 3rem;
+  background: linear-gradient(
+    270deg,
+    hsl(102, 70%, 95%),
+    hsl(282, 70%, 95%)
+  );
+  border-radius: 10px;
+}

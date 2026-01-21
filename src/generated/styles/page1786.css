@@ -1,0 +1,22 @@
+/* Page 1786 styles */
+.page-1786 {
+  --page-index: 1786;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1786-header {
+  font-size: calc(1rem + 6px);
+  color: hsl(202, 70%, 50%);
+}
+
+.page-1786-content {
+  padding: 3rem;
+  background: linear-gradient(
+    90deg,
+    hsl(202, 70%, 95%),
+    hsl(22, 70%, 95%)
+  );
+  border-radius: 6px;
+}

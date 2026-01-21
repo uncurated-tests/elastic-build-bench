@@ -1,0 +1,22 @@
+/* Page 1141 styles */
+.page-1141 {
+  --page-index: 1141;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1141-header {
+  font-size: calc(1rem + 1px);
+  color: hsl(97, 70%, 50%);
+}
+
+.page-1141-content {
+  padding: 2rem;
+  background: linear-gradient(
+    225deg,
+    hsl(97, 70%, 95%),
+    hsl(277, 70%, 95%)
+  );
+  border-radius: 9px;
+}

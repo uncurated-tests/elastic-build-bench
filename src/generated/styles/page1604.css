@@ -1,0 +1,22 @@
+/* Page 1604 styles */
+.page-1604 {
+  --page-index: 1604;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1604-header {
+  font-size: calc(1rem + 4px);
+  color: hsl(308, 70%, 50%);
+}
+
+.page-1604-content {
+  padding: 1rem;
+  background: linear-gradient(
+    180deg,
+    hsl(308, 70%, 95%),
+    hsl(128, 70%, 95%)
+  );
+  border-radius: 8px;
+}

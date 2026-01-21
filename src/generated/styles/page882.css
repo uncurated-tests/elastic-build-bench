@@ -1,0 +1,22 @@
+/* Page 882 styles */
+.page-882 {
+  --page-index: 882;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-882-header {
+  font-size: calc(1rem + 2px);
+  color: hsl(234, 70%, 50%);
+}
+
+.page-882-content {
+  padding: 3rem;
+  background: linear-gradient(
+    90deg,
+    hsl(234, 70%, 95%),
+    hsl(54, 70%, 95%)
+  );
+  border-radius: 6px;
+}

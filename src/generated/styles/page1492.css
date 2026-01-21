@@ -1,0 +1,22 @@
+/* Page 1492 styles */
+.page-1492 {
+  --page-index: 1492;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1492-header {
+  font-size: calc(1rem + 2px);
+  color: hsl(124, 70%, 50%);
+}
+
+.page-1492-content {
+  padding: 1rem;
+  background: linear-gradient(
+    180deg,
+    hsl(124, 70%, 95%),
+    hsl(304, 70%, 95%)
+  );
+  border-radius: 8px;
+}

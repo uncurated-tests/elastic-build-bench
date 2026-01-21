@@ -1,0 +1,22 @@
+/* Page 1622 styles */
+.page-1622 {
+  --page-index: 1622;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1622-header {
+  font-size: calc(1rem + 2px);
+  color: hsl(254, 70%, 50%);
+}
+
+.page-1622-content {
+  padding: 3rem;
+  background: linear-gradient(
+    270deg,
+    hsl(254, 70%, 95%),
+    hsl(74, 70%, 95%)
+  );
+  border-radius: 10px;
+}
