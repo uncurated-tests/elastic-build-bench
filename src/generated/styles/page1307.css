@@ -1,0 +1,17 @@
+/* Page 1307 styles */
+.page-1307 {
+  --page-index: 1307;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1307-header {
+  font-size: calc(1rem + 7px);
+  color: hsl(119, 70%, 50%);
+}
+
+.page-1307-content {
+  padding: 4rem;
+  border-radius: 7px;
+}

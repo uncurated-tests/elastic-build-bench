@@ -1,12 +1,12 @@
 {
-  "BuildTimeOnStandard": "2min",
-  "FullTimeOnStandard": "4min",
+  "BuildTimeOnStandard": "10min",
+  "FullTimeOnStandard": "20min",
   "MachineType": "Standard",
-  "components": 500,
-  "typeFiles": 30,
-  "ssgPages": 815,
-  "computationIterations": 1000,
-  "postcssCpuBurnIterations": 0,
+  "ssgPages": 2000,
+  "sharedComponents": 500,
   "apiRoutes": 5,
-  "strategy": "postcss-cpu-burn-v8"
+  "prebuildDelaySeconds": 321,
+  "strategy": "ssg-plus-delay-v11",
+  "generatedAt": "2026-01-21T05:24:52.197Z",
+  "buildId": "c4a3426f-5c43-4e69-88fa-dc8ade4059ae"
 }
