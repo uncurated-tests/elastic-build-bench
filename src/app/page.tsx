@@ -215,6 +215,11 @@ export default async function Home() {
   };
   
   records.sort((a, b) => {
+    // Priority 0: RealXTotal branches first (these are the validated benchmarks)
+    const isRealXTotalA = a.gitBranch?.includes('RealXTotal') ? 0 : 1;
+    const isRealXTotalB = b.gitBranch?.includes('RealXTotal') ? 0 : 1;
+    if (isRealXTotalA !== isRealXTotalB) return isRealXTotalA - isRealXTotalB;
+    
     // Column 1: Target Build Time (ascending)
     const buildTimeA = parseTime(a.config.BuildTimeOnStandard);
     const buildTimeB = parseTime(b.config.BuildTimeOnStandard);
