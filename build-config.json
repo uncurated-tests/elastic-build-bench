@@ -1,8 +1,10 @@
 {
-  "BuildTimeOnStandard": "0.5min",
-  "FullTimeOnStandard": "1min",
+  "BuildTimeOnStandard": "4min",
+  "FullTimeOnStandard": "8min",
   "MachineType": "Standard",
-  "components": 850,
-  "apiRoutes": 100,
-  "staticPages": 80
+  "components": 500,
+  "typeFiles": 80,
+  "ssgPages": 200,
+  "apiRoutes": 5,
+  "strategy": "memory-efficient"
 }

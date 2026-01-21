@@ -1,0 +1,62 @@
+// SSG Page 135 - Pre-rendered at build time
+import SharedComponent445 from '@/generated/components/SharedComponent445';
+import SharedComponent446 from '@/generated/components/SharedComponent446';
+import SharedComponent447 from '@/generated/components/SharedComponent447';
+import SharedComponent448 from '@/generated/components/SharedComponent448';
+import SharedComponent449 from '@/generated/components/SharedComponent449';
+import SharedComponent450 from '@/generated/components/SharedComponent450';
+import SharedComponent451 from '@/generated/components/SharedComponent451';
+import SharedComponent452 from '@/generated/components/SharedComponent452';
+import SharedComponent453 from '@/generated/components/SharedComponent453';
+import SharedComponent454 from '@/generated/components/SharedComponent454';
+import SharedComponent455 from '@/generated/components/SharedComponent455';
+import SharedComponent456 from '@/generated/components/SharedComponent456';
+import SharedComponent457 from '@/generated/components/SharedComponent457';
+import SharedComponent458 from '@/generated/components/SharedComponent458';
+import SharedComponent459 from '@/generated/components/SharedComponent459';
+import SharedComponent460 from '@/generated/components/SharedComponent460';
+import SharedComponent461 from '@/generated/components/SharedComponent461';
+import SharedComponent462 from '@/generated/components/SharedComponent462';
+import SharedComponent463 from '@/generated/components/SharedComponent463';
+import SharedComponent464 from '@/generated/components/SharedComponent464';
+
+// Server-side computation during SSG
+function computePageData(pageId: number) {
+  let result = pageId;
+  // Intentionally expensive computation during build
+  for (let i = 0; i < 10000; i++) {
+    result = Math.sin(result + i * 0.001) * Math.cos(result) + Math.sqrt(Math.abs(result) + 1);
+  }
+  return {
+    pageId,
+    checksum: result,
+    generatedAt: new Date().toISOString(),
+    componentCount: 20,
+  };
+}
+
+export default async function SSGPage135() {
+  const data = computePageData(135);
+  
+  const items = Array.from({ length: 20 }, (_, i) => ({
+    id: `${135}-${i}`,
+    value: 135 * 100 + i,
+    label: `Page 135 Item`,
+  }));
+  
+  return (
+    <div className="p-6 min-h-screen bg-zinc-50 dark:bg-zinc-950">
+      <h1 className="text-xl font-bold mb-4 text-zinc-900 dark:text-zinc-100">
+        SSG Page 135
+      </h1>
+      <p className="text-sm text-zinc-500 mb-4">
+        Generated: {data.generatedAt} | Checksum: {data.checksum.toFixed(4)}
+      </p>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        {[SharedComponent445, SharedComponent446, SharedComponent447, SharedComponent448, SharedComponent449, SharedComponent450, SharedComponent451, SharedComponent452, SharedComponent453, SharedComponent454, SharedComponent455, SharedComponent456, SharedComponent457, SharedComponent458, SharedComponent459, SharedComponent460, SharedComponent461, SharedComponent462, SharedComponent463, SharedComponent464].map((Component, idx) => (
+          <Component key={idx} {...items[idx]} />
+        ))}
+      </div>
+    </div>
+  );
+}

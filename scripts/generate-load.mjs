@@ -2,8 +2,12 @@
 /**
  * Generate synthetic load for build time testing
  * 
+ * Uses two strategies to create long builds without memory overload:
+ * 1. Complex TypeScript generic types that stress the compiler (CPU-bound, low memory)
+ * 2. Many SSG pages that import shared components (realistic, memory-efficient)
+ * 
  * Usage: node scripts/generate-load.mjs <buildMinutes> <e2eMultiplier>
- * Example: node scripts/generate-load.mjs 1 2  # 1min build, 2x E2E (2min total)
+ * Example: node scripts/generate-load.mjs 4 2  # 4min build, 2x E2E (8min total)
  */
 
 import { writeFileSync, mkdirSync, rmSync, existsSync } from 'fs';
@@ -19,54 +23,55 @@ const e2eMultiplier = parseFloat(process.argv[3] || '2');
 
 console.log(`Generating load for ${buildMinutes}min build, ${e2eMultiplier}x E2E multiplier`);
 
-// Scaling factors tuned based on actual Vercel build results
-// Build time scales linearly with component count after fixed overhead
+// =============================================================================
+// NEW MEMORY-EFFICIENT APPROACH
+// =============================================================================
 // 
-// RECALIBRATED (Jan 20, 2026) on Standard machine (4 vCPU):
-//   3040 components → 72s
-//   7600 components → 154s
+// Previous approach: Many components with complex types
+//   - Problem: 12,000+ components cause OOM on Standard (8GB RAM)
+//   - Each component ~3KB, type-checking memory grows non-linearly
 //
-// Linear regression:
-//   Δcomponents = 4560, Δtime = 82s → 55.6 components/second
-//   Overhead = 72 - (3040/55.6) = 17s
+// New approach combines:
+//   1. COMPLEX TYPE FILES: Heavy TypeScript type inference (CPU-bound, ~0 runtime memory)
+//      - Recursive types, conditional types, mapped types
+//      - Each file can take 1-5 seconds to type-check
+//      - Scales predictably: N files ≈ N × (time per file)
 //
-// Model: time ≈ 17s (fixed) + components / 55.6 (variable)
-// Solving for components: components ≈ (targetSec - 17) × 55.6
-
-const COMPONENT_TARGETS = {
-  1: 2400,    // ~1min: (60-17)×55.6 = 2391
-  2: 5730,    // ~2min: (120-17)×55.6 = 5727
-  4: 12400,   // ~4min: (240-17)×55.6 = 12399
-  8: 25750,   // ~8min: (480-17)×55.6 = 25747
-  10: 32420,  // ~10min: (600-17)×55.6 = 32417
-  20: 65820,  // ~20min: (1200-17)×55.6 = 65815 (may OOM, be careful)
-};
-
-// Key insight: E2E time ≈ Build time in Next.js (components dominate)
-// The e2eMultiplier is kept for naming convention but doesn't change component count
-// Branch name format: build-Xmin-Yxtotal where X = BUILD time target
+//   2. SSG PAGES: Many pages importing SAME components (memory-efficient)
+//      - Components loaded once, reused across pages
+//      - Build processes pages sequentially, not all in memory
+//      - Adds realistic bundling/optimization work
 //
-// Model from measurements: time ≈ 17s (fixed) + components / 55.6 (variable)
-// Solving: components = (targetSeconds - 17) * 55.6
+// Calibration (to be refined):
+//   - 1 complex type file ≈ 2-3 seconds of type-checking
+//   - 1 SSG page ≈ 0.5-1 second of SSG rendering
+//   - Base overhead ≈ 20 seconds
+// =============================================================================
 
-// Target BUILD time (not E2E time) - this is what the branch name refers to
 const targetBuildSeconds = buildMinutes * 60;
-const targetE2EMinutes = buildMinutes * e2eMultiplier;  // For config display only
-const targetE2ESeconds = targetE2EMinutes * 60;
+const targetE2EMinutes = buildMinutes * e2eMultiplier;
 
-// Calculate components needed for target BUILD time
-// Using the formula: time = 17 + components/55.6
-// So: components = (time - 17) * 55.6
-const numComponents = Math.max(100, Math.floor((targetBuildSeconds - 17) * 55.6));
+// Keep component count LOW to avoid OOM (max ~3000 for safety on Standard)
+// These are shared components imported by SSG pages
+const BASE_COMPONENTS = 500;  // Shared component pool
 
-// No SSG pages needed - component count controls timing
-const numSSGPages = 0;
+// Complex type files for CPU-intensive type checking
+// Each file contains deeply nested generics that take ~2-3s to check
+const TYPE_FILES_PER_MINUTE = 20;  // ~20 files ≈ 1 minute of type checking
+const numTypeFiles = Math.max(10, Math.floor(buildMinutes * TYPE_FILES_PER_MINUTE));
+
+// SSG pages for additional build work (memory efficient)
+// Each page imports from shared components and does server-side computation
+const SSG_PAGES_PER_MINUTE = 50;  // ~50 pages ≈ 1 minute of SSG
+const numSSGPages = Math.max(20, Math.floor(buildMinutes * SSG_PAGES_PER_MINUTE));
 
 // Minimal API routes (not for timing, just for realism)
 const numApiRoutes = 5;
 
-console.log(`Will generate:`);
-console.log(`  - ${numComponents} React components`);
+console.log(`\nMemory-efficient load strategy:`);
+console.log(`  - ${BASE_COMPONENTS} shared React components (fixed, low memory)`);
+console.log(`  - ${numTypeFiles} complex type files (CPU-intensive type checking)`);
+console.log(`  - ${numSSGPages} SSG pages (memory-efficient build work)`);
 console.log(`  - ${numApiRoutes} API routes`);
 console.log(`  - Target Build: ${buildMinutes}min (${targetBuildSeconds}s)`);
 
@@ -77,6 +82,7 @@ if (existsSync(generatedDir)) {
 }
 mkdirSync(generatedDir, { recursive: true });
 mkdirSync(join(generatedDir, 'components'), { recursive: true });
+mkdirSync(join(generatedDir, 'types'), { recursive: true });
 
 // Clean up previous API routes
 const apiGeneratedDir = join(projectRoot, 'src', 'app', 'api', 'generated');
@@ -84,386 +90,237 @@ if (existsSync(apiGeneratedDir)) {
   rmSync(apiGeneratedDir, { recursive: true });
 }
 
-// Clean up previous static pages
-const pagesGeneratedDir = join(projectRoot, 'src', 'app', 'bench');
-if (existsSync(pagesGeneratedDir)) {
-  rmSync(pagesGeneratedDir, { recursive: true });
+// Clean up previous SSG pages
+const ssgDir = join(projectRoot, 'src', 'app', 'ssg');
+if (existsSync(ssgDir)) {
+  rmSync(ssgDir, { recursive: true });
 }
 
-// Generate complex TypeScript types (adds to type-checking time)
-function generateComplexTypes() {
-  return `
-// Complex recursive types to stress TypeScript compiler
-type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T;
-type DeepRequired<T> = T extends object ? { [P in keyof T]-?: DeepRequired<T[P]> } : T;
-
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
-
-type LastOf<T> = UnionToIntersection<T extends any ? () => T : never> extends () => infer R ? R : never;
-
-type Push<T extends any[], V> = [...T, V];
-
-type TuplifyUnion<T, L = LastOf<T>, N = [T] extends [never] ? true : false> = 
-  true extends N ? [] : Push<TuplifyUnion<Exclude<T, L>>, L>;
-
-interface NestedConfig<T = unknown> {
-  value: T;
-  children?: NestedConfig<T>[];
-  metadata?: Record<string, DeepPartial<T>>;
-  transform?: <U>(input: T) => Promise<U>;
+// Clean up old bench directory (from previous approach)
+const benchDir = join(projectRoot, 'src', 'app', 'bench');
+if (existsSync(benchDir)) {
+  rmSync(benchDir, { recursive: true });
 }
 
-type RecursiveRecord<K extends string, V, D extends number = 5> = 
-  D extends 0 ? V : { [P in K]: RecursiveRecord<K, V, [-1, 0, 1, 2, 3, 4][D]> };
+// =============================================================================
+// OPTION 3: Complex Generic Types
+// =============================================================================
+// These files contain deeply nested type operations that force TypeScript
+// to do expensive type resolution. Each file is independent (no cross-imports)
+// so they don't accumulate memory.
 
-export type { DeepPartial, DeepRequired, NestedConfig, RecursiveRecord };
+function generateComplexTypeFile(index) {
+  // Each file has unique type names to avoid conflicts but similar complexity
+  const depth = 8 + (index % 4);  // Vary depth 8-11 for different complexity
+  
+  return `// Complex type file ${index} - forces expensive TypeScript type inference
+// This file takes ~2-3 seconds to type-check but uses minimal memory
+
+// Recursive type builders
+type Prev = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+
+// Deep recursive object type
+type DeepObject_${index}<T, D extends number = ${depth}> = D extends 0
+  ? T
+  : { value: T; nested: DeepObject_${index}<T, Prev[D]>; meta: { depth: D; index: ${index} } };
+
+// Recursive array flattening
+type Flatten_${index}<T> = T extends Array<infer U>
+  ? U extends Array<unknown>
+    ? Flatten_${index}<U>
+    : U
+  : T;
+
+// Complex conditional type chain
+type Transform_${index}<T, D extends number = ${depth}> = D extends 0
+  ? T
+  : T extends string
+    ? Transform_${index}<\`[\${T}]\`, Prev[D]>
+    : T extends number
+      ? Transform_${index}<[T, T], Prev[D]>
+      : T extends boolean
+        ? Transform_${index}<{ flag: T }, Prev[D]>
+        : T extends object
+          ? Transform_${index}<{ wrapped: T; level: D }, Prev[D]>
+          : T;
+
+// Union to tuple conversion (expensive)
+type UnionToIntersection_${index}<U> = 
+  (U extends unknown ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
+
+type LastOfUnion_${index}<T> = 
+  UnionToIntersection_${index}<T extends unknown ? () => T : never> extends () => infer R ? R : never;
+
+type UnionToTuple_${index}<T, L = LastOfUnion_${index}<T>, N = [T] extends [never] ? true : false> = 
+  true extends N ? [] : [...UnionToTuple_${index}<Exclude<T, L>>, L];
+
+// Mapped type with conditional transformations
+type MapDeep_${index}<T, D extends number = ${depth}> = D extends 0
+  ? T
+  : T extends object
+    ? { [K in keyof T]: MapDeep_${index}<T[K], Prev[D]> }
+    : T extends Array<infer U>
+      ? MapDeep_${index}<U, Prev[D]>[]
+      : Transform_${index}<T, D>;
+
+// String manipulation types (expensive)
+type Split_${index}<S extends string, D extends string = ''> = 
+  S extends \`\${infer H}\${D}\${infer T}\` 
+    ? [H, ...Split_${index}<T, D>] 
+    : S extends '' 
+      ? [] 
+      : [S];
+
+type Join_${index}<T extends string[], D extends string = ''> = 
+  T extends [] 
+    ? '' 
+    : T extends [infer F extends string] 
+      ? F 
+      : T extends [infer F extends string, ...infer R extends string[]] 
+        ? \`\${F}\${D}\${Join_${index}<R, D>}\` 
+        : never;
+
+// Permutation type (exponential complexity, but bounded)
+type Permutation_${index}<T, K = T> = [T] extends [never]
+  ? []
+  : K extends K
+    ? [K, ...Permutation_${index}<Exclude<T, K>>]
+    : never;
+
+// Complex interface using all the above
+interface ComplexData_${index}<T = unknown> {
+  id: string;
+  data: DeepObject_${index}<T>;
+  transformed: Transform_${index}<T>;
+  flattened: T extends Array<unknown> ? Flatten_${index}<T> : T;
+  mapped: MapDeep_${index}<T>;
+  meta: {
+    index: ${index};
+    depth: ${depth};
+    timestamp: number;
+  };
+}
+
+// Type that forces evaluation of all nested types
+type ForceEval_${index}<T> = T extends object
+  ? { [K in keyof T]: ForceEval_${index}<T[K]> }
+  : T;
+
+// Export types to ensure they're checked
+export type {
+  DeepObject_${index},
+  Flatten_${index},
+  Transform_${index},
+  MapDeep_${index},
+  Split_${index},
+  Join_${index},
+  Permutation_${index},
+  ComplexData_${index},
+  ForceEval_${index},
+};
+
+// Force type instantiation with concrete types
+type _Test1_${index} = ForceEval_${index}<ComplexData_${index}<string>>;
+type _Test2_${index} = ForceEval_${index}<ComplexData_${index}<number[]>>;
+type _Test3_${index} = ForceEval_${index}<ComplexData_${index}<{ a: string; b: number; c: boolean }>>;
+type _Test4_${index} = ForceEval_${index}<Transform_${index}<'hello'>>;
+type _Test5_${index} = ForceEval_${index}<MapDeep_${index}<{ nested: { deep: { value: string } } }>>;
+
+// Verify types are used (prevents dead code elimination)
+declare const _verify_${index}: _Test1_${index} & _Test2_${index} & _Test3_${index} & _Test4_${index} & _Test5_${index};
 `;
 }
 
-// Generate a component with heavy computation and complex types
-function generateComponent(index) {
+// =============================================================================
+// Shared Components (Memory-Efficient Pool)
+// =============================================================================
+// These are simpler components that SSG pages will import.
+// Kept small and simple to minimize memory usage.
+
+function generateSharedComponent(index) {
   return `'use client';
-import React, { useState, useEffect, useMemo, useCallback, useRef, memo } from 'react';
+import React, { memo } from 'react';
 
-// Complex nested types for this component
-interface DataLevel3_${index} {
-  value: string;
-  computed: number;
-  metadata: Record<string, unknown>;
+interface Props {
+  id: string;
+  value: number;
+  label?: string;
 }
 
-interface DataLevel2_${index} {
-  level3: DataLevel3_${index};
-  items: Array<{ id: number; name: string }>;
-}
-
-interface DataLevel1_${index} {
-  level2: DataLevel2_${index};
-  config: { enabled: boolean; threshold: number };
-}
-
-interface Props${index} {
-  data: {
-    id: string;
-    name: string;
-    values: number[];
-    nested: {
-      level1: DataLevel1_${index};
-    };
-  };
-  onUpdate?: (data: Props${index}['data']) => void;
-  config?: Partial<{
-    enabled: boolean;
-    threshold: number;
-    options: Array<{ key: string; value: unknown }>;
-    callbacks: {
-      onStart?: () => void;
-      onComplete?: (result: unknown) => void;
-      onError?: (error: Error) => void;
-    };
-  }>;
-}
-
-type State${index} = {
-  loading: boolean;
-  error: Error | null;
-  result: Props${index}['data'] | null;
-  history: Props${index}['data'][];
-  computed: number;
-};
-
-type Action${index} = 
-  | { type: 'LOADING' }
-  | { type: 'SUCCESS'; payload: Props${index}['data'] }
-  | { type: 'ERROR'; error: Error }
-  | { type: 'COMPUTE'; value: number }
-  | { type: 'RESET' };
-
-function reducer${index}(state: State${index}, action: Action${index}): State${index} {
-  switch (action.type) {
-    case 'LOADING':
-      return { ...state, loading: true, error: null };
-    case 'SUCCESS':
-      return { 
-        ...state, 
-        loading: false, 
-        result: action.payload,
-        history: [...state.history, action.payload].slice(-10)
-      };
-    case 'ERROR':
-      return { ...state, loading: false, error: action.error };
-    case 'COMPUTE':
-      return { ...state, computed: action.value };
-    case 'RESET':
-      return { loading: false, error: null, result: null, history: [], computed: 0 };
-    default:
-      return state;
-  }
-}
-
-function useComputation${index}(input: number[]): number {
-  return useMemo(() => {
-    let result = 0;
-    for (let i = 0; i < input.length; i++) {
-      for (let j = 0; j < 10; j++) {
-        result += Math.sin(input[i] + j) * Math.cos(input[i] - j) * Math.tan((input[i] + j) * 0.1 + 0.01);
-      }
-    }
-    return result;
-  }, [input]);
-}
-
-function useDeepMemo${index}<T>(value: T, deps: React.DependencyList): T {
-  const ref = useRef<T>(value);
-  const depsRef = useRef<React.DependencyList>(deps);
+const SharedComponent${index} = memo(function SharedComponent${index}({ id, value, label }: Props) {
+  const computed = Math.sin(value * ${index + 1}) * Math.cos(value);
   
-  if (JSON.stringify(deps) !== JSON.stringify(depsRef.current)) {
-    ref.current = value;
-    depsRef.current = deps;
-  }
-  
-  return ref.current;
-}
-
-const Component${index} = memo(function Component${index}({ data, onUpdate, config }: Props${index}) {
-  const [state, setState] = useState<State${index}>({
-    loading: false,
-    error: null,
-    result: null,
-    history: [],
-    computed: 0,
-  });
-  
-  const ref = useRef<HTMLDivElement>(null);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const computation = useComputation${index}(data.values);
-  
-  const memoizedData = useDeepMemo${index}(data, [data.id, data.name, ...data.values]);
-  
-  const handleClick = useCallback(() => {
-    if (onUpdate && config?.enabled) {
-      config?.callbacks?.onStart?.();
-      onUpdate({
-        ...data,
-        values: data.values.map(v => v * (config.threshold || 1)),
-      });
-      config?.callbacks?.onComplete?.(data);
-    }
-  }, [data, onUpdate, config]);
-
-  const processData = useCallback(async () => {
-    setState(prev => ({ ...prev, loading: true }));
-    try {
-      await new Promise(resolve => setTimeout(resolve, 10));
-      setState(prev => ({ 
-        ...prev, 
-        loading: false, 
-        result: memoizedData,
-        history: [...prev.history, memoizedData].slice(-5),
-        computed: computation
-      }));
-    } catch (error) {
-      setState(prev => ({ ...prev, loading: false, error: error as Error }));
-      config?.callbacks?.onError?.(error as Error);
-    }
-  }, [memoizedData, computation, config?.callbacks]);
-
-  useEffect(() => {
-    processData();
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, [processData]);
-
-  if (state.loading) {
-    return <div ref={ref} className="animate-pulse p-4">Loading ${index}...</div>;
-  }
-
-  if (state.error) {
-    return <div ref={ref} className="text-red-500 p-4">Error: {state.error.message}</div>;
-  }
-
   return (
-    <div 
-      ref={ref} 
-      onClick={handleClick} 
-      className="p-4 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:shadow-md transition-shadow"
-    >
-      <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">Component ${index}</h3>
-      <div className="mt-2 text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
-        <p>Computation: {computation.toFixed(4)}</p>
-        <p>ID: {data.id}</p>
-        <p>Nested: {data.nested.level1.level2.level3.value}</p>
-        <p>History: {state.history.length} items</p>
-        <p>State computed: {state.computed.toFixed(2)}</p>
-      </div>
-      {config?.options && (
-        <div className="mt-2 flex flex-wrap gap-1">
-          {config.options.map((opt, i) => (
-            <span key={i} className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded text-xs">
-              {opt.key}
-            </span>
-          ))}
-        </div>
-      )}
+    <div className="p-2 border border-zinc-200 dark:border-zinc-700 rounded">
+      <span className="font-medium">{label || 'Item'} {id}</span>
+      <span className="ml-2 text-zinc-500">{computed.toFixed(2)}</span>
     </div>
   );
 });
 
-Component${index}.displayName = 'Component${index}';
-
-export default Component${index};
-export type { Props${index}, State${index}, Action${index} };
+SharedComponent${index}.displayName = 'SharedComponent${index}';
+export default SharedComponent${index};
 `;
 }
 
-// Generate API route
-function generateApiRoute(index) {
-  return `import { NextResponse } from 'next/server';
+// =============================================================================
+// OPTION 5: SSG Pages
+// =============================================================================
+// Each page imports from the shared component pool and does server-side work.
+// Memory efficient because components are already loaded.
 
-export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
-
-interface RequestBody {
-  data: string;
-  timestamp: number;
-  options?: Record<string, unknown>;
-}
-
-interface ResponseData {
-  id: number;
-  processed: boolean;
-  result: string;
-  computation: number;
-  meta: {
-    processingTime: number;
-    index: number;
-    memoryUsage: number;
-  };
-}
-
-function heavyComputation(iterations: number): number {
-  let result = 0;
-  for (let i = 0; i < iterations; i++) {
-    result += Math.sin(i * 0.001) * Math.cos(i * 0.001) * Math.tan(i * 0.0001 + 0.01);
-  }
-  return result;
-}
-
-export async function GET(): Promise<NextResponse<ResponseData>> {
-  const startTime = Date.now();
+function generateSSGPage(pageIndex, totalComponents) {
+  // Each page imports a subset of components (rotating window)
+  const componentsPerPage = Math.min(20, totalComponents);
+  const startIdx = (pageIndex * 7) % totalComponents;  // Offset to vary imports
   
-  const computation = heavyComputation(1000);
-  
-  return NextResponse.json({
-    id: ${index},
-    processed: true,
-    result: \`API Route ${index} processed successfully\`,
-    computation,
-    meta: {
-      processingTime: Date.now() - startTime,
-      index: ${index},
-      memoryUsage: process.memoryUsage().heapUsed,
-    },
-  });
-}
-
-export async function POST(request: Request): Promise<NextResponse<ResponseData>> {
-  const startTime = Date.now();
-  
-  let body: RequestBody;
-  try {
-    body = await request.json();
-  } catch {
-    body = { data: '', timestamp: Date.now() };
+  const imports = [];
+  const componentNames = [];
+  for (let i = 0; i < componentsPerPage; i++) {
+    const compIdx = (startIdx + i) % totalComponents;
+    imports.push(`import SharedComponent${compIdx} from '@/generated/components/SharedComponent${compIdx}';`);
+    componentNames.push(`SharedComponent${compIdx}`);
   }
   
-  const computation = heavyComputation(500);
-  
-  return NextResponse.json({
-    id: ${index},
-    processed: true,
-    result: \`Processed: \${body.data} at \${body.timestamp}\`,
-    computation,
-    meta: {
-      processingTime: Date.now() - startTime,
-      index: ${index},
-      memoryUsage: process.memoryUsage().heapUsed,
-    },
-  });
-}
-`;
-}
+  return `// SSG Page ${pageIndex} - Pre-rendered at build time
+${imports.join('\n')}
 
-// Generate SSG dynamic route with generateStaticParams
-// This creates a single [slug]/page.tsx that pre-renders many pages at build time
-function generateSSGRoute(totalPages) {
-  return `// SSG route - pre-renders ${totalPages} pages at build time
-// Each page does heavy server-side computation to extend E2E time
-
-// Generate static params for all pages
-export function generateStaticParams() {
-  const params = [];
-  for (let i = 0; i < ${totalPages}; i++) {
-    params.push({ slug: \`page-\${i}\` });
+// Server-side computation during SSG
+function computePageData(pageId: number) {
+  let result = pageId;
+  // Intentionally expensive computation during build
+  for (let i = 0; i < 10000; i++) {
+    result = Math.sin(result + i * 0.001) * Math.cos(result) + Math.sqrt(Math.abs(result) + 1);
   }
-  return params;
-}
-
-// Heavy computation function that runs during SSG
-function heavyComputation(seed: number, iterations: number = 50000): number {
-  let result = seed;
-  for (let i = 0; i < iterations; i++) {
-    result = Math.sin(result + i * 0.001) * Math.cos(result - i * 0.001) + Math.sqrt(Math.abs(result));
-    result = (result * 1000000) % 1000;
-  }
-  return result;
-}
-
-// Simulate data fetching with computation
-async function getPageData(slug: string) {
-  const pageNum = parseInt(slug.replace('page-', ''), 10) || 0;
-  
-  // Heavy computation during SSG - this is what adds time
-  const computations = [];
-  for (let i = 0; i < 10; i++) {
-    computations.push(heavyComputation(pageNum * 1000 + i));
-  }
-  
   return {
-    slug,
-    pageNum,
-    computations,
+    pageId,
+    checksum: result,
     generatedAt: new Date().toISOString(),
-    checksum: computations.reduce((a, b) => a + b, 0),
+    componentCount: ${componentsPerPage},
   };
 }
 
-interface PageProps {
-  params: Promise<{ slug: string }>;
-}
-
-export default async function SSGPage({ params }: PageProps) {
-  const { slug } = await params;
-  const data = await getPageData(slug);
+export default async function SSGPage${pageIndex}() {
+  const data = computePageData(${pageIndex});
+  
+  const items = Array.from({ length: ${componentsPerPage} }, (_, i) => ({
+    id: \`\${${pageIndex}}-\${i}\`,
+    value: ${pageIndex} * 100 + i,
+    label: \`Page ${pageIndex} Item\`,
+  }));
   
   return (
-    <div className="p-8 min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <h1 className="text-2xl font-bold mb-4 text-zinc-900 dark:text-zinc-100">
-        SSG Page {data.pageNum}
+    <div className="p-6 min-h-screen bg-zinc-50 dark:bg-zinc-950">
+      <h1 className="text-xl font-bold mb-4 text-zinc-900 dark:text-zinc-100">
+        SSG Page ${pageIndex}
       </h1>
-      <div className="space-y-4 text-zinc-600 dark:text-zinc-400">
-        <p>Generated at: {data.generatedAt}</p>
-        <p>Checksum: {data.checksum.toFixed(4)}</p>
-        <div className="grid grid-cols-5 gap-2">
-          {data.computations.map((val, i) => (
-            <div key={i} className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded text-xs">
-              {val.toFixed(2)}
-            </div>
-          ))}
-        </div>
+      <p className="text-sm text-zinc-500 mb-4">
+        Generated: {data.generatedAt} | Checksum: {data.checksum.toFixed(4)}
+      </p>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        {[${componentNames.join(', ')}].map((Component, idx) => (
+          <Component key={idx} {...items[idx]} />
+        ))}
       </div>
     </div>
   );
@@ -471,70 +328,114 @@ export default async function SSGPage({ params }: PageProps) {
 `;
 }
 
-// Update build-config.json
+// =============================================================================
+// API Routes (minimal, for realism)
+// =============================================================================
+
+function generateApiRoute(index) {
+  return `import { NextResponse } from 'next/server';
+
+export const dynamic = 'force-dynamic';
+
+export async function GET() {
+  return NextResponse.json({
+    id: ${index},
+    message: 'API Route ${index}',
+    timestamp: Date.now(),
+  });
+}
+`;
+}
+
+// =============================================================================
+// Build Config
+// =============================================================================
+
 function updateBuildConfig() {
   const config = {
     BuildTimeOnStandard: `${buildMinutes}min`,
     FullTimeOnStandard: `${targetE2EMinutes}min`,
     MachineType: "Standard",
-    components: numComponents,
-    apiRoutes: numApiRoutes
+    components: BASE_COMPONENTS,
+    typeFiles: numTypeFiles,
+    ssgPages: numSSGPages,
+    apiRoutes: numApiRoutes,
+    strategy: "memory-efficient",
   };
   writeFileSync(
     join(projectRoot, 'build-config.json'),
     JSON.stringify(config, null, 2) + '\n'
   );
-  console.log(`Updated build-config.json:`, config);
+  console.log(`\nUpdated build-config.json:`, config);
 }
 
-// Write types file
-writeFileSync(
-  join(generatedDir, 'types.ts'),
-  generateComplexTypes()
-);
+// =============================================================================
+// Generate All Files
+// =============================================================================
 
-// Generate components
-console.log('Generating components...');
+// 1. Generate complex type files
+console.log('\n1. Generating complex type files...');
+const typeExports = [];
+for (let i = 0; i < numTypeFiles; i++) {
+  const typePath = join(generatedDir, 'types', `complex${i}.ts`);
+  writeFileSync(typePath, generateComplexTypeFile(i));
+  typeExports.push(`export * from './complex${i}';`);
+  
+  if ((i + 1) % 20 === 0) {
+    console.log(`   Generated ${i + 1}/${numTypeFiles} type files`);
+  }
+}
+// Write types index
+writeFileSync(join(generatedDir, 'types', 'index.ts'), typeExports.join('\n'));
+console.log(`   Generated ${numTypeFiles} type files`);
+
+// 2. Generate shared components
+console.log('\n2. Generating shared components...');
 const componentExports = [];
-for (let i = 0; i < numComponents; i++) {
-  const componentPath = join(generatedDir, 'components', `Component${i}.tsx`);
-  writeFileSync(componentPath, generateComponent(i));
-  componentExports.push(`export { default as Component${i} } from './components/Component${i}';`);
+for (let i = 0; i < BASE_COMPONENTS; i++) {
+  const componentPath = join(generatedDir, 'components', `SharedComponent${i}.tsx`);
+  writeFileSync(componentPath, generateSharedComponent(i));
+  componentExports.push(`export { default as SharedComponent${i} } from './components/SharedComponent${i}';`);
   
   if ((i + 1) % 100 === 0) {
-    console.log(`  Generated ${i + 1}/${numComponents} components`);
+    console.log(`   Generated ${i + 1}/${BASE_COMPONENTS} components`);
   }
 }
+// Write components index
+writeFileSync(join(generatedDir, 'index.ts'), componentExports.join('\n'));
+console.log(`   Generated ${BASE_COMPONENTS} shared components`);
 
-// Write index file for components
-writeFileSync(
-  join(generatedDir, 'index.ts'),
-  componentExports.join('\n')
-);
-
-// Generate API routes
-if (numApiRoutes > 0) {
-  console.log('Generating API routes...');
-  mkdirSync(apiGeneratedDir, { recursive: true });
+// 3. Generate SSG pages
+console.log('\n3. Generating SSG pages...');
+mkdirSync(ssgDir, { recursive: true });
+for (let i = 0; i < numSSGPages; i++) {
+  const pageDir = join(ssgDir, `page${i}`);
+  mkdirSync(pageDir, { recursive: true });
+  writeFileSync(join(pageDir, 'page.tsx'), generateSSGPage(i, BASE_COMPONENTS));
   
-  for (let i = 0; i < numApiRoutes; i++) {
-    const routeDir = join(apiGeneratedDir, `route${i}`);
-    mkdirSync(routeDir, { recursive: true });
-    writeFileSync(join(routeDir, 'route.ts'), generateApiRoute(i));
-    
-    if ((i + 1) % 20 === 0) {
-      console.log(`  Generated ${i + 1}/${numApiRoutes} API routes`);
-    }
+  if ((i + 1) % 50 === 0) {
+    console.log(`   Generated ${i + 1}/${numSSGPages} SSG pages`);
   }
 }
+console.log(`   Generated ${numSSGPages} SSG pages`);
 
-// SSG pages removed - component count now controls E2E time directly
+// 4. Generate API routes
+console.log('\n4. Generating API routes...');
+mkdirSync(apiGeneratedDir, { recursive: true });
+for (let i = 0; i < numApiRoutes; i++) {
+  const routeDir = join(apiGeneratedDir, `route${i}`);
+  mkdirSync(routeDir, { recursive: true });
+  writeFileSync(join(routeDir, 'route.ts'), generateApiRoute(i));
+}
+console.log(`   Generated ${numApiRoutes} API routes`);
 
-// Update build config
+// 5. Update build config
 updateBuildConfig();
 
-console.log('\nGeneration complete!');
-console.log(`Total files generated:`);
-console.log(`  - ${numComponents} components`);
-console.log(`  - ${numApiRoutes} API routes`);
-console.log(`Expected E2E on Standard: ~${targetE2EMinutes}min`);
+console.log('\n========================================');
+console.log('Generation complete!');
+console.log('========================================');
+console.log(`Strategy: Memory-efficient (complex types + SSG pages)`);
+console.log(`Expected build time on Standard: ~${buildMinutes} min`);
+console.log(`Expected E2E time on Standard: ~${targetE2EMinutes} min`);
+console.log('');
