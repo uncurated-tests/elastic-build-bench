@@ -1,6 +1,9 @@
 import { list, put } from '@vercel/blob';
 import BenchmarkTable from './components/BenchmarkTable';
 
+// Revalidate every 60 seconds to pick up new build data
+export const revalidate = 60;
+
 interface TimingRecord {
   runId: string;
   gitCommit: string;
