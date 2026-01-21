@@ -1,0 +1,17 @@
+/* Page 850 styles */
+.page-850 {
+  --page-index: 850;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-850-header {
+  font-size: calc(1rem + 0px);
+  color: hsl(130, 70%, 50%);
+}
+
+.page-850-content {
+  padding: 3rem;
+  border-radius: 6px;
+}
