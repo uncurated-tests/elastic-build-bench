@@ -74,58 +74,67 @@ const BASE_COMPONENTS = 500;  // Shared component pool
 // =============================================================================
 
 // =============================================================================
-// Calibration v4: Fixed OOM issue + Empirically calibrated rates
+// Calibration v5: Heavy SSG computation strategy
 // =============================================================================
-// Problem: Builds with 2400+ pages fail with "invalid_output" error
-// Solution: Cap pages at 2000 and increase type files for longer builds
+// Problem v4: Type files don't contribute to Turbopack builds
+// Finding: Only SSG page count drives build time, but >2000 pages = OOM
+// Solution: Make each SSG page do MORE computation for longer builds
 //
-// Empirically measured rates from successful Standard builds:
-//   Base overhead: 18s
-//   Per type file: 0.3s  
-//   Per SSG page:  0.08s
+// Empirical data from Standard builds:
+//   480 pages (light) = 75s   → 0.156s/page
+//   960 pages (light) = 139s  → 0.145s/page
+//   1920 pages (light) = 246s → 0.128s/page
+//   2000 pages (light) = ~260s → 0.130s/page
 //
-// Formula: buildTime = 18 + (0.3 * types) + (0.08 * pages)
+// New strategy: Scale computation intensity per page
+//   Base: 10,000 iterations = ~0.13s/page  
+//   For longer builds: increase iterations proportionally
+//
+// Target formula: buildTime = 18 + (pages * secondsPerPage)
+//   where secondsPerPage scales with computation intensity
 // =============================================================================
 const BASE_OVERHEAD = 18;           // seconds
-const SECONDS_PER_TYPE = 0.3;       // seconds per type file
-const SECONDS_PER_PAGE = 0.08;      // seconds per SSG page
 const MAX_SSG_PAGES = 2000;         // Cap to avoid OOM errors
+const BASE_ITERATIONS = 10000;      // Baseline iterations per page
+const BASE_SECONDS_PER_PAGE = 0.13; // Time per page with base iterations
 
-// Calculate target build time
+// Calculate target build time and required page time
 const targetSeconds = buildMinutes * 60;
 const availableSeconds = targetSeconds - BASE_OVERHEAD;
 
-// Strategy: Allocate ~60% of time to pages, ~40% to types (more balanced)
-// This distributes load more evenly and avoids extreme values
-const pageTimeAllocation = 0.6;
-const typeTimeAllocation = 0.4;
+// For builds up to ~4min, use more pages with base computation
+// For builds >4min, use max pages with heavier computation
+let numSSGPages;
+let computationIterations;
 
-let pageSeconds = availableSeconds * pageTimeAllocation;
-let typeSeconds = availableSeconds * typeTimeAllocation;
-
-// Calculate initial values
-let numSSGPages = Math.floor(pageSeconds / SECONDS_PER_PAGE);
-let numTypeFiles = Math.ceil(typeSeconds / SECONDS_PER_TYPE);
-
-// Apply page cap and redistribute excess to types
-if (numSSGPages > MAX_SSG_PAGES) {
-  const excessPages = numSSGPages - MAX_SSG_PAGES;
-  const excessTime = excessPages * SECONDS_PER_PAGE;
+if (availableSeconds <= MAX_SSG_PAGES * BASE_SECONDS_PER_PAGE) {
+  // Short builds: scale pages, use base computation
+  numSSGPages = Math.floor(availableSeconds / BASE_SECONDS_PER_PAGE);
+  computationIterations = BASE_ITERATIONS;
+} else {
+  // Long builds: use max pages, scale computation intensity
   numSSGPages = MAX_SSG_PAGES;
-  numTypeFiles += Math.ceil(excessTime / SECONDS_PER_TYPE);
+  const requiredSecondsPerPage = availableSeconds / MAX_SSG_PAGES;
+  const scaleFactor = requiredSecondsPerPage / BASE_SECONDS_PER_PAGE;
+  computationIterations = Math.floor(BASE_ITERATIONS * scaleFactor);
 }
 
 // Ensure minimum values
 numSSGPages = Math.max(100, numSSGPages);
-numTypeFiles = Math.max(30, numTypeFiles);
+computationIterations = Math.max(BASE_ITERATIONS, computationIterations);
+
+// Minimal type files (just for TypeScript project realism)
+let numTypeFiles = 30;
 
 // Estimate actual build time
-const estimatedSeconds = BASE_OVERHEAD + (SECONDS_PER_TYPE * numTypeFiles) + (SECONDS_PER_PAGE * numSSGPages);
+const estimatedSecondsPerPage = BASE_SECONDS_PER_PAGE * (computationIterations / BASE_ITERATIONS);
+const estimatedSeconds = BASE_OVERHEAD + (numSSGPages * estimatedSecondsPerPage);
 console.log(`\nTarget: ${buildMinutes}min (${targetSeconds}s)`);
 console.log(`Estimated: ${(estimatedSeconds/60).toFixed(1)}min (${Math.round(estimatedSeconds)}s)`);
+console.log(`Computation intensity: ${computationIterations.toLocaleString()} iterations/page`);
 
-if (numSSGPages === MAX_SSG_PAGES) {
-  console.log(`Note: Capped pages at ${MAX_SSG_PAGES} to avoid OOM, using ${numTypeFiles} type files`);
+if (numSSGPages === MAX_SSG_PAGES && computationIterations > BASE_ITERATIONS) {
+  console.log(`Note: Using max pages (${MAX_SSG_PAGES}) with ${(computationIterations/BASE_ITERATIONS).toFixed(1)}x computation`);
 }
 
 // Minimal API routes (not for timing, just for realism)
@@ -332,7 +341,7 @@ export default SharedComponent${index};
 // Each page imports from the shared component pool and does server-side work.
 // Memory efficient because components are already loaded.
 
-function generateSSGPage(pageIndex, totalComponents) {
+function generateSSGPage(pageIndex, totalComponents, iterations) {
   // Each page imports a subset of components (rotating window)
   const componentsPerPage = Math.min(20, totalComponents);
   const startIdx = (pageIndex * 7) % totalComponents;  // Offset to vary imports
@@ -348,11 +357,12 @@ function generateSSGPage(pageIndex, totalComponents) {
   return `// SSG Page ${pageIndex} - Pre-rendered at build time
 ${imports.join('\n')}
 
-// Server-side computation during SSG
+// Server-side computation during SSG (${iterations.toLocaleString()} iterations)
 function computePageData(pageId: number) {
   let result = pageId;
-  // Intentionally expensive computation during build
-  for (let i = 0; i < 10000; i++) {
+  // Expensive computation during build - scaled for target build time
+  const ITERATIONS = ${iterations};
+  for (let i = 0; i < ITERATIONS; i++) {
     result = Math.sin(result + i * 0.001) * Math.cos(result) + Math.sqrt(Math.abs(result) + 1);
   }
   return {
@@ -360,6 +370,7 @@ function computePageData(pageId: number) {
     checksum: result,
     generatedAt: new Date().toISOString(),
     componentCount: ${componentsPerPage},
+    iterations: ITERATIONS,
   };
 }
 
@@ -422,8 +433,9 @@ function updateBuildConfig() {
     components: BASE_COMPONENTS,
     typeFiles: numTypeFiles,
     ssgPages: numSSGPages,
+    computationIterations: computationIterations,
     apiRoutes: numApiRoutes,
-    strategy: "memory-efficient",
+    strategy: "heavy-ssg-v5",
   };
   writeFileSync(
     join(projectRoot, 'build-config.json'),
@@ -474,7 +486,7 @@ mkdirSync(ssgDir, { recursive: true });
 for (let i = 0; i < numSSGPages; i++) {
   const pageDir = join(ssgDir, `page${i}`);
   mkdirSync(pageDir, { recursive: true });
-  writeFileSync(join(pageDir, 'page.tsx'), generateSSGPage(i, BASE_COMPONENTS));
+  writeFileSync(join(pageDir, 'page.tsx'), generateSSGPage(i, BASE_COMPONENTS, computationIterations));
   
   if ((i + 1) % 50 === 0) {
     console.log(`   Generated ${i + 1}/${numSSGPages} SSG pages`);
