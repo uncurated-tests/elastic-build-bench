@@ -328,9 +328,6 @@ export default async function Home() {
                       Build Cost
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Reduction
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                       Branch
                     </th>
                   </tr>
@@ -381,12 +378,28 @@ export default async function Home() {
                         </span>
                       </td>
                       <td className="px-4 py-3 text-sm font-mono">
-                        <span className={`px-2 py-1 rounded text-xs ${
-                          record.durations.totalWithDeploymentMs 
-                            ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' 
-                            : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500'
-                        }`}>
-                          {formatDuration(record.durations.totalWithDeploymentMs)}
+                        <span className="inline-flex items-center gap-1.5">
+                          <span className={`px-2 py-1 rounded text-xs ${
+                            record.durations.totalWithDeploymentMs 
+                              ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' 
+                              : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500'
+                          }`}>
+                            {formatDuration(record.durations.totalWithDeploymentMs)}
+                          </span>
+                          {(() => {
+                            const reduction = getBuildTimeReduction(record);
+                            if (reduction === '-') return null;
+                            const isReduction = reduction.startsWith('-');
+                            return (
+                              <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+                                isReduction
+                                  ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                  : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                              }`}>
+                                {reduction}
+                              </span>
+                            );
+                          })()}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-sm font-mono">
@@ -399,27 +412,33 @@ export default async function Home() {
                             : record.config.MachineType === 'Enhanced' ? 0.028 
                             : 0.014;
                           const cost = (minutes * costPerMin).toFixed(3);
-                          return (
-                            <span className="px-2 py-1 rounded text-xs bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
-                              ${cost}
-                            </span>
-                          );
-                        })()}
-                      </td>
-                      <td className="px-4 py-3 text-sm font-mono">
-                        {(() => {
-                          const reduction = getBuildTimeReduction(record);
-                          if (reduction === '-') {
-                            return <span className="text-zinc-400">-</span>;
+                          
+                          // Calculate Standard cost for comparison
+                          const key = `${record.config.BuildTimeOnStandard}-${record.config.FullTimeOnStandard}`;
+                          const standardE2E = standardE2EMap.get(key);
+                          let costDelta = null;
+                          if (record.config.MachineType !== 'Standard' && standardE2E) {
+                            const standardMinutes = Math.ceil(standardE2E / 60000);
+                            const standardCost = standardMinutes * 0.014;
+                            const currentCost = minutes * costPerMin;
+                            const delta = ((currentCost - standardCost) / standardCost) * 100;
+                            costDelta = delta;
                           }
-                          const isReduction = reduction.startsWith('-');
+                          
                           return (
-                            <span className={`px-2 py-1 rounded text-xs font-medium ${
-                              isReduction
-                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                                : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-                            }`}>
-                              {reduction}
+                            <span className="inline-flex items-center gap-1.5">
+                              <span className="px-2 py-1 rounded text-xs bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
+                                ${cost}
+                              </span>
+                              {costDelta !== null && (
+                                <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+                                  costDelta < 0
+                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                                }`}>
+                                  {costDelta < 0 ? `${costDelta.toFixed(0)}%` : `+${costDelta.toFixed(0)}%`}
+                                </span>
+                              )}
                             </span>
                           );
                         })()}
