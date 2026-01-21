@@ -1,0 +1,17 @@
+/* Page 1122 styles */
+.page-1122 {
+  --page-index: 1122;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1122-header {
+  font-size: calc(1rem + 2px);
+  color: hsl(114, 70%, 50%);
+}
+
+.page-1122-content {
+  padding: 3rem;
+  border-radius: 6px;
+}
