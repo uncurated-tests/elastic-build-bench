@@ -1,0 +1,17 @@
+/* Page 907 styles */
+.page-907 {
+  --page-index: 907;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-907-header {
+  font-size: calc(1rem + 7px);
+  color: hsl(79, 70%, 50%);
+}
+
+.page-907-content {
+  padding: 4rem;
+  border-radius: 7px;
+}

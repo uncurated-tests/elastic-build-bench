@@ -1,0 +1,17 @@
+/* Page 940 styles */
+.page-940 {
+  --page-index: 940;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-940-header {
+  font-size: calc(1rem + 0px);
+  color: hsl(220, 70%, 50%);
+}
+
+.page-940-content {
+  padding: 1rem;
+  border-radius: 8px;
+}
