@@ -355,6 +355,9 @@ export default async function Home() {
                       Actual E2E
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                      Ratio
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                       Build Cost
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
@@ -439,6 +442,15 @@ export default async function Home() {
                             );
                           })()}
                         </span>
+                      </td>
+                      <td className="px-4 py-3 text-sm font-mono text-zinc-600 dark:text-zinc-400">
+                        {(() => {
+                          const e2e = record.durations.totalWithDeploymentMs;
+                          const build = record.durations.totalMs;
+                          if (!e2e || !build) return '-';
+                          const ratio = e2e / build;
+                          return `${ratio.toFixed(2)}x`;
+                        })()}
                       </td>
                       <td className="px-4 py-3 text-sm font-mono">
                         {(() => {

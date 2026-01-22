@@ -140,6 +140,9 @@ export default function BenchmarkTable({ records, standardE2EMap, standardBuildM
                   E2E
                 </th>
                 <th className="px-3 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100 whitespace-nowrap">
+                  Ratio
+                </th>
+                <th className="px-3 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100 whitespace-nowrap">
                   Cost
                 </th>
                 {showBranch && (
@@ -220,6 +223,15 @@ export default function BenchmarkTable({ records, standardE2EMap, standardBuildM
                           )}
                         </span>
                       </td>
+                      <td className="px-3 py-2.5 text-sm font-mono text-zinc-600 dark:text-zinc-400 whitespace-nowrap">
+                        {(() => {
+                          const e2e = record.durations.totalWithDeploymentMs;
+                          const build = record.durations.totalMs;
+                          if (!e2e || !build) return '-';
+                          const ratio = e2e / build;
+                          return `${ratio.toFixed(2)}x`;
+                        })()}
+                      </td>
                       <td className="px-3 py-2.5 text-sm font-mono whitespace-nowrap">
                         {(() => {
                           if (!record.durations.totalWithDeploymentMs) {
@@ -284,7 +296,7 @@ export default function BenchmarkTable({ records, standardE2EMap, standardBuildM
                     </tr>
                     {isExpanded && (
                       <tr key={`${record.runId}-expanded`} className="bg-zinc-50 dark:bg-zinc-800/50">
-                        <td colSpan={showBranch ? 7 : 6} className="px-3 py-3">
+                        <td colSpan={showBranch ? 8 : 7} className="px-3 py-3">
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                             <div>
                               <p className="text-zinc-500 dark:text-zinc-500 mb-1">Branch</p>
