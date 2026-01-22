@@ -1,0 +1,17 @@
+/* Page 858 styles */
+.page-858 {
+  --page-index: 858;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-858-header {
+  font-size: calc(1rem + 8px);
+  color: hsl(66, 70%, 50%);
+}
+
+.page-858-content {
+  padding: 3rem;
+  border-radius: 6px;
+}
