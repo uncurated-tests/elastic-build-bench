@@ -15,7 +15,8 @@ const { targetSeconds, workerId, totalWorkers, standardCores } = workerData;
 // This determines how much TOTAL work we need for the target time on Standard
 // v20: 8.5M (20min build took 32min on Standard - 1.62x too slow)
 // v21: 14M (8.5M * 1.62 correction factor)
-const ITERATIONS_PER_SECOND_PER_CORE = 14_000_000;
+// v22: 20M (14M * 1.4 correction factor)
+const ITERATIONS_PER_SECOND_PER_CORE = 20_000_000;
 
 // Standard machine has 4 cores - this is our baseline
 const STANDARD_CORES = standardCores || 4;
