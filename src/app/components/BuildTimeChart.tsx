@@ -4,6 +4,7 @@ interface DataPoint {
   targetMin: number;
   actualSec: number;
   machine: 'Standard' | 'Enhanced' | 'Turbo';
+  label?: string;
 }
 
 interface BuildTimeChartProps {
@@ -97,10 +98,10 @@ export default function BuildTimeChart({ data }: BuildTimeChartProps) {
   return (
     <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6 mb-8">
       <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
-        Actual vs Target Build Time
+        Actual vs Target Trigger2Ready Time
       </h2>
       <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">
-        Points below the diagonal line indicate faster builds than target
+        Target = Compilation Target × Field Ratio. Points below diagonal are faster than expected.
       </p>
 
       <div className="overflow-x-auto">
@@ -200,7 +201,7 @@ export default function BuildTimeChart({ data }: BuildTimeChartProps) {
             transform={`rotate(-90, ${padding.left - 50}, ${height / 2})`}
             className="text-sm fill-zinc-600 dark:fill-zinc-400"
           >
-            Actual Build Time
+            Actual Trigger2Ready
           </text>
 
           {/* X-axis */}
@@ -238,7 +239,7 @@ export default function BuildTimeChart({ data }: BuildTimeChartProps) {
             textAnchor="middle"
             className="text-sm fill-zinc-600 dark:fill-zinc-400"
           >
-            Target Build Time
+            Target Trigger2Ready (Compilation × FieldRatio)
           </text>
         </svg>
       </div>

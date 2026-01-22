@@ -253,14 +253,39 @@ export default async function Home() {
     }
   }
 
-  // Prepare chart data
+  // Field ratios for calculating Target Trigger2Ready from Target Compilation
+  const fieldRatios: Record<number, number> = {
+    1: 1.82,
+    2: 1.38,
+    4: 1.28,
+    5: 1.23,
+    8: 1.19,
+    10: 1.14,
+    15: 1.10,
+    20: 1.09,
+  };
+
+  // Get field ratio for a given build time (interpolate if needed)
+  const getFieldRatio = (buildMin: number): number => {
+    if (fieldRatios[buildMin]) return fieldRatios[buildMin];
+    // Approximate using formula: multiplier ≈ 1 + (0.82 / buildMinutes^0.6)
+    return 1 + (0.82 / Math.pow(buildMin, 0.6));
+  };
+
+  // Prepare chart data - using Trigger2Ready (E2E) times
   const chartData = records
-    .filter(r => r.durations.totalMs && ['Standard', 'Enhanced', 'Turbo'].includes(r.config.MachineType))
-    .map(r => ({
-      targetMin: parseTime(r.config.BuildTimeOnStandard),
-      actualSec: (r.durations.totalMs || 0) / 1000,
-      machine: r.config.MachineType as 'Standard' | 'Enhanced' | 'Turbo',
-    }))
+    .filter(r => r.durations.totalWithDeploymentMs && ['Standard', 'Enhanced', 'Turbo'].includes(r.config.MachineType))
+    .map(r => {
+      const targetCompilationMin = parseTime(r.config.BuildTimeOnStandard);
+      const fieldRatio = getFieldRatio(targetCompilationMin);
+      const targetT2RMin = targetCompilationMin * fieldRatio;
+      return {
+        targetMin: targetT2RMin,
+        actualSec: (r.durations.totalWithDeploymentMs || 0) / 1000,
+        machine: r.config.MachineType as 'Standard' | 'Enhanced' | 'Turbo',
+        label: r.config.BuildTimeOnStandard,
+      };
+    })
     .filter(d => d.targetMin > 0);
 
   // Helper function to get deployment inspection URL
