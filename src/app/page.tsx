@@ -1,5 +1,7 @@
 import { list, put } from '@vercel/blob';
 import BenchmarkTable from './components/BenchmarkTable';
+import BuildTimeChart from './components/BuildTimeChart';
+import BuildCostChart from './components/BuildCostChart';
 
 // Revalidate every 60 seconds to pick up new build data
 export const revalidate = 60;
@@ -252,6 +254,67 @@ export default async function Home() {
     }
   }
 
+  // Field ratios for calculating Target Trigger2Ready from Target Compilation
+  const fieldRatios: Record<number, number> = {
+    1: 1.82,
+    2: 1.38,
+    4: 1.28,
+    5: 1.23,
+    8: 1.19,
+    10: 1.14,
+    15: 1.10,
+    20: 1.09,
+    30: 1.11,
+  };
+
+  // Get field ratio for a given build time (interpolate if needed)
+  const getFieldRatio = (buildMin: number): number => {
+    if (fieldRatios[buildMin]) return fieldRatios[buildMin];
+    // Approximate using formula: multiplier ≈ 1 + (0.82 / buildMinutes^0.6)
+    return 1 + (0.82 / Math.pow(buildMin, 0.6));
+  };
+
+  // Prepare chart data - using Trigger2Ready (E2E) times
+  const chartData = records
+    .filter(r => r.durations.totalWithDeploymentMs && ['Standard', 'Enhanced', 'Turbo'].includes(r.config.MachineType))
+    .map(r => {
+      const targetCompilationMin = parseTime(r.config.BuildTimeOnStandard);
+      const fieldRatio = getFieldRatio(targetCompilationMin);
+      const targetT2RMin = targetCompilationMin * fieldRatio;
+      return {
+        targetMin: targetT2RMin,
+        actualSec: (r.durations.totalWithDeploymentMs || 0) / 1000,
+        machine: r.config.MachineType as 'Standard' | 'Enhanced' | 'Turbo',
+        label: r.config.BuildTimeOnStandard,
+      };
+    })
+    .filter(d => d.targetMin > 0);
+
+  // Prepare cost chart data - Build Cost per second
+  const COST_PER_MIN = {
+    Standard: 0.014,
+    Enhanced: 0.028,
+    Turbo: 0.105,
+  };
+
+  const costChartData = records
+    .filter(r => r.durations.totalWithDeploymentMs && ['Standard', 'Enhanced', 'Turbo'].includes(r.config.MachineType))
+    .map(r => {
+      const targetCompilationMin = parseTime(r.config.BuildTimeOnStandard);
+      const fieldRatio = getFieldRatio(targetCompilationMin);
+      const targetT2RMin = targetCompilationMin * fieldRatio;
+      const machineType = r.config.MachineType as 'Standard' | 'Enhanced' | 'Turbo';
+      const seconds = (r.durations.totalWithDeploymentMs || 0) / 1000;
+      const costPerSec = seconds * (COST_PER_MIN[machineType] / 60);
+      return {
+        targetMin: targetT2RMin,
+        costPerSec,
+        machine: machineType,
+        label: r.config.BuildTimeOnStandard,
+      };
+    })
+    .filter(d => d.targetMin > 0);
+
   // Helper function to get deployment inspection URL
   const getDeploymentUrl = (record: TimingRecord): string | null => {
     if (record.deploymentId && record.vercelProjectName) {
@@ -334,28 +397,29 @@ export default async function Home() {
           </div>
         ) : (
           <>
+            {/* Charts */}
+            <BuildTimeChart data={chartData} />
+            <BuildCostChart data={costChartData} />
+
             {/* Desktop Table View */}
             <div className="hidden lg:block overflow-x-auto">
               <table className="w-full bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
                 <thead>
                   <tr className="bg-zinc-100 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700">
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Target Build
+                      Target Compilation
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Target E2E
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Target Ratio
+                      Target Trigger2Ready
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                       Machine
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Actual Build
+                      Actual Compilation
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Actual E2E
+                      Actual Trigger2Ready
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                       Actual Ratio
@@ -365,9 +429,6 @@ export default async function Home() {
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                       Build Cost (per sec.)
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Branch
                     </th>
                   </tr>
                 </thead>
@@ -383,19 +444,11 @@ export default async function Home() {
                         {record.config.BuildTimeOnStandard}
                       </td>
                       <td className="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-400">
-                        {record.config.FullTimeOnStandard}
-                      </td>
-                      <td className="px-4 py-3 text-sm font-mono text-zinc-600 dark:text-zinc-400">
                         {(() => {
-                          // Calculate target ratio from FullTimeOnStandard / BuildTimeOnStandard
-                          const buildMatch = record.config.BuildTimeOnStandard.match(/(\d+)/);
-                          const e2eMatch = record.config.FullTimeOnStandard.match(/(\d+)/);
-                          if (!buildMatch || !e2eMatch) return '-';
-                          const buildMin = parseInt(buildMatch[1], 10);
-                          const e2eMin = parseInt(e2eMatch[1], 10);
-                          if (buildMin === 0) return '-';
-                          const ratio = e2eMin / buildMin;
-                          return `${ratio.toFixed(1)}x`;
+                          const targetCompilationMin = parseTime(record.config.BuildTimeOnStandard);
+                          const fieldRatio = getFieldRatio(targetCompilationMin);
+                          const targetT2RMin = targetCompilationMin * fieldRatio;
+                          return `${targetT2RMin.toFixed(1)}min`;
                         })()}
                       </td>
                       <td className="px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 font-medium">
@@ -554,9 +607,6 @@ export default async function Home() {
                           );
                         })()}
                       </td>
-                      <td className="px-4 py-3 text-xs text-zinc-500 dark:text-zinc-500 font-mono truncate max-w-[150px]">
-                        {record.gitBranch}
-                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -604,7 +654,7 @@ export default async function Home() {
                             ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                             : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
                         }`}>
-                          E2E: {reduction}
+                          T2R: {reduction}
                         </span>
                       );
                     })()}
@@ -612,15 +662,22 @@ export default async function Home() {
                   
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div>
-                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Target Build</p>
+                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Target Compilation</p>
                       <p className="text-zinc-900 dark:text-zinc-100">{record.config.BuildTimeOnStandard}</p>
                     </div>
                     <div>
-                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Target E2E</p>
-                      <p className="text-zinc-900 dark:text-zinc-100">{record.config.FullTimeOnStandard}</p>
+                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Target Trigger2Ready</p>
+                      <p className="text-zinc-900 dark:text-zinc-100">
+                        {(() => {
+                          const targetCompilationMin = parseTime(record.config.BuildTimeOnStandard);
+                          const fieldRatio = getFieldRatio(targetCompilationMin);
+                          const targetT2RMin = targetCompilationMin * fieldRatio;
+                          return `${targetT2RMin.toFixed(1)}min`;
+                        })()}
+                      </p>
                     </div>
                     <div>
-                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Actual Build</p>
+                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Actual Compilation</p>
                       <span className="inline-flex items-center gap-1">
                         <span className={`px-2 py-1 rounded text-xs font-mono ${
                           record.durations.totalMs 
@@ -646,7 +703,7 @@ export default async function Home() {
                       </span>
                     </div>
                     <div>
-                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Actual E2E</p>
+                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Actual Trigger2Ready</p>
                       <span className={`px-2 py-1 rounded text-xs font-mono ${
                         record.durations.totalWithDeploymentMs 
                           ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' 
@@ -669,32 +726,45 @@ export default async function Home() {
           </h2>
           <div className="text-sm text-zinc-600 dark:text-zinc-400 space-y-3">
             <p>
-              This benchmark measures Vercel build performance across different machine types by using 
-              synthetically generated Next.js applications with controlled complexity levels.
+              This benchmark measures Vercel build performance across different machine types by generating 
+              synthetic Next.js applications with predictable build times using real CPU work.
             </p>
+            
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Synthetic Load Generation</h3>
             <ul className="list-disc list-inside space-y-2 ml-2">
               <li>
-                <strong>Build Time Control:</strong> Each branch contains a specific number of React components 
-                (~28-35 components per second of target build time on Standard machines). Components include 
-                complex TypeScript types, React hooks, and state management to stress the compiler.
+                <strong>SSG Pages:</strong> Up to 2,000 statically generated pages with shared React components 
+                and CSS files. Each page adds ~0.045s to build time, providing up to ~90s of build work.
               </li>
               <li>
-                <strong>E2E Multiplier:</strong> The &quot;2x&quot; and &quot;3x&quot; variants add additional API routes and 
-                static pages to extend the total deployment time beyond just compilation.
+                <strong>Multi-threaded CPU Burn:</strong> For builds targeting &gt;2 minutes, a prebuild phase 
+                performs real CPU-intensive math operations using Node.js worker threads. Work is calibrated 
+                at 5M iterations/second/core and <em>divided among available cores</em>, so machines with more 
+                cores complete faster (e.g., Turbo with 30 cores finishes ~7.5x faster than Standard with 4 cores).
               </li>
               <li>
-                <strong>Timing Instrumentation:</strong> A custom build script records timestamps at each phase 
-                (dependency install, compilation, deployment) and uploads them to Vercel Blob storage.
-              </li>
-              <li>
-                <strong>Machine Detection:</strong> The same codebase is deployed to three Vercel projects 
-                configured with different machine types (Standard, Enhanced, Turbo), allowing direct comparison.
-              </li>
-              <li>
-                <strong>Build Time Reduction:</strong> Shows the percentage improvement in E2E time compared to 
-                the Standard machine baseline for the same workload configuration.
+                <strong>E2E Ratio:</strong> The Target Ratio (currently 1.4x) represents the expected E2E time 
+                relative to build time, accounting for deployment overhead after compilation completes.
               </li>
             </ul>
+            
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Measurement</h3>
+            <ul className="list-disc list-inside space-y-2 ml-2">
+              <li>
+                <strong>Timing Instrumentation:</strong> A custom build script records timestamps at each phase 
+                (build start, compilation complete, deployment complete) and uploads them to Vercel Blob storage.
+              </li>
+              <li>
+                <strong>Machine Comparison:</strong> The same codebase is deployed to three Vercel projects 
+                configured with Standard (4 vCPU, $0.014/min), Enhanced (8 vCPU, $0.028/min), and 
+                Turbo (30 vCPU, $0.105/min) machine types.
+              </li>
+              <li>
+                <strong>Delta Calculations:</strong> Percentage changes for build time, E2E time, and cost 
+                are calculated relative to the Standard machine baseline for the same target configuration.
+              </li>
+            </ul>
+            
             <p className="text-xs text-zinc-500 dark:text-zinc-500 mt-4">
               Source code: <a 
                 href="https://github.com/uncurated-tests/elastic-build-bench" 
