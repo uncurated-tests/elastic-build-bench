@@ -1,5 +1,6 @@
 import { list, put } from '@vercel/blob';
 import BenchmarkTable from './components/BenchmarkTable';
+import BuildTimeChart from './components/BuildTimeChart';
 
 // Revalidate every 60 seconds to pick up new build data
 export const revalidate = 60;
@@ -252,6 +253,16 @@ export default async function Home() {
     }
   }
 
+  // Prepare chart data
+  const chartData = records
+    .filter(r => r.durations.totalMs && ['Standard', 'Enhanced', 'Turbo'].includes(r.config.MachineType))
+    .map(r => ({
+      targetMin: parseTime(r.config.BuildTimeOnStandard),
+      actualSec: (r.durations.totalMs || 0) / 1000,
+      machine: r.config.MachineType as 'Standard' | 'Enhanced' | 'Turbo',
+    }))
+    .filter(d => d.targetMin > 0);
+
   // Helper function to get deployment inspection URL
   const getDeploymentUrl = (record: TimingRecord): string | null => {
     if (record.deploymentId && record.vercelProjectName) {
@@ -334,6 +345,9 @@ export default async function Home() {
           </div>
         ) : (
           <>
+            {/* Chart */}
+            <BuildTimeChart data={chartData} />
+
             {/* Desktop Table View */}
             <div className="hidden lg:block overflow-x-auto">
               <table className="w-full bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
