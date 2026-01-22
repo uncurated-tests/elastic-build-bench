@@ -97,6 +97,13 @@ export default function BuildTimeChart({ data }: BuildTimeChartProps) {
     xTicks.push({ value, x: scaleX(value), label: `${Math.round(value)}m` });
   }
 
+  // Generate intermediate X-axis ticks (between main ticks)
+  const xTicksIntermediate = [];
+  for (let i = 0; i < xTickCount; i++) {
+    const value = ((i + 0.5) / xTickCount) * xMax;
+    xTicksIntermediate.push({ value, x: scaleX(value) });
+  }
+
   // Render marker based on machine type
   const renderMarker = (machine: string, x: number, y: number, key: string) => {
     const color = COLORS[machine as keyof typeof COLORS] || '#888';
@@ -146,6 +153,19 @@ export default function BuildTimeChart({ data }: BuildTimeChartProps) {
               y2={height - padding.bottom}
               stroke="currentColor"
               strokeOpacity={0.1}
+              className="text-zinc-400 dark:text-zinc-600"
+            />
+          ))}
+          {xTicksIntermediate.map((tick, i) => (
+            <line
+              key={`grid-x-mid-${i}`}
+              x1={tick.x}
+              y1={padding.top}
+              x2={tick.x}
+              y2={height - padding.bottom}
+              stroke="currentColor"
+              strokeOpacity={0.05}
+              strokeDasharray="2,4"
               className="text-zinc-400 dark:text-zinc-600"
             />
           ))}

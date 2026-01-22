@@ -264,6 +264,7 @@ export default async function Home() {
     10: 1.14,
     15: 1.10,
     20: 1.09,
+    30: 1.11,
   };
 
   // Get field ratio for a given build time (interpolate if needed)
