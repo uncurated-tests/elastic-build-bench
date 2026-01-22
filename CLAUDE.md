@@ -2,11 +2,11 @@
 
 ## Auto-Deploy Workflow
 
-**IMPORTANT**: After making any code changes, ALWAYS follow this workflow:
+**CRITICAL**: After making ANY code changes, ALWAYS:
 
 1. **Commit** changes with a descriptive message
 2. **Push** to the appropriate branch(es)
-3. **Deploy** to production if on main branch
+3. **Deploy to PRODUCTION** - ALWAYS deploy to prod, not preview
 
 ### Commit and Push
 
@@ -18,17 +18,15 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 git push origin <branch>
 ```
 
-### Deploy to Production
+### Deploy to Production (REQUIRED)
 
-After pushing to main, trigger a production deployment:
+**ALWAYS deploy to production after pushing to main:**
 
 ```bash
-# Option 1: Use Vercel CLI
-vercel --prod --scope uncurated-tests
-
-# Option 2: If the build was already triggered by push, promote it
-vercel promote <deployment-url> --scope uncurated-tests
+vercel --prod --scope uncurated-tests --yes
 ```
+
+This deploys to: https://elastic-build-bench.vercel.app
 
 ### For Branch Updates (Calibration Changes)
 
