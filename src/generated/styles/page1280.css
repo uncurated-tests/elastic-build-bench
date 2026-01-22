@@ -1,0 +1,17 @@
+/* Page 1280 styles */
+.page-1280 {
+  --page-index: 1280;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1280-header {
+  font-size: calc(1rem + 0px);
+  color: hsl(200, 70%, 50%);
+}
+
+.page-1280-content {
+  padding: 1rem;
+  border-radius: 4px;
+}
