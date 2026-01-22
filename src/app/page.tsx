@@ -361,7 +361,7 @@ export default async function Home() {
                       Actual Ratio
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Build Cost
+                      Build Cost (per min.)
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                       Branch
