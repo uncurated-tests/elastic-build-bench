@@ -1,12 +1,12 @@
 {
   "BuildTimeOnStandard": "15min",
-  "FullTimeOnStandard": "30min",
+  "FullTimeOnStandard": "16.5min",
   "MachineType": "Standard",
   "ssgPages": 2000,
   "sharedComponents": 500,
   "apiRoutes": 5,
-  "prebuildCpuBurnSeconds": 842,
-  "strategy": "ssg-cpu-burn-v25",
-  "generatedAt": "2026-01-22T15:51:07.150Z",
-  "buildId": "76169abd-f101-4c09-b3bd-7d2038af0182"
+  "prebuildCpuBurnSeconds": 517,
+  "strategy": "ssg-cpu-burn-v26",
+  "generatedAt": "2026-01-22T21:54:13.145Z",
+  "buildId": "2b84dbdb-565a-4b6f-8f46-de8ffcefac2f"
 }
