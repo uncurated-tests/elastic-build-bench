@@ -15,8 +15,12 @@ const { targetSeconds, workerId, totalWorkers, standardCores } = workerData;
 // This determines how much TOTAL work we need for the target time on Standard
 // v20: 8.5M (20min build took 32min on Standard - 1.62x too slow)
 // v21: 14M (8.5M * 1.62 correction factor)
-// v22: 20M (14M * 1.4 correction factor)
-const ITERATIONS_PER_SECOND_PER_CORE = 20_000_000;
+// v22: 20M (14M * 1.4 correction factor) - builds still 2.5-4x too slow!
+// v23: 5M - based on actual measured rate from v22 results:
+//      - 4min target took 10min (10.48B iters in 491s CPU burn = 5.3M/core)
+//      - 8min target took 32min (29.68B iters in 1811s CPU burn = 4.1M/core)
+//      Using 5M as the calibrated rate based on actual Vercel Standard performance
+const ITERATIONS_PER_SECOND_PER_CORE = 5_000_000;
 
 // Standard machine has 4 cores - this is our baseline
 const STANDARD_CORES = standardCores || 4;
