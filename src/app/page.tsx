@@ -1,5 +1,7 @@
 import { list, put } from '@vercel/blob';
 import BenchmarkTable from './components/BenchmarkTable';
+import BuildTimeChart from './components/BuildTimeChart';
+import BuildCostChart from './components/BuildCostChart';
 
 // Revalidate every 60 seconds to pick up new build data
 export const revalidate = 60;
@@ -215,25 +217,20 @@ export default async function Home() {
   };
   
   records.sort((a, b) => {
-    // Priority 0: RealXTotal branches first (these are the validated benchmarks)
-    const isRealXTotalA = a.gitBranch?.includes('RealXTotal') ? 0 : 1;
-    const isRealXTotalB = b.gitBranch?.includes('RealXTotal') ? 0 : 1;
-    if (isRealXTotalA !== isRealXTotalB) return isRealXTotalA - isRealXTotalB;
-    
-    // Column 1: Target Build Time (ascending)
+    // Column 1: Target Build Time (ascending) - PRIMARY SORT
     const buildTimeA = parseTime(a.config.BuildTimeOnStandard);
     const buildTimeB = parseTime(b.config.BuildTimeOnStandard);
     if (buildTimeA !== buildTimeB) return buildTimeA - buildTimeB;
     
-    // Column 2: Target Total Time (ascending)
-    const totalTimeA = parseTime(a.config.FullTimeOnStandard);
-    const totalTimeB = parseTime(b.config.FullTimeOnStandard);
-    if (totalTimeA !== totalTimeB) return totalTimeA - totalTimeB;
-    
-    // Column 3: Machine Type (Standard -> Enhanced -> Turbo)
+    // Column 2: Machine Type (Standard -> Enhanced -> Turbo)
     const machineOrderA = machineTypeOrder[a.config.MachineType] ?? 99;
     const machineOrderB = machineTypeOrder[b.config.MachineType] ?? 99;
-    return machineOrderA - machineOrderB;
+    if (machineOrderA !== machineOrderB) return machineOrderA - machineOrderB;
+    
+    // Column 3: RealXTotal branches preferred (for same build time + machine)
+    const isRealXTotalA = a.gitBranch?.includes('RealXTotal') ? 0 : 1;
+    const isRealXTotalB = b.gitBranch?.includes('RealXTotal') ? 0 : 1;
+    return isRealXTotalA - isRealXTotalB;
   });
 
   // Build a lookup map for Standard E2E times by (BuildTimeOnStandard, FullTimeOnStandard)
@@ -251,6 +248,68 @@ export default async function Home() {
       }
     }
   }
+
+  // Field ratios for calculating Target Trigger2Ready from Target Compilation
+  const fieldRatios: Record<number, number> = {
+    1: 1.82,
+    2: 1.38,
+    4: 1.28,
+    5: 1.23,
+    8: 1.19,
+    10: 1.14,
+    15: 1.10,
+    20: 1.09,
+    30: 1.11,
+  };
+
+  // Get field ratio for a given build time (interpolate if needed)
+  const getFieldRatio = (buildMin: number): number => {
+    if (fieldRatios[buildMin]) return fieldRatios[buildMin];
+    // Approximate using formula: multiplier ≈ 1 + (0.82 / buildMinutes^0.6)
+    return 1 + (0.82 / Math.pow(buildMin, 0.6));
+  };
+
+  // Prepare chart data - using Trigger2Ready (E2E) times
+  const chartData = records
+    .filter(r => r.durations.totalWithDeploymentMs && ['Standard', 'Enhanced', 'Turbo'].includes(r.config.MachineType))
+    .map(r => {
+      const targetCompilationMin = parseTime(r.config.BuildTimeOnStandard);
+      const fieldRatio = getFieldRatio(targetCompilationMin);
+      const targetT2RMin = targetCompilationMin * fieldRatio;
+      return {
+        targetMin: targetT2RMin,
+        actualSec: (r.durations.totalWithDeploymentMs || 0) / 1000,
+        machine: r.config.MachineType as 'Standard' | 'Enhanced' | 'Turbo',
+        label: r.config.BuildTimeOnStandard,
+      };
+    })
+    .filter(d => d.targetMin > 0);
+
+  // Prepare cost chart data - Build Cost per second
+  const COST_PER_MIN = {
+    Standard: 0.014,
+    Enhanced: 0.028,
+    Turbo: 0.105,
+  };
+
+  const costChartData = records
+    .filter(r => r.durations.totalWithDeploymentMs && ['Standard', 'Enhanced', 'Turbo'].includes(r.config.MachineType))
+    .map(r => {
+      const targetCompilationMin = parseTime(r.config.BuildTimeOnStandard);
+      const fieldRatio = getFieldRatio(targetCompilationMin);
+      const targetT2RMin = targetCompilationMin * fieldRatio;
+      const machineType = r.config.MachineType as 'Standard' | 'Enhanced' | 'Turbo';
+      const seconds = (r.durations.totalWithDeploymentMs || 0) / 1000;
+      const costPerSec = seconds * (COST_PER_MIN[machineType] / 60);
+      return {
+        targetMin: targetT2RMin,
+        costPerSec,
+        machine: machineType,
+        label: r.config.BuildTimeOnStandard,
+        e2eSec: seconds,
+      };
+    })
+    .filter(d => d.targetMin > 0);
 
   // Helper function to get deployment inspection URL
   const getDeploymentUrl = (record: TimingRecord): string | null => {
@@ -334,6 +393,10 @@ export default async function Home() {
           </div>
         ) : (
           <>
+            {/* Charts */}
+            <BuildTimeChart data={chartData} />
+            <BuildCostChart data={costChartData} />
+
             {/* Desktop Table View */}
             <div className="hidden lg:block overflow-x-auto">
               <table className="w-full bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
@@ -377,7 +440,12 @@ export default async function Home() {
                         {record.config.BuildTimeOnStandard}
                       </td>
                       <td className="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-400">
-                        {record.config.FullTimeOnStandard}
+                        {(() => {
+                          const targetCompilationMin = parseTime(record.config.BuildTimeOnStandard);
+                          const fieldRatio = getFieldRatio(targetCompilationMin);
+                          const targetT2RMin = targetCompilationMin * fieldRatio;
+                          return `${targetT2RMin.toFixed(1)}min`;
+                        })()}
                       </td>
                       <td className="px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 font-medium">
                         <span className="inline-flex items-center gap-1.5">
@@ -595,7 +663,14 @@ export default async function Home() {
                     </div>
                     <div>
                       <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Target Trigger2Ready</p>
-                      <p className="text-zinc-900 dark:text-zinc-100">{record.config.FullTimeOnStandard}</p>
+                      <p className="text-zinc-900 dark:text-zinc-100">
+                        {(() => {
+                          const targetCompilationMin = parseTime(record.config.BuildTimeOnStandard);
+                          const fieldRatio = getFieldRatio(targetCompilationMin);
+                          const targetT2RMin = targetCompilationMin * fieldRatio;
+                          return `${targetT2RMin.toFixed(1)}min`;
+                        })()}
+                      </p>
                     </div>
                     <div>
                       <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Actual Compilation</p>

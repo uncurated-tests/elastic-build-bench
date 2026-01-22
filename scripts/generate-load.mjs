@@ -28,43 +28,54 @@ const buildMinutes = parseFloat(process.argv[2] || '1');
 const e2eMultiplier = parseFloat(process.argv[3] || '2');
 
 console.log(`\n========================================`);
-console.log(`v25 Load Generator: SSG + Multi-threaded CPU Burn`);
+console.log(`v26 Load Generator: SSG + Multi-threaded CPU Burn`);
 console.log(`========================================`);
 console.log(`Target: ${buildMinutes}min build, ${e2eMultiplier}x E2E multiplier`);
 
 // =============================================================================
-// v25 CALIBRATION - Based on empirical data from 2026-01-22 builds (updated)
+// v26 CALIBRATION - Based on empirical data from 2026-01-22 builds
 // =============================================================================
 //
 // Build time components (on Standard 4 vCPU):
 //   1. Base overhead: ~13.2s (Next.js startup, compile setup)
 //   2. SSG pages: ~0.0563s per page (up to 2000 pages max due to OOM)
-//   3. CPU burn: Runs at 0.92x configured time on Standard
+//   3. CPU burn: Multiplier varies with duration (longer burns run slower)
 //
-// Calibration data (actual measurements):
-//   - 1min target (672 pages): 51s actual
-//   - 2min target (1560 pages): 101s actual
-//   - 4min target (2000 pages + 60s burn): 177s actual
-//   - 8min target (2000 pages + 216s burn): 309s actual
-//   - 10min target (2000 pages + 295s burn): 435s actual
+// Calibration data (actual measurements from 2026-01-22):
+//   | Target | Config Burn | Actual Build | Actual Burn | Multiplier |
+//   |--------|-------------|--------------|-------------|------------|
+//   | 4min   |        131s |         223s |         97s |      0.74x |
+//   | 8min   |        371s |         576s |        450s |      1.21x |
+//   | 10min  |        491s |         830s |        704s |      1.43x |
+//   | 15min  |        842s |        1463s |       1337s |      1.59x |
+//   | 20min  |       1091s |        2110s |       1984s |      1.82x |
 //
-// Derived constants:
-//   - SSG rate: (101-51)/(1560-672) = 0.0563s/page
-//   - Overhead: 51 - 672*0.0563 = 13.2s
-//   - CPU burn multiplier: avg(0.85, 0.85, 1.05) = 0.92x
+// Key insight: CPU burn multiplier INCREASES with duration, likely due to:
+//   - Memory pressure / GC overhead on longer runs
+//   - Thermal throttling on sustained CPU load
+//   - Worker thread coordination overhead
 //
-// v25 approach:
-//   - Calculate SSG pages needed (capped at 2000)
-//   - If target > what pages can provide, add CPU burn
-//   - CPU burn config = (targetTime - ssgTime) / CPU_BURN_MULTIPLIER
+// v26 approach:
+//   - Use duration-dependent multiplier based on empirical data
+//   - Short burns (<150s needed): 0.75x (burn completes faster than config)
+//   - Medium burns (150-400s): 1.2x
+//   - Long burns (400-800s): 1.5x  
+//   - Very long burns (>800s): 1.8x
 //
 // =============================================================================
 
 const BASE_OVERHEAD = 13.2;         // seconds (Next.js startup)
 const MAX_SSG_PAGES = 2000;         // Cap to avoid OOM errors
-const SECONDS_PER_PAGE = 0.0563;    // v25: Calibrated from 2026-01-22 data
-const CPU_BURN_MULTIPLIER = 0.92;   // CPU burn runs at 0.92x on Standard
+const SECONDS_PER_PAGE = 0.0563;    // Calibrated from 2026-01-22 data
 const MAX_PAGE_BUILD_TIME = MAX_SSG_PAGES * SECONDS_PER_PAGE; // ~113s
+
+// Duration-dependent CPU burn multiplier
+function getCpuBurnMultiplier(neededBurnSeconds) {
+  if (neededBurnSeconds < 150) return 0.75;
+  if (neededBurnSeconds < 400) return 1.2;
+  if (neededBurnSeconds < 800) return 1.5;
+  return 1.8;
+}
 
 // Target build time in seconds
 const targetSeconds = buildMinutes * 60;
@@ -87,27 +98,29 @@ if (pagesNeededForTarget <= MAX_SSG_PAGES) {
 
 // Calculate prebuild CPU burn needed (if any)
 // This is REAL CPU work, not sleep delay
-// CPU burn runs at CPU_BURN_MULTIPLIER (1.53x) on Standard
-let prebuildCpuBurnSeconds = 0;
 const ssgTime = BASE_OVERHEAD + (numSSGPages * SECONDS_PER_PAGE);
+let prebuildCpuBurnSeconds = 0;
+let cpuBurnMultiplier = 1.0;
+
 if (targetSeconds > ssgTime) {
   const remainingTime = targetSeconds - ssgTime;
-  prebuildCpuBurnSeconds = Math.ceil(remainingTime / CPU_BURN_MULTIPLIER);
+  cpuBurnMultiplier = getCpuBurnMultiplier(remainingTime);
+  prebuildCpuBurnSeconds = Math.ceil(remainingTime / cpuBurnMultiplier);
 }
 
 // Calculate expected build time
-const expectedBuildTime = ssgTime + (prebuildCpuBurnSeconds * CPU_BURN_MULTIPLIER);
+const expectedBuildTime = ssgTime + (prebuildCpuBurnSeconds * cpuBurnMultiplier);
 
 // Fixed values
 const numSharedComponents = 500;
 const numApiRoutes = 5;
 
-console.log(`\nv25 Load Composition:`);
+console.log(`\nv26 Load Composition:`);
 console.log(`  Target: ${targetSeconds}s (${buildMinutes}min)`);
 console.log(`  Base overhead: ${BASE_OVERHEAD}s`);
 console.log(`  SSG pages: ${numSSGPages} (~${Math.round(numSSGPages * SECONDS_PER_PAGE)}s)`);
 if (prebuildCpuBurnSeconds > 0) {
-  console.log(`  Prebuild CPU burn: ${prebuildCpuBurnSeconds}s config × ${CPU_BURN_MULTIPLIER}x = ~${Math.round(prebuildCpuBurnSeconds * CPU_BURN_MULTIPLIER)}s actual`);
+  console.log(`  Prebuild CPU burn: ${prebuildCpuBurnSeconds}s config × ${cpuBurnMultiplier}x = ~${Math.round(prebuildCpuBurnSeconds * cpuBurnMultiplier)}s actual`);
 }
 console.log(`  Expected total: ~${Math.round(expectedBuildTime)}s`);
 
@@ -269,7 +282,7 @@ function updateBuildConfig() {
     sharedComponents: numSharedComponents,
     apiRoutes: numApiRoutes,
     prebuildCpuBurnSeconds: prebuildCpuBurnSeconds,
-    strategy: "ssg-cpu-burn-v25",
+    strategy: "ssg-cpu-burn-v26",
     generatedAt: new Date().toISOString(),
     buildId: randomUUID(),
   };
@@ -338,10 +351,10 @@ updateBuildConfig();
 console.log('\n========================================');
 console.log('Generation complete!');
 console.log('========================================');
-console.log(`Strategy: SSG + Multi-threaded CPU Burn v25`);
+console.log(`Strategy: SSG + Multi-threaded CPU Burn v26`);
 console.log(`Expected build time on Standard: ~${buildMinutes} min (~${Math.round(expectedBuildTime)}s)`);
 if (prebuildCpuBurnSeconds > 0) {
-  console.log(`  (includes ${prebuildCpuBurnSeconds}s CPU burn config → ~${Math.round(prebuildCpuBurnSeconds * CPU_BURN_MULTIPLIER)}s actual)`);
+  console.log(`  (includes ${prebuildCpuBurnSeconds}s CPU burn config × ${cpuBurnMultiplier}x → ~${Math.round(prebuildCpuBurnSeconds * cpuBurnMultiplier)}s actual)`);
 }
 console.log(`Expected E2E time on Standard: ~${targetE2EMinutes} min`);
 console.log('');
