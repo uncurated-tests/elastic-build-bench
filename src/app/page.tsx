@@ -215,6 +215,11 @@ export default async function Home() {
   };
   
   records.sort((a, b) => {
+    // Priority 0: RealXTotal branches first (these are the validated benchmarks)
+    const isRealXTotalA = a.gitBranch?.includes('RealXTotal') ? 0 : 1;
+    const isRealXTotalB = b.gitBranch?.includes('RealXTotal') ? 0 : 1;
+    if (isRealXTotalA !== isRealXTotalB) return isRealXTotalA - isRealXTotalB;
+    
     // Column 1: Target Build Time (ascending)
     const buildTimeA = parseTime(a.config.BuildTimeOnStandard);
     const buildTimeB = parseTime(b.config.BuildTimeOnStandard);
@@ -233,10 +238,17 @@ export default async function Home() {
 
   // Build a lookup map for Standard E2E times by (BuildTimeOnStandard, FullTimeOnStandard)
   const standardE2EMap = new Map<string, number>();
+  // Build a lookup map for Standard Build times by (BuildTimeOnStandard, FullTimeOnStandard)
+  const standardBuildMap = new Map<string, number>();
   for (const record of records) {
-    if (record.config.MachineType === 'Standard' && record.durations.totalWithDeploymentMs) {
+    if (record.config.MachineType === 'Standard') {
       const key = `${record.config.BuildTimeOnStandard}-${record.config.FullTimeOnStandard}`;
-      standardE2EMap.set(key, record.durations.totalWithDeploymentMs);
+      if (record.durations.totalWithDeploymentMs) {
+        standardE2EMap.set(key, record.durations.totalWithDeploymentMs);
+      }
+      if (record.durations.totalMs) {
+        standardBuildMap.set(key, record.durations.totalMs);
+      }
     }
   }
 
@@ -258,8 +270,8 @@ export default async function Home() {
     return null;
   };
 
-  // Helper function to calculate build time reduction percentage
-  const getBuildTimeReduction = (record: TimingRecord): string => {
+  // Helper function to calculate E2E time reduction percentage
+  const getE2EReduction = (record: TimingRecord): string => {
     if (record.config.MachineType === 'Standard') {
       return '-'; // Baseline, no reduction to show
     }
@@ -273,6 +285,29 @@ export default async function Home() {
     }
     
     const reduction = ((standardE2E - currentE2E) / standardE2E) * 100;
+    if (reduction > 0) {
+      return `-${reduction.toFixed(0)}%`;
+    } else if (reduction < 0) {
+      return `+${Math.abs(reduction).toFixed(0)}%`;
+    }
+    return '0%';
+  };
+
+  // Helper function to calculate build time reduction percentage (vs Standard)
+  const getBuildReduction = (record: TimingRecord): string => {
+    if (record.config.MachineType === 'Standard') {
+      return '-'; // Baseline, no reduction to show
+    }
+    
+    const key = `${record.config.BuildTimeOnStandard}-${record.config.FullTimeOnStandard}`;
+    const standardBuild = standardBuildMap.get(key);
+    const currentBuild = record.durations.totalMs;
+    
+    if (!standardBuild || !currentBuild) {
+      return '-';
+    }
+    
+    const reduction = ((standardBuild - currentBuild) / standardBuild) * 100;
     if (reduction > 0) {
       return `-${reduction.toFixed(0)}%`;
     } else if (reduction < 0) {
@@ -305,25 +340,28 @@ export default async function Home() {
                 <thead>
                   <tr className="bg-zinc-100 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700">
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Target Build
+                      Target Compilation
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Target E2E
+                      Target Trigger2Ready
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                       Machine
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Actual Build
+                      Actual Compilation
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Actual E2E
+                      Actual Trigger2Ready
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Reduction
+                      Actual Ratio
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Branch
+                      Build Cost (per min.)
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                      Build Cost (per sec.)
                     </th>
                   </tr>
                 </thead>
@@ -343,7 +381,9 @@ export default async function Home() {
                       </td>
                       <td className="px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 font-medium">
                         <span className="inline-flex items-center gap-1.5">
-                          {record.config.MachineType}
+                          {record.config.MachineType === 'Standard' && 'Standard - $0.014/min'}
+                          {record.config.MachineType === 'Enhanced' && 'Enhanced - $0.028/min'}
+                          {record.config.MachineType === 'Turbo' && 'Turbo - $0.105/min'}
                           {(() => {
                             const url = getDeploymentUrl(record);
                             if (!url) return null;
@@ -362,43 +402,138 @@ export default async function Home() {
                         </span>
                       </td>
                       <td className="px-4 py-3 text-sm font-mono">
-                        <span className={`px-2 py-1 rounded text-xs ${
-                          record.durations.totalMs 
-                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
-                            : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500'
-                        }`}>
-                          {formatDuration(record.durations.totalMs)}
+                        <span className="inline-flex items-center gap-1.5">
+                          <span className="text-zinc-900 dark:text-zinc-100">
+                            {record.durations.totalMs ? formatDuration(record.durations.totalMs) : '-'}
+                          </span>
+                          {(() => {
+                            const reduction = getBuildReduction(record);
+                            if (reduction === '-') return null;
+                            const isReduction = reduction.startsWith('-');
+                            return (
+                              <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+                                isReduction
+                                  ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                  : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                              }`}>
+                                {reduction}
+                              </span>
+                            );
+                          })()}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-sm font-mono">
-                        <span className={`px-2 py-1 rounded text-xs ${
-                          record.durations.totalWithDeploymentMs 
-                            ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' 
-                            : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500'
-                        }`}>
-                          {formatDuration(record.durations.totalWithDeploymentMs)}
+                        <span className="inline-flex items-center gap-1.5">
+                          <span className="text-zinc-900 dark:text-zinc-100">
+                            {record.durations.totalWithDeploymentMs ? formatDuration(record.durations.totalWithDeploymentMs) : '-'}
+                          </span>
+                          {(() => {
+                            const reduction = getE2EReduction(record);
+                            if (reduction === '-') return null;
+                            const isReduction = reduction.startsWith('-');
+                            return (
+                              <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+                                isReduction
+                                  ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                  : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                              }`}>
+                                {reduction}
+                              </span>
+                            );
+                          })()}
                         </span>
+                      </td>
+                      <td className="px-4 py-3 text-sm font-mono text-zinc-600 dark:text-zinc-400">
+                        {(() => {
+                          const e2e = record.durations.totalWithDeploymentMs;
+                          const build = record.durations.totalMs;
+                          if (!e2e || !build) return '-';
+                          const ratio = e2e / build;
+                          return `${ratio.toFixed(2)}x`;
+                        })()}
                       </td>
                       <td className="px-4 py-3 text-sm font-mono">
                         {(() => {
-                          const reduction = getBuildTimeReduction(record);
-                          if (reduction === '-') {
+                          if (!record.durations.totalWithDeploymentMs) {
                             return <span className="text-zinc-400">-</span>;
                           }
-                          const isReduction = reduction.startsWith('-');
+                          const minutes = Math.ceil(record.durations.totalWithDeploymentMs / 60000);
+                          const costPerMin = record.config.MachineType === 'Turbo' ? 0.105 
+                            : record.config.MachineType === 'Enhanced' ? 0.028 
+                            : 0.014;
+                          const cost = (minutes * costPerMin).toFixed(3);
+                          
+                          // Calculate Standard cost for comparison
+                          const key = `${record.config.BuildTimeOnStandard}-${record.config.FullTimeOnStandard}`;
+                          const standardE2E = standardE2EMap.get(key);
+                          let costDelta = null;
+                          if (record.config.MachineType !== 'Standard' && standardE2E) {
+                            const standardMinutes = Math.ceil(standardE2E / 60000);
+                            const standardCost = standardMinutes * 0.014;
+                            const currentCost = minutes * costPerMin;
+                            const delta = ((currentCost - standardCost) / standardCost) * 100;
+                            costDelta = delta;
+                          }
+                          
                           return (
-                            <span className={`px-2 py-1 rounded text-xs font-medium ${
-                              isReduction
-                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                                : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-                            }`}>
-                              {reduction}
+                            <span className="inline-flex items-center gap-1.5">
+                              <span className="text-zinc-900 dark:text-zinc-100">
+                                ${cost}
+                              </span>
+                              {costDelta !== null && (
+                                <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+                                  costDelta < 0
+                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                                }`}>
+                                  {costDelta < 0 ? `${costDelta.toFixed(0)}%` : `+${costDelta.toFixed(0)}%`}
+                                </span>
+                              )}
                             </span>
                           );
                         })()}
                       </td>
-                      <td className="px-4 py-3 text-xs text-zinc-500 dark:text-zinc-500 font-mono truncate max-w-[150px]">
-                        {record.gitBranch}
+                      <td className="px-4 py-3 text-sm font-mono">
+                        {(() => {
+                          if (!record.durations.totalWithDeploymentMs) {
+                            return <span className="text-zinc-400">-</span>;
+                          }
+                          // Use exact seconds instead of ceiling to minutes
+                          const seconds = record.durations.totalWithDeploymentMs / 1000;
+                          const costPerSec = record.config.MachineType === 'Turbo' ? 0.105 / 60
+                            : record.config.MachineType === 'Enhanced' ? 0.028 / 60
+                            : 0.014 / 60;
+                          const cost = (seconds * costPerSec).toFixed(3);
+                          
+                          // Calculate Standard cost for comparison
+                          const key = `${record.config.BuildTimeOnStandard}-${record.config.FullTimeOnStandard}`;
+                          const standardE2E = standardE2EMap.get(key);
+                          let costDelta = null;
+                          if (record.config.MachineType !== 'Standard' && standardE2E) {
+                            const standardSeconds = standardE2E / 1000;
+                            const standardCost = standardSeconds * (0.014 / 60);
+                            const currentCost = seconds * costPerSec;
+                            const delta = ((currentCost - standardCost) / standardCost) * 100;
+                            costDelta = delta;
+                          }
+                          
+                          return (
+                            <span className="inline-flex items-center gap-1.5">
+                              <span className="text-zinc-900 dark:text-zinc-100">
+                                ${cost}
+                              </span>
+                              {costDelta !== null && (
+                                <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+                                  costDelta < 0
+                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                                }`}>
+                                  {costDelta < 0 ? `${costDelta.toFixed(0)}%` : `+${costDelta.toFixed(0)}%`}
+                                </span>
+                              )}
+                            </span>
+                          );
+                        })()}
                       </td>
                     </tr>
                   ))}
@@ -438,7 +573,7 @@ export default async function Home() {
                       </p>
                     </div>
                     {(() => {
-                      const reduction = getBuildTimeReduction(record);
+                      const reduction = getE2EReduction(record);
                       if (reduction === '-') return null;
                       const isReduction = reduction.startsWith('-');
                       return (
@@ -447,7 +582,7 @@ export default async function Home() {
                             ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                             : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
                         }`}>
-                          {reduction}
+                          T2R: {reduction}
                         </span>
                       );
                     })()}
@@ -455,25 +590,41 @@ export default async function Home() {
                   
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div>
-                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Target Build</p>
+                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Target Compilation</p>
                       <p className="text-zinc-900 dark:text-zinc-100">{record.config.BuildTimeOnStandard}</p>
                     </div>
                     <div>
-                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Target E2E</p>
+                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Target Trigger2Ready</p>
                       <p className="text-zinc-900 dark:text-zinc-100">{record.config.FullTimeOnStandard}</p>
                     </div>
                     <div>
-                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Actual Build</p>
-                      <span className={`px-2 py-1 rounded text-xs font-mono ${
-                        record.durations.totalMs 
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
-                          : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500'
-                      }`}>
-                        {formatDuration(record.durations.totalMs)}
+                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Actual Compilation</p>
+                      <span className="inline-flex items-center gap-1">
+                        <span className={`px-2 py-1 rounded text-xs font-mono ${
+                          record.durations.totalMs 
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
+                            : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500'
+                        }`}>
+                          {formatDuration(record.durations.totalMs)}
+                        </span>
+                        {(() => {
+                          const reduction = getBuildReduction(record);
+                          if (reduction === '-') return null;
+                          const isReduction = reduction.startsWith('-');
+                          return (
+                            <span className={`px-1 py-0.5 rounded text-xs font-medium ${
+                              isReduction
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                            }`}>
+                              {reduction}
+                            </span>
+                          );
+                        })()}
                       </span>
                     </div>
                     <div>
-                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Actual E2E</p>
+                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Actual Trigger2Ready</p>
                       <span className={`px-2 py-1 rounded text-xs font-mono ${
                         record.durations.totalWithDeploymentMs 
                           ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' 
@@ -496,32 +647,45 @@ export default async function Home() {
           </h2>
           <div className="text-sm text-zinc-600 dark:text-zinc-400 space-y-3">
             <p>
-              This benchmark measures Vercel build performance across different machine types by using 
-              synthetically generated Next.js applications with controlled complexity levels.
+              This benchmark measures Vercel build performance across different machine types by generating 
+              synthetic Next.js applications with predictable build times using real CPU work.
             </p>
+            
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Synthetic Load Generation</h3>
             <ul className="list-disc list-inside space-y-2 ml-2">
               <li>
-                <strong>Build Time Control:</strong> Each branch contains a specific number of React components 
-                (~28-35 components per second of target build time on Standard machines). Components include 
-                complex TypeScript types, React hooks, and state management to stress the compiler.
+                <strong>SSG Pages:</strong> Up to 2,000 statically generated pages with shared React components 
+                and CSS files. Each page adds ~0.045s to build time, providing up to ~90s of build work.
               </li>
               <li>
-                <strong>E2E Multiplier:</strong> The &quot;2x&quot; and &quot;3x&quot; variants add additional API routes and 
-                static pages to extend the total deployment time beyond just compilation.
+                <strong>Multi-threaded CPU Burn:</strong> For builds targeting &gt;2 minutes, a prebuild phase 
+                performs real CPU-intensive math operations using Node.js worker threads. Work is calibrated 
+                at 5M iterations/second/core and <em>divided among available cores</em>, so machines with more 
+                cores complete faster (e.g., Turbo with 30 cores finishes ~7.5x faster than Standard with 4 cores).
               </li>
               <li>
-                <strong>Timing Instrumentation:</strong> A custom build script records timestamps at each phase 
-                (dependency install, compilation, deployment) and uploads them to Vercel Blob storage.
-              </li>
-              <li>
-                <strong>Machine Detection:</strong> The same codebase is deployed to three Vercel projects 
-                configured with different machine types (Standard, Enhanced, Turbo), allowing direct comparison.
-              </li>
-              <li>
-                <strong>Build Time Reduction:</strong> Shows the percentage improvement in E2E time compared to 
-                the Standard machine baseline for the same workload configuration.
+                <strong>E2E Ratio:</strong> The Target Ratio (currently 1.4x) represents the expected E2E time 
+                relative to build time, accounting for deployment overhead after compilation completes.
               </li>
             </ul>
+            
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Measurement</h3>
+            <ul className="list-disc list-inside space-y-2 ml-2">
+              <li>
+                <strong>Timing Instrumentation:</strong> A custom build script records timestamps at each phase 
+                (build start, compilation complete, deployment complete) and uploads them to Vercel Blob storage.
+              </li>
+              <li>
+                <strong>Machine Comparison:</strong> The same codebase is deployed to three Vercel projects 
+                configured with Standard (4 vCPU, $0.014/min), Enhanced (8 vCPU, $0.028/min), and 
+                Turbo (30 vCPU, $0.105/min) machine types.
+              </li>
+              <li>
+                <strong>Delta Calculations:</strong> Percentage changes for build time, E2E time, and cost 
+                are calculated relative to the Standard machine baseline for the same target configuration.
+              </li>
+            </ul>
+            
             <p className="text-xs text-zinc-500 dark:text-zinc-500 mt-4">
               Source code: <a 
                 href="https://github.com/uncurated-tests/elastic-build-bench" 
