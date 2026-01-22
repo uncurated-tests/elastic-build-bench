@@ -61,6 +61,13 @@
       "expectedE2EMinutes": 21.8,
       "confidence": "medium",
       "source": "extrapolated"
+    },
+    "30min": {
+      "buildMinutes": 30,
+      "e2eMultiplier": 1.11,
+      "expectedE2EMinutes": 33.2,
+      "confidence": "medium",
+      "source": "extrapolated"
     }
   },
   "formula": {
