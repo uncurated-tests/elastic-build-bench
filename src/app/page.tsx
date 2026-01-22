@@ -669,32 +669,45 @@ export default async function Home() {
           </h2>
           <div className="text-sm text-zinc-600 dark:text-zinc-400 space-y-3">
             <p>
-              This benchmark measures Vercel build performance across different machine types by using 
-              synthetically generated Next.js applications with controlled complexity levels.
+              This benchmark measures Vercel build performance across different machine types by generating 
+              synthetic Next.js applications with predictable build times using real CPU work.
             </p>
+            
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Synthetic Load Generation</h3>
             <ul className="list-disc list-inside space-y-2 ml-2">
               <li>
-                <strong>Build Time Control:</strong> Each branch contains a specific number of React components 
-                (~28-35 components per second of target build time on Standard machines). Components include 
-                complex TypeScript types, React hooks, and state management to stress the compiler.
+                <strong>SSG Pages:</strong> Up to 2,000 statically generated pages with shared React components 
+                and CSS files. Each page adds ~0.045s to build time, providing up to ~90s of build work.
               </li>
               <li>
-                <strong>E2E Multiplier:</strong> The &quot;2x&quot; and &quot;3x&quot; variants add additional API routes and 
-                static pages to extend the total deployment time beyond just compilation.
+                <strong>Multi-threaded CPU Burn:</strong> For builds targeting &gt;2 minutes, a prebuild phase 
+                performs real CPU-intensive math operations using Node.js worker threads. Work is calibrated 
+                at 5M iterations/second/core and <em>divided among available cores</em>, so machines with more 
+                cores complete faster (e.g., Turbo with 30 cores finishes ~7.5x faster than Standard with 4 cores).
               </li>
               <li>
-                <strong>Timing Instrumentation:</strong> A custom build script records timestamps at each phase 
-                (dependency install, compilation, deployment) and uploads them to Vercel Blob storage.
-              </li>
-              <li>
-                <strong>Machine Detection:</strong> The same codebase is deployed to three Vercel projects 
-                configured with different machine types (Standard, Enhanced, Turbo), allowing direct comparison.
-              </li>
-              <li>
-                <strong>Build Time Reduction:</strong> Shows the percentage improvement in E2E time compared to 
-                the Standard machine baseline for the same workload configuration.
+                <strong>E2E Ratio:</strong> The Target Ratio (currently 1.4x) represents the expected E2E time 
+                relative to build time, accounting for deployment overhead after compilation completes.
               </li>
             </ul>
+            
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Measurement</h3>
+            <ul className="list-disc list-inside space-y-2 ml-2">
+              <li>
+                <strong>Timing Instrumentation:</strong> A custom build script records timestamps at each phase 
+                (build start, compilation complete, deployment complete) and uploads them to Vercel Blob storage.
+              </li>
+              <li>
+                <strong>Machine Comparison:</strong> The same codebase is deployed to three Vercel projects 
+                configured with Standard (4 vCPU, $0.014/min), Enhanced (8 vCPU, $0.028/min), and 
+                Turbo (30 vCPU, $0.105/min) machine types.
+              </li>
+              <li>
+                <strong>Delta Calculations:</strong> Percentage changes for build time, E2E time, and cost 
+                are calculated relative to the Standard machine baseline for the same target configuration.
+              </li>
+            </ul>
+            
             <p className="text-xs text-zinc-500 dark:text-zinc-500 mt-4">
               Source code: <a 
                 href="https://github.com/uncurated-tests/elastic-build-bench" 
