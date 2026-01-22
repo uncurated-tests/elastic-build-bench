@@ -2,14 +2,11 @@
   "BuildTimeOnStandard": "10min",
   "FullTimeOnStandard": "20min",
   "MachineType": "Standard",
-  "components": 500,
-  "typeFiles": 30,
   "ssgPages": 2000,
-  "computationIterations": 1000,
-  "postcssCpuBurnIterations": 475714,
+  "sharedComponents": 500,
   "apiRoutes": 5,
-  "strategy": "postcss-cpu-burn-v8",
-  "generatedAt": "2026-01-21T04:37:39.245Z",
-  "buildId": "48c3e06f-9472-4586-9eb3-721f0cee18ac",
-  "cacheBuster": "20260122-062344-23d1ef75"
+  "prebuildCpuBurnSeconds": 295,
+  "strategy": "ssg-cpu-burn-v24",
+  "generatedAt": "2026-01-22T15:19:41.750Z",
+  "buildId": "b2e068ba-6df8-49d7-99aa-afc1109b61dc"
 }
