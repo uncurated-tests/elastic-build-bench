@@ -13,10 +13,5 @@
 
 .page-1889-content {
   padding: 2rem;
-  background: linear-gradient(
-    45deg,
-    hsl(53, 70%, 95%),
-    hsl(233, 70%, 95%)
-  );
   border-radius: 5px;
 }

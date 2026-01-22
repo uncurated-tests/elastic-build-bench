@@ -10,50 +10,24 @@ import SharedComponent218 from '@/generated/components/SharedComponent218';
 import SharedComponent219 from '@/generated/components/SharedComponent219';
 import SharedComponent220 from '@/generated/components/SharedComponent220';
 import SharedComponent221 from '@/generated/components/SharedComponent221';
-import SharedComponent222 from '@/generated/components/SharedComponent222';
-import SharedComponent223 from '@/generated/components/SharedComponent223';
-import SharedComponent224 from '@/generated/components/SharedComponent224';
-import SharedComponent225 from '@/generated/components/SharedComponent225';
-import SharedComponent226 from '@/generated/components/SharedComponent226';
-import SharedComponent227 from '@/generated/components/SharedComponent227';
-import SharedComponent228 from '@/generated/components/SharedComponent228';
-import SharedComponent229 from '@/generated/components/SharedComponent229';
-import SharedComponent230 from '@/generated/components/SharedComponent230';
-import SharedComponent231 from '@/generated/components/SharedComponent231';
-
-function computePageData(pageId: number) {
-  let result = pageId;
-  for (let i = 0; i < 1000; i++) {
-    result = Math.sin(result + i * 0.001) * Math.cos(result) + Math.sqrt(Math.abs(result) + 1);
-  }
-  return {
-    pageId,
-    checksum: result,
-    generatedAt: new Date().toISOString(),
-  };
-}
 
 export default async function SSGPage1816() {
-  const data = computePageData(1816);
-  
-  const items = Array.from({ length: 20 }, (_, i) => ({
-    id: `${1816}-${i}`,
-    value: 1816 * 100 + i,
-    label: `Page 1816 Item`,
-  }));
-  
   return (
     <div className="page-1816 p-6 min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <h1 className="page-1816-header text-xl font-bold mb-4 text-zinc-900 dark:text-zinc-100">
         SSG Page 1816
       </h1>
-      <p className="text-sm text-zinc-500 mb-4">
-        Generated: {data.generatedAt} | Checksum: {data.checksum.toFixed(4)}
-      </p>
       <div className="page-1816-content grid grid-cols-2 md:grid-cols-4 gap-2">
-        {[SharedComponent212, SharedComponent213, SharedComponent214, SharedComponent215, SharedComponent216, SharedComponent217, SharedComponent218, SharedComponent219, SharedComponent220, SharedComponent221, SharedComponent222, SharedComponent223, SharedComponent224, SharedComponent225, SharedComponent226, SharedComponent227, SharedComponent228, SharedComponent229, SharedComponent230, SharedComponent231].map((Component, idx) => (
-          <Component key={idx} {...items[idx]} />
-        ))}
+        <SharedComponent212 id="1816-0" value={181600} label="Item" />
+        <SharedComponent213 id="1816-1" value={181601} label="Item" />
+        <SharedComponent214 id="1816-2" value={181602} label="Item" />
+        <SharedComponent215 id="1816-3" value={181603} label="Item" />
+        <SharedComponent216 id="1816-4" value={181604} label="Item" />
+        <SharedComponent217 id="1816-5" value={181605} label="Item" />
+        <SharedComponent218 id="1816-6" value={181606} label="Item" />
+        <SharedComponent219 id="1816-7" value={181607} label="Item" />
+        <SharedComponent220 id="1816-8" value={181608} label="Item" />
+        <SharedComponent221 id="1816-9" value={181609} label="Item" />
       </div>
     </div>
   );
