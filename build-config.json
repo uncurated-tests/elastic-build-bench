@@ -10,5 +10,6 @@
   "apiRoutes": 5,
   "strategy": "postcss-cpu-burn-v8",
   "generatedAt": "2026-01-21T04:37:08.797Z",
-  "buildId": "2eb9e938-44c9-46f4-917d-8f8c900672e1"
+  "buildId": "2eb9e938-44c9-46f4-917d-8f8c900672e1",
+  "cacheBuster": "20260122-062344-23d1ef75"
 }
