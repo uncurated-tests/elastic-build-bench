@@ -8,5 +8,6 @@
   "prebuildCpuBurnSeconds": 687,
   "strategy": "ssg-cpu-burn-v24",
   "generatedAt": "2026-01-22T15:19:48.864Z",
-  "buildId": "fe1f7cef-0630-4941-97f8-12e217b1b5d4"
+  "buildId": "fe1f7cef-0630-4941-97f8-12e217b1b5d4",
+  "cacheBuster": "20260122-072019-37ff906d"
 }
