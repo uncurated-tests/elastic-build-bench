@@ -364,6 +364,9 @@ export default async function Home() {
                       Build Cost (per min.)
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                      Build Cost (per sec.)
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                       Branch
                     </th>
                   </tr>
@@ -487,6 +490,48 @@ export default async function Home() {
                             const standardMinutes = Math.ceil(standardE2E / 60000);
                             const standardCost = standardMinutes * 0.014;
                             const currentCost = minutes * costPerMin;
+                            const delta = ((currentCost - standardCost) / standardCost) * 100;
+                            costDelta = delta;
+                          }
+                          
+                          return (
+                            <span className="inline-flex items-center gap-1.5">
+                              <span className="text-zinc-900 dark:text-zinc-100">
+                                ${cost}
+                              </span>
+                              {costDelta !== null && (
+                                <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+                                  costDelta < 0
+                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                                }`}>
+                                  {costDelta < 0 ? `${costDelta.toFixed(0)}%` : `+${costDelta.toFixed(0)}%`}
+                                </span>
+                              )}
+                            </span>
+                          );
+                        })()}
+                      </td>
+                      <td className="px-4 py-3 text-sm font-mono">
+                        {(() => {
+                          if (!record.durations.totalWithDeploymentMs) {
+                            return <span className="text-zinc-400">-</span>;
+                          }
+                          // Use exact seconds instead of ceiling to minutes
+                          const seconds = record.durations.totalWithDeploymentMs / 1000;
+                          const costPerSec = record.config.MachineType === 'Turbo' ? 0.105 / 60
+                            : record.config.MachineType === 'Enhanced' ? 0.028 / 60
+                            : 0.014 / 60;
+                          const cost = (seconds * costPerSec).toFixed(3);
+                          
+                          // Calculate Standard cost for comparison
+                          const key = `${record.config.BuildTimeOnStandard}-${record.config.FullTimeOnStandard}`;
+                          const standardE2E = standardE2EMap.get(key);
+                          let costDelta = null;
+                          if (record.config.MachineType !== 'Standard' && standardE2E) {
+                            const standardSeconds = standardE2E / 1000;
+                            const standardCost = standardSeconds * (0.014 / 60);
+                            const currentCost = seconds * costPerSec;
                             const delta = ((currentCost - standardCost) / standardCost) * 100;
                             costDelta = delta;
                           }
