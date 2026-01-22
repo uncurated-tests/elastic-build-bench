@@ -1,0 +1,17 @@
+/* Page 1096 styles */
+.page-1096 {
+  --page-index: 1096;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1096-header {
+  font-size: calc(1rem + 6px);
+  color: hsl(232, 70%, 50%);
+}
+
+.page-1096-content {
+  padding: 1rem;
+  border-radius: 4px;
+}

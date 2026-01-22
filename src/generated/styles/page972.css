@@ -1,0 +1,17 @@
+/* Page 972 styles */
+.page-972 {
+  --page-index: 972;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-972-header {
+  font-size: calc(1rem + 2px);
+  color: hsl(324, 70%, 50%);
+}
+
+.page-972-content {
+  padding: 1rem;
+  border-radius: 8px;
+}

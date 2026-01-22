@@ -10,50 +10,24 @@ import SharedComponent284 from '@/generated/components/SharedComponent284';
 import SharedComponent285 from '@/generated/components/SharedComponent285';
 import SharedComponent286 from '@/generated/components/SharedComponent286';
 import SharedComponent287 from '@/generated/components/SharedComponent287';
-import SharedComponent288 from '@/generated/components/SharedComponent288';
-import SharedComponent289 from '@/generated/components/SharedComponent289';
-import SharedComponent290 from '@/generated/components/SharedComponent290';
-import SharedComponent291 from '@/generated/components/SharedComponent291';
-import SharedComponent292 from '@/generated/components/SharedComponent292';
-import SharedComponent293 from '@/generated/components/SharedComponent293';
-import SharedComponent294 from '@/generated/components/SharedComponent294';
-import SharedComponent295 from '@/generated/components/SharedComponent295';
-import SharedComponent296 from '@/generated/components/SharedComponent296';
-import SharedComponent297 from '@/generated/components/SharedComponent297';
-
-function computePageData(pageId: number) {
-  let result = pageId;
-  for (let i = 0; i < 1000; i++) {
-    result = Math.sin(result + i * 0.001) * Math.cos(result) + Math.sqrt(Math.abs(result) + 1);
-  }
-  return {
-    pageId,
-    checksum: result,
-    generatedAt: new Date().toISOString(),
-  };
-}
 
 export default async function SSGPage754() {
-  const data = computePageData(754);
-  
-  const items = Array.from({ length: 20 }, (_, i) => ({
-    id: `${754}-${i}`,
-    value: 754 * 100 + i,
-    label: `Page 754 Item`,
-  }));
-  
   return (
     <div className="page-754 p-6 min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <h1 className="page-754-header text-xl font-bold mb-4 text-zinc-900 dark:text-zinc-100">
         SSG Page 754
       </h1>
-      <p className="text-sm text-zinc-500 mb-4">
-        Generated: {data.generatedAt} | Checksum: {data.checksum.toFixed(4)}
-      </p>
       <div className="page-754-content grid grid-cols-2 md:grid-cols-4 gap-2">
-        {[SharedComponent278, SharedComponent279, SharedComponent280, SharedComponent281, SharedComponent282, SharedComponent283, SharedComponent284, SharedComponent285, SharedComponent286, SharedComponent287, SharedComponent288, SharedComponent289, SharedComponent290, SharedComponent291, SharedComponent292, SharedComponent293, SharedComponent294, SharedComponent295, SharedComponent296, SharedComponent297].map((Component, idx) => (
-          <Component key={idx} {...items[idx]} />
-        ))}
+        <SharedComponent278 id="754-0" value={75400} label="Item" />
+        <SharedComponent279 id="754-1" value={75401} label="Item" />
+        <SharedComponent280 id="754-2" value={75402} label="Item" />
+        <SharedComponent281 id="754-3" value={75403} label="Item" />
+        <SharedComponent282 id="754-4" value={75404} label="Item" />
+        <SharedComponent283 id="754-5" value={75405} label="Item" />
+        <SharedComponent284 id="754-6" value={75406} label="Item" />
+        <SharedComponent285 id="754-7" value={75407} label="Item" />
+        <SharedComponent286 id="754-8" value={75408} label="Item" />
+        <SharedComponent287 id="754-9" value={75409} label="Item" />
       </div>
     </div>
   );

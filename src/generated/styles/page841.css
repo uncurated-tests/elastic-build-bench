@@ -1,0 +1,17 @@
+/* Page 841 styles */
+.page-841 {
+  --page-index: 841;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-841-header {
+  font-size: calc(1rem + 1px);
+  color: hsl(157, 70%, 50%);
+}
+
+.page-841-content {
+  padding: 2rem;
+  border-radius: 5px;
+}

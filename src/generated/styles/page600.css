@@ -13,10 +13,5 @@
 
 .page-600-content {
   padding: 1rem;
-  background: linear-gradient(
-    0deg,
-    hsl(240, 70%, 95%),
-    hsl(60, 70%, 95%)
-  );
   border-radius: 4px;
 }

@@ -1,0 +1,17 @@
+/* Page 1353 styles */
+.page-1353 {
+  --page-index: 1353;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1353-header {
+  font-size: calc(1rem + 3px);
+  color: hsl(21, 70%, 50%);
+}
+
+.page-1353-content {
+  padding: 2rem;
+  border-radius: 5px;
+}

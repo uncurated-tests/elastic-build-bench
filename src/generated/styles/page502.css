@@ -13,10 +13,5 @@
 
 .page-502-content {
   padding: 3rem;
-  background: linear-gradient(
-    270deg,
-    hsl(214, 70%, 95%),
-    hsl(34, 70%, 95%)
-  );
   border-radius: 10px;
 }

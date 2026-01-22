@@ -1,0 +1,17 @@
+/* Page 1499 styles */
+.page-1499 {
+  --page-index: 1499;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1499-header {
+  font-size: calc(1rem + 9px);
+  color: hsl(23, 70%, 50%);
+}
+
+.page-1499-content {
+  padding: 4rem;
+  border-radius: 7px;
+}

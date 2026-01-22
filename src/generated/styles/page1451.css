@@ -1,0 +1,17 @@
+/* Page 1451 styles */
+.page-1451 {
+  --page-index: 1451;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1451-header {
+  font-size: calc(1rem + 1px);
+  color: hsl(47, 70%, 50%);
+}
+
+.page-1451-content {
+  padding: 4rem;
+  border-radius: 7px;
+}

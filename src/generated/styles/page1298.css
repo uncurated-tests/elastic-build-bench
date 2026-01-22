@@ -1,0 +1,17 @@
+/* Page 1298 styles */
+.page-1298 {
+  --page-index: 1298;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1298-header {
+  font-size: calc(1rem + 8px);
+  color: hsl(146, 70%, 50%);
+}
+
+.page-1298-content {
+  padding: 3rem;
+  border-radius: 6px;
+}

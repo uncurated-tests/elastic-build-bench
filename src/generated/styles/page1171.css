@@ -1,0 +1,17 @@
+/* Page 1171 styles */
+.page-1171 {
+  --page-index: 1171;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1171-header {
+  font-size: calc(1rem + 1px);
+  color: hsl(127, 70%, 50%);
+}
+
+.page-1171-content {
+  padding: 4rem;
+  border-radius: 7px;
+}

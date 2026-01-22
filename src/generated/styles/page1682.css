@@ -1,0 +1,17 @@
+/* Page 1682 styles */
+.page-1682 {
+  --page-index: 1682;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1682-header {
+  font-size: calc(1rem + 2px);
+  color: hsl(314, 70%, 50%);
+}
+
+.page-1682-content {
+  padding: 3rem;
+  border-radius: 6px;
+}

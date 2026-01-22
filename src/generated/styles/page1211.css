@@ -1,0 +1,17 @@
+/* Page 1211 styles */
+.page-1211 {
+  --page-index: 1211;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1211-header {
+  font-size: calc(1rem + 1px);
+  color: hsl(167, 70%, 50%);
+}
+
+.page-1211-content {
+  padding: 4rem;
+  border-radius: 7px;
+}

@@ -1,0 +1,17 @@
+/* Page 849 styles */
+.page-849 {
+  --page-index: 849;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-849-header {
+  font-size: calc(1rem + 9px);
+  color: hsl(93, 70%, 50%);
+}
+
+.page-849-content {
+  padding: 2rem;
+  border-radius: 5px;
+}

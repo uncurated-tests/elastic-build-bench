@@ -1,0 +1,17 @@
+/* Page 1222 styles */
+.page-1222 {
+  --page-index: 1222;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1222-header {
+  font-size: calc(1rem + 2px);
+  color: hsl(214, 70%, 50%);
+}
+
+.page-1222-content {
+  padding: 3rem;
+  border-radius: 10px;
+}

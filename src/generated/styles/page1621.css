@@ -1,0 +1,17 @@
+/* Page 1621 styles */
+.page-1621 {
+  --page-index: 1621;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1621-header {
+  font-size: calc(1rem + 1px);
+  color: hsl(217, 70%, 50%);
+}
+
+.page-1621-content {
+  padding: 2rem;
+  border-radius: 9px;
+}

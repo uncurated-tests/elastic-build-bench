@@ -1,0 +1,17 @@
+/* Page 1784 styles */
+.page-1784 {
+  --page-index: 1784;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1784-header {
+  font-size: calc(1rem + 4px);
+  color: hsl(128, 70%, 50%);
+}
+
+.page-1784-content {
+  padding: 1rem;
+  border-radius: 4px;
+}

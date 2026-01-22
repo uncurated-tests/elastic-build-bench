@@ -13,10 +13,5 @@
 
 .page-444-content {
   padding: 1rem;
-  background: linear-gradient(
-    180deg,
-    hsl(228, 70%, 95%),
-    hsl(48, 70%, 95%)
-  );
   border-radius: 8px;
 }

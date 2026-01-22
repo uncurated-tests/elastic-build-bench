@@ -1,0 +1,17 @@
+/* Page 1938 styles */
+.page-1938 {
+  --page-index: 1938;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1938-header {
+  font-size: calc(1rem + 8px);
+  color: hsl(66, 70%, 50%);
+}
+
+.page-1938-content {
+  padding: 3rem;
+  border-radius: 6px;
+}

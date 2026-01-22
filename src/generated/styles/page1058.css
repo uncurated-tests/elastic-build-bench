@@ -1,0 +1,17 @@
+/* Page 1058 styles */
+.page-1058 {
+  --page-index: 1058;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1058-header {
+  font-size: calc(1rem + 8px);
+  color: hsl(266, 70%, 50%);
+}
+
+.page-1058-content {
+  padding: 3rem;
+  border-radius: 6px;
+}

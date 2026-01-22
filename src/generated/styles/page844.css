@@ -1,0 +1,17 @@
+/* Page 844 styles */
+.page-844 {
+  --page-index: 844;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-844-header {
+  font-size: calc(1rem + 4px);
+  color: hsl(268, 70%, 50%);
+}
+
+.page-844-content {
+  padding: 1rem;
+  border-radius: 8px;
+}
