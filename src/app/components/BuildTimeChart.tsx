@@ -7,6 +7,13 @@ interface DataPoint {
   label?: string;
 }
 
+interface NormalizedDataPoint {
+  targetMin: number;
+  percentage: number;
+  machine: 'Standard' | 'Enhanced' | 'Turbo';
+  label?: string;
+}
+
 interface BuildTimeChartProps {
   data: DataPoint[];
 }
@@ -17,14 +24,34 @@ const COLORS = {
   Turbo: '#eab308',     // yellow
 };
 
-const MARKERS = {
-  Standard: 'circle',
-  Enhanced: 'rect',
-  Turbo: 'triangle',
-};
-
 export default function BuildTimeChart({ data }: BuildTimeChartProps) {
   if (data.length === 0) return null;
+
+  // Group data by label (compilation target) to find Standard baseline
+  const byLabel: Record<string, DataPoint[]> = {};
+  for (const d of data) {
+    const key = d.label || String(d.targetMin);
+    if (!byLabel[key]) byLabel[key] = [];
+    byLabel[key].push(d);
+  }
+
+  // Normalize: Standard = 100%, others as percentage of Standard
+  const normalizedData: NormalizedDataPoint[] = [];
+  for (const [label, points] of Object.entries(byLabel)) {
+    const standardPoint = points.find(p => p.machine === 'Standard');
+    if (!standardPoint) continue;
+
+    for (const p of points) {
+      normalizedData.push({
+        targetMin: p.targetMin,
+        percentage: (p.actualSec / standardPoint.actualSec) * 100,
+        machine: p.machine,
+        label: p.label,
+      });
+    }
+  }
+
+  if (normalizedData.length === 0) return null;
 
   // Chart dimensions
   const width = 700;
@@ -34,19 +61,17 @@ export default function BuildTimeChart({ data }: BuildTimeChartProps) {
   const chartHeight = height - padding.top - padding.bottom;
 
   // Calculate ranges
-  const maxTargetMin = Math.max(...data.map(d => d.targetMin));
-  const maxActualSec = Math.max(...data.map(d => d.actualSec));
-
-  const xMax = Math.ceil(maxTargetMin / 5) * 5 || 20;
-  const yMax = Math.ceil(maxActualSec / 60) * 60 || 1200;
+  const maxTargetMin = Math.max(...normalizedData.map(d => d.targetMin));
+  const xMax = Math.ceil(maxTargetMin / 5) * 5 || 25;
+  const yMax = 120; // 120% max to show Standard at 100%
 
   // Scale functions
   const scaleX = (targetMin: number) => padding.left + (targetMin / xMax) * chartWidth;
-  const scaleY = (actualSec: number) => padding.top + chartHeight - (actualSec / yMax) * chartHeight;
+  const scaleY = (percentage: number) => padding.top + chartHeight - (percentage / yMax) * chartHeight;
 
-  // Group data by machine type and sort by targetMin
-  const byMachine: Record<string, DataPoint[]> = {};
-  for (const d of data) {
+  // Group normalized data by machine type and sort by targetMin
+  const byMachine: Record<string, NormalizedDataPoint[]> = {};
+  for (const d of normalizedData) {
     if (!byMachine[d.machine]) byMachine[d.machine] = [];
     byMachine[d.machine].push(d);
   }
@@ -54,22 +79,15 @@ export default function BuildTimeChart({ data }: BuildTimeChartProps) {
     byMachine[machine].sort((a, b) => a.targetMin - b.targetMin);
   }
 
-  // Generate ideal line points (y = x * 60)
-  const idealLinePoints: string[] = [];
-  for (let x = 0; x <= xMax; x += xMax / 20) {
-    const idealSec = x * 60;
-    if (idealSec <= yMax) {
-      idealLinePoints.push(`${scaleX(x)},${scaleY(idealSec)}`);
-    }
-  }
+  // Generate 100% baseline line
+  const baselineY = scaleY(100);
 
   // Generate Y-axis ticks
-  const yTicks = [];
-  const yTickCount = 5;
-  for (let i = 0; i <= yTickCount; i++) {
-    const value = (i / yTickCount) * yMax;
-    yTicks.push({ value, y: scaleY(value), label: `${Math.round(value / 60)}m` });
-  }
+  const yTicks = [0, 25, 50, 75, 100].map(value => ({
+    value,
+    y: scaleY(value),
+    label: `${value}%`,
+  }));
 
   // Generate X-axis ticks
   const xTicks = [];
@@ -98,10 +116,10 @@ export default function BuildTimeChart({ data }: BuildTimeChartProps) {
   return (
     <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6 mb-8">
       <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
-        Actual vs Target Trigger2Ready Time
+        Trigger2Ready Time (Normalized to Standard = 100%)
       </h2>
       <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">
-        Target = Compilation Target × Field Ratio. Points below diagonal are faster than expected.
+        Lower is faster. Enhanced and Turbo shown as % of Standard time for each target.
       </p>
 
       <div className="overflow-x-auto">
@@ -132,22 +150,23 @@ export default function BuildTimeChart({ data }: BuildTimeChartProps) {
             />
           ))}
 
-          {/* Ideal line (y = x) */}
-          <polyline
-            points={idealLinePoints.join(' ')}
-            fill="none"
-            stroke="currentColor"
+          {/* 100% baseline (Standard) */}
+          <line
+            x1={padding.left}
+            y1={baselineY}
+            x2={width - padding.right}
+            y2={baselineY}
+            stroke={COLORS.Standard}
             strokeWidth={2}
             strokeDasharray="4,4"
-            strokeOpacity={0.3}
-            className="text-zinc-500 dark:text-zinc-400"
+            strokeOpacity={0.5}
           />
 
           {/* Lines connecting points for each machine type */}
           {Object.entries(byMachine).map(([machine, points]) => {
             if (points.length < 2) return null;
             const linePoints = points
-              .map(p => `${scaleX(p.targetMin)},${scaleY(p.actualSec)}`)
+              .map(p => `${scaleX(p.targetMin)},${scaleY(p.percentage)}`)
               .join(' ');
             return (
               <polyline
@@ -162,7 +181,7 @@ export default function BuildTimeChart({ data }: BuildTimeChartProps) {
           })}
 
           {/* Data points */}
-          {data.map((d, i) => renderMarker(d.machine, scaleX(d.targetMin), scaleY(d.actualSec), `point-${i}`))}
+          {normalizedData.map((d, i) => renderMarker(d.machine, scaleX(d.targetMin), scaleY(d.percentage), `point-${i}`))}
 
           {/* Y-axis */}
           <line
@@ -201,7 +220,7 @@ export default function BuildTimeChart({ data }: BuildTimeChartProps) {
             transform={`rotate(-90, ${padding.left - 50}, ${height / 2})`}
             className="text-sm fill-zinc-600 dark:fill-zinc-400"
           >
-            Actual Trigger2Ready
+            % of Standard Time
           </text>
 
           {/* X-axis */}
@@ -250,7 +269,7 @@ export default function BuildTimeChart({ data }: BuildTimeChartProps) {
           <svg width="16" height="16">
             <circle cx="8" cy="8" r="6" fill={COLORS.Standard} />
           </svg>
-          <span className="text-sm text-zinc-600 dark:text-zinc-400">Standard</span>
+          <span className="text-sm text-zinc-600 dark:text-zinc-400">Standard (100%)</span>
         </div>
         <div className="flex items-center gap-2">
           <svg width="16" height="16">
@@ -263,12 +282,6 @@ export default function BuildTimeChart({ data }: BuildTimeChartProps) {
             <polygon points="8,2 2,14 14,14" fill={COLORS.Turbo} />
           </svg>
           <span className="text-sm text-zinc-600 dark:text-zinc-400">Turbo</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <svg width="24" height="16">
-            <line x1="0" y1="8" x2="24" y2="8" stroke="currentColor" strokeWidth="2" strokeDasharray="4,4" className="text-zinc-400" />
-          </svg>
-          <span className="text-sm text-zinc-600 dark:text-zinc-400">Ideal (actual = target)</span>
         </div>
       </div>
     </div>
