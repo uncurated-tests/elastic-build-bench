@@ -2,8 +2,9 @@
 import { list } from '@vercel/blob';
 
 // Chart configuration
-const CHART_WIDTH = 60;
+const CHART_WIDTH = 50;
 const CHART_HEIGHT = 20;
+const CHART_GAP = 4;
 const MARKERS = { Standard: '●', Enhanced: '■', Turbo: '▲' };
 const COLORS = {
   Standard: '\x1b[34m',  // Blue
@@ -14,32 +15,42 @@ const COLORS = {
   bright: '\x1b[1m',
 };
 
-function renderChart(dataPoints) {
-  // dataPoints: [{ targetMin, actualSec, machine }]
+// Cost multipliers per machine type (relative to Standard)
+const COST_MULTIPLIERS = { Standard: 1, Enhanced: 2, Turbo: 7.5 };
+
+function colorizeChar(char) {
+  if (char === MARKERS.Standard) {
+    return `${COLORS.Standard}${char}${COLORS.reset}`;
+  } else if (char === MARKERS.Enhanced) {
+    return `${COLORS.Enhanced}${char}${COLORS.reset}`;
+  } else if (char === MARKERS.Turbo) {
+    return `${COLORS.Turbo}${char}${COLORS.reset}`;
+  } else if (char === '·') {
+    return `${COLORS.dim}${char}${COLORS.reset}`;
+  }
+  return char;
+}
+
+function buildChartLines(dataPoints, { title, subtitle, xLabel, yLabelFn, xMax, yMax, idealLineFn }) {
+  const lines = [];
 
   if (dataPoints.length === 0) {
-    console.log('No data points to chart.\n');
-    return;
+    lines.push('No data points to chart.');
+    return lines;
   }
-
-  // Find ranges
-  const maxTargetMin = Math.max(...dataPoints.map(d => d.targetMin));
-  const maxActualSec = Math.max(...dataPoints.map(d => d.actualSec));
-
-  // Add some padding to max values
-  const xMax = Math.ceil(maxTargetMin / 5) * 5 || 20;
-  const yMax = Math.ceil(maxActualSec / 60) * 60 || 1200;
 
   // Create empty chart grid
   const grid = Array(CHART_HEIGHT).fill(null).map(() => Array(CHART_WIDTH).fill(' '));
 
-  // Draw ideal line (y = x * 60, where x is minutes and y is seconds)
-  for (let x = 0; x < CHART_WIDTH; x++) {
-    const targetMin = (x / CHART_WIDTH) * xMax;
-    const idealSec = targetMin * 60;
-    const y = Math.round((1 - idealSec / yMax) * (CHART_HEIGHT - 1));
-    if (y >= 0 && y < CHART_HEIGHT) {
-      grid[y][x] = '·';
+  // Draw ideal line if provided
+  if (idealLineFn) {
+    for (let x = 0; x < CHART_WIDTH; x++) {
+      const xVal = (x / CHART_WIDTH) * xMax;
+      const idealY = idealLineFn(xVal);
+      const y = Math.round((1 - idealY / yMax) * (CHART_HEIGHT - 1));
+      if (y >= 0 && y < CHART_HEIGHT) {
+        grid[y][x] = '·';
+      }
     }
   }
 
@@ -51,11 +62,11 @@ function renderChart(dataPoints) {
   }
 
   // Plot points for each machine type
-  const plotted = {}; // Track plotted positions to handle overlaps
+  const plotted = {};
   for (const [machine, points] of Object.entries(byMachine)) {
     for (const p of points) {
-      const x = Math.round((p.targetMin / xMax) * (CHART_WIDTH - 1));
-      const y = Math.round((1 - p.actualSec / yMax) * (CHART_HEIGHT - 1));
+      const x = Math.round((p.x / xMax) * (CHART_WIDTH - 1));
+      const y = Math.round((1 - p.y / yMax) * (CHART_HEIGHT - 1));
       if (x >= 0 && x < CHART_WIDTH && y >= 0 && y < CHART_HEIGHT) {
         const key = `${x},${y}`;
         if (!plotted[key]) plotted[key] = [];
@@ -67,46 +78,34 @@ function renderChart(dataPoints) {
   // Apply plotted points to grid
   for (const [key, items] of Object.entries(plotted)) {
     const [x, y] = key.split(',').map(Number);
-    // If multiple points at same location, show first one
     grid[y][x] = items[0].marker;
   }
 
-  // Render chart
-  console.log(`${COLORS.bright}Actual Build Time vs Target Build Time${COLORS.reset}`);
-  console.log(`${COLORS.dim}(dotted line = ideal where actual = target)${COLORS.reset}\n`);
+  // Build chart lines
+  lines.push(`${COLORS.bright}${title}${COLORS.reset}`);
+  lines.push(`${COLORS.dim}${subtitle}${COLORS.reset}`);
+  lines.push('');
 
   // Y-axis labels and grid
   for (let row = 0; row < CHART_HEIGHT; row++) {
     const yVal = yMax * (1 - row / (CHART_HEIGHT - 1));
-    const yLabel = row % 4 === 0 ? `${Math.round(yVal / 60)}m`.padStart(4) : '    ';
+    const yLabel = row % 4 === 0 ? yLabelFn(yVal).padStart(6) : '      ';
 
     let line = '';
     for (let col = 0; col < CHART_WIDTH; col++) {
-      const char = grid[row][col];
-      // Color the markers
-      if (char === MARKERS.Standard) {
-        line += `${COLORS.Standard}${char}${COLORS.reset}`;
-      } else if (char === MARKERS.Enhanced) {
-        line += `${COLORS.Enhanced}${char}${COLORS.reset}`;
-      } else if (char === MARKERS.Turbo) {
-        line += `${COLORS.Turbo}${char}${COLORS.reset}`;
-      } else if (char === '·') {
-        line += `${COLORS.dim}${char}${COLORS.reset}`;
-      } else {
-        line += char;
-      }
+      line += colorizeChar(grid[row][col]);
     }
 
     const border = row === 0 ? '┌' : row === CHART_HEIGHT - 1 ? '└' : '│';
-    console.log(`${yLabel} ${border}${line}│`);
+    lines.push(`${yLabel} ${border}${line}│`);
   }
 
   // X-axis
-  console.log('     └' + '─'.repeat(CHART_WIDTH) + '┘');
+  lines.push('       └' + '─'.repeat(CHART_WIDTH) + '┘');
 
-  // X-axis labels - evenly spaced
+  // X-axis labels
   const xLabelCount = 5;
-  let xLabelsLine = '      ';
+  let xLabelsLine = '        ';
   for (let i = 0; i < xLabelCount; i++) {
     const val = Math.round((i / (xLabelCount - 1)) * xMax);
     const label = `${val}m`;
@@ -117,12 +116,62 @@ function renderChart(dataPoints) {
       xLabelsLine += label.padStart(spacing);
     }
   }
-  console.log(xLabelsLine);
-  console.log('      ' + ' '.repeat(CHART_WIDTH / 2 - 8) + 'Target Build Time\n');
+  lines.push(xLabelsLine);
+  lines.push(' '.repeat(8 + CHART_WIDTH / 2 - xLabel.length / 2) + xLabel);
 
-  // Legend
+  return lines;
+}
+
+function renderChartsSideBySide(chartData, costData) {
+  // Build first chart: Actual Build Time vs Target Build Time
+  const maxTargetMin1 = Math.max(...chartData.map(d => d.targetMin), 1);
+  const maxActualSec = Math.max(...chartData.map(d => d.actualSec), 60);
+  const xMax1 = Math.ceil(maxTargetMin1 / 5) * 5 || 20;
+  const yMax1 = Math.ceil(maxActualSec / 60) * 60 || 1200;
+
+  const chart1Data = chartData.map(d => ({ x: d.targetMin, y: d.actualSec, machine: d.machine }));
+  const chart1Lines = buildChartLines(chart1Data, {
+    title: 'Actual Build Time vs Target Build Time',
+    subtitle: '(dotted line = ideal where actual = target)',
+    xLabel: 'Target Build Time',
+    yLabelFn: (val) => `${Math.round(val / 60)}m`,
+    xMax: xMax1,
+    yMax: yMax1,
+    idealLineFn: (targetMin) => targetMin * 60  // ideal: actual seconds = target minutes * 60
+  });
+
+  // Build second chart: Build Cost vs Target Trigger2Ready
+  const maxTargetMin2 = Math.max(...costData.map(d => d.targetMin), 1);
+  const maxCost = Math.max(...costData.map(d => d.cost), 1);
+  const xMax2 = Math.ceil(maxTargetMin2 / 5) * 5 || 20;
+  const yMax2 = Math.ceil(maxCost / 100) * 100 || 1000;
+
+  const chart2Data = costData.map(d => ({ x: d.targetMin, y: d.cost, machine: d.machine }));
+  const chart2Lines = buildChartLines(chart2Data, {
+    title: 'Build Cost ($/sec) vs Target Trigger2Ready',
+    subtitle: '(dotted line = Standard cost baseline)',
+    xLabel: 'Target Trigger2Ready',
+    yLabelFn: (val) => `$${Math.round(val)}`,
+    xMax: xMax2,
+    yMax: yMax2,
+    idealLineFn: (targetMin) => targetMin * 60 * COST_MULTIPLIERS.Standard  // baseline: Standard cost
+  });
+
+  // Render side by side
+  const maxLines = Math.max(chart1Lines.length, chart2Lines.length);
+  for (let i = 0; i < maxLines; i++) {
+    const left = chart1Lines[i] || '';
+    const right = chart2Lines[i] || '';
+    // Calculate visible width (excluding ANSI codes)
+    const visibleLeft = left.replace(/\x1b\[[0-9;]*m/g, '');
+    const padding = CHART_WIDTH + 14 - visibleLeft.length;
+    console.log(left + ' '.repeat(Math.max(CHART_GAP, padding)) + right);
+  }
+
+  // Legend (shared)
+  console.log('');
   console.log('  Legend:');
-  console.log(`    ${COLORS.Standard}${MARKERS.Standard}${COLORS.reset} Standard    ${COLORS.Enhanced}${MARKERS.Enhanced}${COLORS.reset} Enhanced    ${COLORS.Turbo}${MARKERS.Turbo}${COLORS.reset} Turbo    ${COLORS.dim}·${COLORS.reset} Ideal (actual=target)`);
+  console.log(`    ${COLORS.Standard}${MARKERS.Standard}${COLORS.reset} Standard (1x)    ${COLORS.Enhanced}${MARKERS.Enhanced}${COLORS.reset} Enhanced (2x)    ${COLORS.Turbo}${MARKERS.Turbo}${COLORS.reset} Turbo (7.5x)    ${COLORS.dim}·${COLORS.reset} Baseline`);
   console.log('');
 }
 
@@ -147,6 +196,7 @@ async function fetchTimings() {
   // Get latest for each and build rows
   const rows = [];
   const chartData = [];
+  const costData = [];
 
   for (const [key, records] of Object.entries(grouped)) {
     const latest = records.sort((a, b) => new Date(b.timestamps?.buildStarted || 0) - new Date(a.timestamps?.buildStarted || 0))[0];
@@ -172,6 +222,15 @@ async function fetchTimings() {
         actualSec: buildSec,
         machine
       });
+
+      // Calculate build cost: actual build seconds × cost multiplier
+      const costMultiplier = COST_MULTIPLIERS[machine] || 1;
+      const cost = buildSec * costMultiplier;
+      costData.push({
+        targetMin,
+        cost,
+        machine
+      });
     }
   }
 
@@ -182,8 +241,8 @@ async function fetchTimings() {
     return (machineOrder[a.machine] || 99) - (machineOrder[b.machine] || 99);
   });
 
-  // Render chart first
-  renderChart(chartData);
+  // Render both charts side by side
+  renderChartsSideBySide(chartData, costData);
 
   // Then render table
   console.log('─'.repeat(78));
