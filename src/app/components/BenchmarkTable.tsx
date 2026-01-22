@@ -29,6 +29,7 @@ interface TimingRecord {
 interface BenchmarkTableProps {
   records: TimingRecord[];
   standardE2EMap: Map<string, number>;
+  standardBuildMap: Map<string, number>;
 }
 
 function formatDuration(ms: number | null | undefined): string {
@@ -41,7 +42,7 @@ function formatDuration(ms: number | null | undefined): string {
   return `${minutes}m ${remainingSeconds}s`;
 }
 
-function getBuildTimeReduction(record: TimingRecord, standardE2EMap: Map<string, number>): string {
+function getE2EReduction(record: TimingRecord, standardE2EMap: Map<string, number>): string {
   if (record.config.MachineType === 'Standard') {
     return '-';
   }
@@ -63,7 +64,29 @@ function getBuildTimeReduction(record: TimingRecord, standardE2EMap: Map<string,
   return '0%';
 }
 
-export default function BenchmarkTable({ records, standardE2EMap }: BenchmarkTableProps) {
+function getBuildReduction(record: TimingRecord, standardBuildMap: Map<string, number>): string {
+  if (record.config.MachineType === 'Standard') {
+    return '-';
+  }
+  
+  const key = `${record.config.BuildTimeOnStandard}-${record.config.FullTimeOnStandard}`;
+  const standardBuild = standardBuildMap.get(key);
+  const currentBuild = record.durations.totalMs;
+  
+  if (!standardBuild || !currentBuild) {
+    return '-';
+  }
+  
+  const reduction = ((standardBuild - currentBuild) / standardBuild) * 100;
+  if (reduction > 0) {
+    return `-${reduction.toFixed(0)}%`;
+  } else if (reduction < 0) {
+    return `+${Math.abs(reduction).toFixed(0)}%`;
+  }
+  return '0%';
+}
+
+export default function BenchmarkTable({ records, standardE2EMap, standardBuildMap }: BenchmarkTableProps) {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
   const [showBranch, setShowBranch] = useState(false);
 
@@ -79,7 +102,9 @@ export default function BenchmarkTable({ records, standardE2EMap }: BenchmarkTab
 
   // Convert Map to object for client-side use
   const standardE2EObj = Object.fromEntries(standardE2EMap);
+  const standardBuildObj = Object.fromEntries(standardBuildMap);
   const getStandardE2E = (key: string) => standardE2EObj[key];
+  const getStandardBuild = (key: string) => standardBuildObj[key];
 
   return (
     <div className="space-y-4">
@@ -130,8 +155,10 @@ export default function BenchmarkTable({ records, standardE2EMap }: BenchmarkTab
             <tbody>
               {records.map((record, index) => {
                 const isExpanded = expandedRows.has(record.runId);
-                const reduction = getBuildTimeReduction(record, standardE2EMap);
-                const isReduction = reduction.startsWith('-');
+                const e2eReduction = getE2EReduction(record, standardE2EMap);
+                const buildReduction = getBuildReduction(record, standardBuildMap);
+                const isE2EReduction = e2eReduction.startsWith('-');
+                const isBuildReduction = buildReduction.startsWith('-');
                 
                 return (
                   <>
@@ -162,8 +189,19 @@ export default function BenchmarkTable({ records, standardE2EMap }: BenchmarkTab
                         </span>
                       </td>
                       <td className="px-3 py-2.5 text-sm font-mono whitespace-nowrap">
-                        <span className="text-zinc-900 dark:text-zinc-100">
-                          {record.durations.totalMs ? formatDuration(record.durations.totalMs) : '-'}
+                        <span className="inline-flex items-center gap-1">
+                          <span className="text-zinc-900 dark:text-zinc-100">
+                            {record.durations.totalMs ? formatDuration(record.durations.totalMs) : '-'}
+                          </span>
+                          {buildReduction !== '-' && (
+                            <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+                              isBuildReduction
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                            }`}>
+                              {buildReduction}
+                            </span>
+                          )}
                         </span>
                       </td>
                       <td className="px-3 py-2.5 text-sm font-mono whitespace-nowrap">
@@ -171,13 +209,13 @@ export default function BenchmarkTable({ records, standardE2EMap }: BenchmarkTab
                           <span className="text-zinc-900 dark:text-zinc-100">
                             {record.durations.totalWithDeploymentMs ? formatDuration(record.durations.totalWithDeploymentMs) : '-'}
                           </span>
-                          {reduction !== '-' && (
+                          {e2eReduction !== '-' && (
                             <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
-                              isReduction
+                              isE2EReduction
                                 ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                                 : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
                             }`}>
-                              {reduction}
+                              {e2eReduction}
                             </span>
                           )}
                         </span>

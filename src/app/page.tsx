@@ -238,10 +238,17 @@ export default async function Home() {
 
   // Build a lookup map for Standard E2E times by (BuildTimeOnStandard, FullTimeOnStandard)
   const standardE2EMap = new Map<string, number>();
+  // Build a lookup map for Standard Build times by (BuildTimeOnStandard, FullTimeOnStandard)
+  const standardBuildMap = new Map<string, number>();
   for (const record of records) {
-    if (record.config.MachineType === 'Standard' && record.durations.totalWithDeploymentMs) {
+    if (record.config.MachineType === 'Standard') {
       const key = `${record.config.BuildTimeOnStandard}-${record.config.FullTimeOnStandard}`;
-      standardE2EMap.set(key, record.durations.totalWithDeploymentMs);
+      if (record.durations.totalWithDeploymentMs) {
+        standardE2EMap.set(key, record.durations.totalWithDeploymentMs);
+      }
+      if (record.durations.totalMs) {
+        standardBuildMap.set(key, record.durations.totalMs);
+      }
     }
   }
 
@@ -263,8 +270,8 @@ export default async function Home() {
     return null;
   };
 
-  // Helper function to calculate build time reduction percentage
-  const getBuildTimeReduction = (record: TimingRecord): string => {
+  // Helper function to calculate E2E time reduction percentage
+  const getE2EReduction = (record: TimingRecord): string => {
     if (record.config.MachineType === 'Standard') {
       return '-'; // Baseline, no reduction to show
     }
@@ -278,6 +285,29 @@ export default async function Home() {
     }
     
     const reduction = ((standardE2E - currentE2E) / standardE2E) * 100;
+    if (reduction > 0) {
+      return `-${reduction.toFixed(0)}%`;
+    } else if (reduction < 0) {
+      return `+${Math.abs(reduction).toFixed(0)}%`;
+    }
+    return '0%';
+  };
+
+  // Helper function to calculate build time reduction percentage (vs Standard)
+  const getBuildReduction = (record: TimingRecord): string => {
+    if (record.config.MachineType === 'Standard') {
+      return '-'; // Baseline, no reduction to show
+    }
+    
+    const key = `${record.config.BuildTimeOnStandard}-${record.config.FullTimeOnStandard}`;
+    const standardBuild = standardBuildMap.get(key);
+    const currentBuild = record.durations.totalMs;
+    
+    if (!standardBuild || !currentBuild) {
+      return '-';
+    }
+    
+    const reduction = ((standardBuild - currentBuild) / standardBuild) * 100;
     if (reduction > 0) {
       return `-${reduction.toFixed(0)}%`;
     } else if (reduction < 0) {
@@ -368,8 +398,26 @@ export default async function Home() {
                           })()}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-sm font-mono text-zinc-900 dark:text-zinc-100">
-                        {record.durations.totalMs ? formatDuration(record.durations.totalMs) : '-'}
+                      <td className="px-4 py-3 text-sm font-mono">
+                        <span className="inline-flex items-center gap-1.5">
+                          <span className="text-zinc-900 dark:text-zinc-100">
+                            {record.durations.totalMs ? formatDuration(record.durations.totalMs) : '-'}
+                          </span>
+                          {(() => {
+                            const reduction = getBuildReduction(record);
+                            if (reduction === '-') return null;
+                            const isReduction = reduction.startsWith('-');
+                            return (
+                              <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+                                isReduction
+                                  ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                  : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                              }`}>
+                                {reduction}
+                              </span>
+                            );
+                          })()}
+                        </span>
                       </td>
                       <td className="px-4 py-3 text-sm font-mono">
                         <span className="inline-flex items-center gap-1.5">
@@ -377,7 +425,7 @@ export default async function Home() {
                             {record.durations.totalWithDeploymentMs ? formatDuration(record.durations.totalWithDeploymentMs) : '-'}
                           </span>
                           {(() => {
-                            const reduction = getBuildTimeReduction(record);
+                            const reduction = getE2EReduction(record);
                             if (reduction === '-') return null;
                             const isReduction = reduction.startsWith('-');
                             return (
@@ -474,7 +522,7 @@ export default async function Home() {
                       </p>
                     </div>
                     {(() => {
-                      const reduction = getBuildTimeReduction(record);
+                      const reduction = getE2EReduction(record);
                       if (reduction === '-') return null;
                       const isReduction = reduction.startsWith('-');
                       return (
@@ -483,7 +531,7 @@ export default async function Home() {
                             ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                             : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
                         }`}>
-                          {reduction}
+                          E2E: {reduction}
                         </span>
                       );
                     })()}
@@ -500,12 +548,28 @@ export default async function Home() {
                     </div>
                     <div>
                       <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Actual Build</p>
-                      <span className={`px-2 py-1 rounded text-xs font-mono ${
-                        record.durations.totalMs 
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
-                          : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500'
-                      }`}>
-                        {formatDuration(record.durations.totalMs)}
+                      <span className="inline-flex items-center gap-1">
+                        <span className={`px-2 py-1 rounded text-xs font-mono ${
+                          record.durations.totalMs 
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
+                            : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500'
+                        }`}>
+                          {formatDuration(record.durations.totalMs)}
+                        </span>
+                        {(() => {
+                          const reduction = getBuildReduction(record);
+                          if (reduction === '-') return null;
+                          const isReduction = reduction.startsWith('-');
+                          return (
+                            <span className={`px-1 py-0.5 rounded text-xs font-medium ${
+                              isReduction
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                            }`}>
+                              {reduction}
+                            </span>
+                          );
+                        })()}
                       </span>
                     </div>
                     <div>
