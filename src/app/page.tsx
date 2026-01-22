@@ -1,6 +1,7 @@
 import { list, put } from '@vercel/blob';
 import BenchmarkTable from './components/BenchmarkTable';
 import BuildTimeChart from './components/BuildTimeChart';
+import BuildCostChart from './components/BuildCostChart';
 
 // Revalidate every 60 seconds to pick up new build data
 export const revalidate = 60;
@@ -288,6 +289,31 @@ export default async function Home() {
     })
     .filter(d => d.targetMin > 0);
 
+  // Prepare cost chart data - Build Cost per second
+  const COST_PER_MIN = {
+    Standard: 0.014,
+    Enhanced: 0.028,
+    Turbo: 0.105,
+  };
+
+  const costChartData = records
+    .filter(r => r.durations.totalWithDeploymentMs && ['Standard', 'Enhanced', 'Turbo'].includes(r.config.MachineType))
+    .map(r => {
+      const targetCompilationMin = parseTime(r.config.BuildTimeOnStandard);
+      const fieldRatio = getFieldRatio(targetCompilationMin);
+      const targetT2RMin = targetCompilationMin * fieldRatio;
+      const machineType = r.config.MachineType as 'Standard' | 'Enhanced' | 'Turbo';
+      const seconds = (r.durations.totalWithDeploymentMs || 0) / 1000;
+      const costPerSec = seconds * (COST_PER_MIN[machineType] / 60);
+      return {
+        targetMin: targetT2RMin,
+        costPerSec,
+        machine: machineType,
+        label: r.config.BuildTimeOnStandard,
+      };
+    })
+    .filter(d => d.targetMin > 0);
+
   // Helper function to get deployment inspection URL
   const getDeploymentUrl = (record: TimingRecord): string | null => {
     if (record.deploymentId && record.vercelProjectName) {
@@ -370,8 +396,9 @@ export default async function Home() {
           </div>
         ) : (
           <>
-            {/* Chart */}
+            {/* Charts */}
             <BuildTimeChart data={chartData} />
+            <BuildCostChart data={costChartData} />
 
             {/* Desktop Table View */}
             <div className="hidden lg:block overflow-x-auto">
