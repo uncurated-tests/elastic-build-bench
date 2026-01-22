@@ -1,0 +1,17 @@
+/* Page 1973 styles */
+.page-1973 {
+  --page-index: 1973;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1973-header {
+  font-size: calc(1rem + 3px);
+  color: hsl(281, 70%, 50%);
+}
+
+.page-1973-content {
+  padding: 2rem;
+  border-radius: 9px;
+}
