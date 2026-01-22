@@ -388,11 +388,11 @@ export default async function Home() {
                       <td className="px-4 py-3 text-sm font-mono text-zinc-600 dark:text-zinc-400">
                         {(() => {
                           // Calculate target ratio from FullTimeOnStandard / BuildTimeOnStandard
-                          const buildMatch = record.config.BuildTimeOnStandard.match(/(\d+)/);
-                          const e2eMatch = record.config.FullTimeOnStandard.match(/(\d+)/);
+                          const buildMatch = record.config.BuildTimeOnStandard.match(/([\d.]+)/);
+                          const e2eMatch = record.config.FullTimeOnStandard.match(/([\d.]+)/);
                           if (!buildMatch || !e2eMatch) return '-';
-                          const buildMin = parseInt(buildMatch[1], 10);
-                          const e2eMin = parseInt(e2eMatch[1], 10);
+                          const buildMin = parseFloat(buildMatch[1]);
+                          const e2eMin = parseFloat(e2eMatch[1]);
                           if (buildMin === 0) return '-';
                           const ratio = e2eMin / buildMin;
                           return `${ratio.toFixed(1)}x`;
