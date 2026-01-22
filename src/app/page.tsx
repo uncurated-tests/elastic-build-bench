@@ -306,6 +306,7 @@ export default async function Home() {
         costPerSec,
         machine: machineType,
         label: r.config.BuildTimeOnStandard,
+        e2eSec: seconds,
       };
     })
     .filter(d => d.targetMin > 0);
