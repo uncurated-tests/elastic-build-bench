@@ -346,9 +346,6 @@ export default async function Home() {
                       Target E2E
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Target Ratio
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                       Machine
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
@@ -366,9 +363,6 @@ export default async function Home() {
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                       Build Cost (per sec.)
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Branch
-                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -384,19 +378,6 @@ export default async function Home() {
                       </td>
                       <td className="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-400">
                         {record.config.FullTimeOnStandard}
-                      </td>
-                      <td className="px-4 py-3 text-sm font-mono text-zinc-600 dark:text-zinc-400">
-                        {(() => {
-                          // Calculate target ratio from FullTimeOnStandard / BuildTimeOnStandard
-                          const buildMatch = record.config.BuildTimeOnStandard.match(/([\d.]+)/);
-                          const e2eMatch = record.config.FullTimeOnStandard.match(/([\d.]+)/);
-                          if (!buildMatch || !e2eMatch) return '-';
-                          const buildMin = parseFloat(buildMatch[1]);
-                          const e2eMin = parseFloat(e2eMatch[1]);
-                          if (buildMin === 0) return '-';
-                          const ratio = e2eMin / buildMin;
-                          return `${ratio.toFixed(1)}x`;
-                        })()}
                       </td>
                       <td className="px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 font-medium">
                         <span className="inline-flex items-center gap-1.5">
@@ -553,9 +534,6 @@ export default async function Home() {
                             </span>
                           );
                         })()}
-                      </td>
-                      <td className="px-4 py-3 text-xs text-zinc-500 dark:text-zinc-500 font-mono truncate max-w-[150px]">
-                        {record.gitBranch}
                       </td>
                     </tr>
                   ))}
