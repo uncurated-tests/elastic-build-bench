@@ -340,19 +340,19 @@ export default async function Home() {
                 <thead>
                   <tr className="bg-zinc-100 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700">
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Target Build
+                      Target Compilation
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Target E2E
+                      Target Trigger2Ready
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                       Machine
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Actual Build
+                      Actual Compilation
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Actual E2E
+                      Actual Trigger2Ready
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                       Actual Ratio
@@ -582,7 +582,7 @@ export default async function Home() {
                             ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                             : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
                         }`}>
-                          E2E: {reduction}
+                          T2R: {reduction}
                         </span>
                       );
                     })()}
@@ -590,15 +590,15 @@ export default async function Home() {
                   
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div>
-                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Target Build</p>
+                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Target Compilation</p>
                       <p className="text-zinc-900 dark:text-zinc-100">{record.config.BuildTimeOnStandard}</p>
                     </div>
                     <div>
-                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Target E2E</p>
+                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Target Trigger2Ready</p>
                       <p className="text-zinc-900 dark:text-zinc-100">{record.config.FullTimeOnStandard}</p>
                     </div>
                     <div>
-                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Actual Build</p>
+                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Actual Compilation</p>
                       <span className="inline-flex items-center gap-1">
                         <span className={`px-2 py-1 rounded text-xs font-mono ${
                           record.durations.totalMs 
@@ -624,7 +624,7 @@ export default async function Home() {
                       </span>
                     </div>
                     <div>
-                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Actual E2E</p>
+                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Actual Trigger2Ready</p>
                       <span className={`px-2 py-1 rounded text-xs font-mono ${
                         record.durations.totalWithDeploymentMs 
                           ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' 
