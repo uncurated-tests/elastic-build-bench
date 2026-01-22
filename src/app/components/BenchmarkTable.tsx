@@ -140,7 +140,7 @@ export default function BenchmarkTable({ records, standardE2EMap, standardBuildM
                   E2E
                 </th>
                 <th className="px-3 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100 whitespace-nowrap">
-                  Ratio
+                  Actual Ratio
                 </th>
                 <th className="px-3 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100 whitespace-nowrap">
                   Cost
