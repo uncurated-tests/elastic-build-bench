@@ -1,0 +1,17 @@
+/* Page 1250 styles */
+.page-1250 {
+  --page-index: 1250;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1250-header {
+  font-size: calc(1rem + 0px);
+  color: hsl(170, 70%, 50%);
+}
+
+.page-1250-content {
+  padding: 3rem;
+  border-radius: 6px;
+}
