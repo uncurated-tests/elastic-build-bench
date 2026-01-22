@@ -217,25 +217,20 @@ export default async function Home() {
   };
   
   records.sort((a, b) => {
-    // Priority 0: RealXTotal branches first (these are the validated benchmarks)
-    const isRealXTotalA = a.gitBranch?.includes('RealXTotal') ? 0 : 1;
-    const isRealXTotalB = b.gitBranch?.includes('RealXTotal') ? 0 : 1;
-    if (isRealXTotalA !== isRealXTotalB) return isRealXTotalA - isRealXTotalB;
-    
-    // Column 1: Target Build Time (ascending)
+    // Column 1: Target Build Time (ascending) - PRIMARY SORT
     const buildTimeA = parseTime(a.config.BuildTimeOnStandard);
     const buildTimeB = parseTime(b.config.BuildTimeOnStandard);
     if (buildTimeA !== buildTimeB) return buildTimeA - buildTimeB;
     
-    // Column 2: Target Total Time (ascending)
-    const totalTimeA = parseTime(a.config.FullTimeOnStandard);
-    const totalTimeB = parseTime(b.config.FullTimeOnStandard);
-    if (totalTimeA !== totalTimeB) return totalTimeA - totalTimeB;
-    
-    // Column 3: Machine Type (Standard -> Enhanced -> Turbo)
+    // Column 2: Machine Type (Standard -> Enhanced -> Turbo)
     const machineOrderA = machineTypeOrder[a.config.MachineType] ?? 99;
     const machineOrderB = machineTypeOrder[b.config.MachineType] ?? 99;
-    return machineOrderA - machineOrderB;
+    if (machineOrderA !== machineOrderB) return machineOrderA - machineOrderB;
+    
+    // Column 3: RealXTotal branches preferred (for same build time + machine)
+    const isRealXTotalA = a.gitBranch?.includes('RealXTotal') ? 0 : 1;
+    const isRealXTotalB = b.gitBranch?.includes('RealXTotal') ? 0 : 1;
+    return isRealXTotalA - isRealXTotalB;
   });
 
   // Build a lookup map for Standard E2E times by (BuildTimeOnStandard, FullTimeOnStandard)
