@@ -13,10 +13,5 @@
 
 .page-393-content {
   padding: 2rem;
-  background: linear-gradient(
-    45deg,
-    hsl(141, 70%, 95%),
-    hsl(321, 70%, 95%)
-  );
   border-radius: 5px;
 }

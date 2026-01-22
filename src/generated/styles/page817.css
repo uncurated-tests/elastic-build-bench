@@ -1,0 +1,17 @@
+/* Page 817 styles */
+.page-817 {
+  --page-index: 817;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-817-header {
+  font-size: calc(1rem + 7px);
+  color: hsl(349, 70%, 50%);
+}
+
+.page-817-content {
+  padding: 2rem;
+  border-radius: 5px;
+}
