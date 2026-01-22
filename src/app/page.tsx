@@ -416,7 +416,12 @@ export default async function Home() {
                         {record.config.BuildTimeOnStandard}
                       </td>
                       <td className="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-400">
-                        {record.config.FullTimeOnStandard}
+                        {(() => {
+                          const targetCompilationMin = parseTime(record.config.BuildTimeOnStandard);
+                          const fieldRatio = getFieldRatio(targetCompilationMin);
+                          const targetT2RMin = targetCompilationMin * fieldRatio;
+                          return `${targetT2RMin.toFixed(1)}min`;
+                        })()}
                       </td>
                       <td className="px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 font-medium">
                         <span className="inline-flex items-center gap-1.5">
@@ -634,7 +639,14 @@ export default async function Home() {
                     </div>
                     <div>
                       <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Target Trigger2Ready</p>
-                      <p className="text-zinc-900 dark:text-zinc-100">{record.config.FullTimeOnStandard}</p>
+                      <p className="text-zinc-900 dark:text-zinc-100">
+                        {(() => {
+                          const targetCompilationMin = parseTime(record.config.BuildTimeOnStandard);
+                          const fieldRatio = getFieldRatio(targetCompilationMin);
+                          const targetT2RMin = targetCompilationMin * fieldRatio;
+                          return `${targetT2RMin.toFixed(1)}min`;
+                        })()}
+                      </p>
                     </div>
                     <div>
                       <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Actual Compilation</p>
