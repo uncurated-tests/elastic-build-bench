@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Regenerate all branches with v24 calibration
+# Regenerate all branches with v25 calibration
 #
 
 set -e
@@ -13,7 +13,7 @@ BRANCHES="1 2 4 8 10 15 20"
 E2E_MULTIPLIER=2
 
 echo "=============================================="
-echo "v24 Branch Regeneration"
+echo "v25 Branch Regeneration"
 echo "=============================================="
 
 # Ensure we start from main
@@ -28,7 +28,7 @@ for minutes in $BRANCHES; do
   # Checkout or create branch from main
   if git show-ref --verify --quiet "refs/heads/$branch"; then
     git checkout "$branch"
-    git merge main -m "Merge main for v24 calibration" --no-edit || true
+    git merge main -m "Merge main for v25 calibration" --no-edit || true
   else
     git checkout -b "$branch"
   fi
@@ -39,7 +39,7 @@ for minutes in $BRANCHES; do
 
   # Commit and push
   git add -A
-  git commit -m "v24 calibration: ${minutes}min target (${E2E_MULTIPLIER}x E2E)" || echo "No changes to commit"
+  git commit -m "v25 calibration: ${minutes}min target (${E2E_MULTIPLIER}x E2E)" || echo "No changes to commit"
   git push origin "$branch" --force-with-lease
 
   echo "✅ $branch updated"
@@ -50,5 +50,5 @@ git checkout main
 
 echo ""
 echo "=============================================="
-echo "All branches regenerated with v24 calibration"
+echo "All branches regenerated with v25 calibration"
 echo "=============================================="
