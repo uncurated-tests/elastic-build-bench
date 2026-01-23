@@ -84,13 +84,19 @@ const targetE2EMinutes = buildMinutes * e2eMultiplier;
 // Calculate how much time SSG pages can provide
 const maxTimeFromPages = BASE_OVERHEAD + MAX_PAGE_BUILD_TIME; // ~150s or ~2.5min
 
-// Calculate SSG pages needed first
+// Calculate SSG pages needed
+// For very long builds (>25min), use minimal SSG pages to reduce overhead
+// This helps stay within Vercel's 45 minute build limit
 let numSSGPages;
 const pagesNeededForTarget = Math.ceil((targetSeconds - BASE_OVERHEAD) / SECONDS_PER_PAGE);
 
 if (pagesNeededForTarget <= MAX_SSG_PAGES) {
   // SSG only - no CPU burn needed
   numSSGPages = Math.max(100, pagesNeededForTarget);
+} else if (targetSeconds > 25 * 60) {
+  // Very long builds (>25min): use minimal SSG pages to stay within 45min limit
+  // 100 pages = ~5.6s SSG time, leaves more headroom for CPU burn
+  numSSGPages = 100;
 } else {
   // Need CPU burn - use max pages
   numSSGPages = MAX_SSG_PAGES;
