@@ -1,10 +1,13 @@
 'use client';
 
+import { useState } from 'react';
+
 interface DataPoint {
   targetMin: number;
   costPerSec: number;
   machine: 'Standard' | 'Enhanced' | 'Turbo';
   label?: string;
+  e2eSec?: number;
 }
 
 interface NormalizedDataPoint {
@@ -12,6 +15,8 @@ interface NormalizedDataPoint {
   percentage: number;
   machine: 'Standard' | 'Enhanced' | 'Turbo';
   label?: string;
+  costPerSec: number;
+  e2eSec: number;
 }
 
 interface BuildCostChartProps {
@@ -24,7 +29,17 @@ const COLORS = {
   Turbo: '#eab308',     // yellow
 };
 
+// Format seconds to human readable time
+const formatTime = (seconds: number): string => {
+  if (seconds < 60) return `${seconds.toFixed(1)}s`;
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.round(seconds % 60);
+  return `${mins}m ${secs}s`;
+};
+
 export default function BuildCostChart({ data }: BuildCostChartProps) {
+  const [hoveredLabel, setHoveredLabel] = useState<string | null>(null);
+
   if (data.length === 0) return null;
 
   // Group data by label (compilation target) to find Standard baseline
@@ -47,6 +62,8 @@ export default function BuildCostChart({ data }: BuildCostChartProps) {
         percentage: (p.costPerSec / standardPoint.costPerSec) * 100,
         machine: p.machine,
         label: p.label,
+        costPerSec: p.costPerSec,
+        e2eSec: p.e2eSec || 0,
       });
     }
   }
@@ -110,24 +127,79 @@ export default function BuildCostChart({ data }: BuildCostChartProps) {
     xTicksIntermediate.push({ value, x: scaleX(value) });
   }
 
+  // Get tooltip data for hovered label
+  const getTooltipData = (label: string) => {
+    const points = normalizedData.filter(d => d.label === label);
+    const standard = points.find(p => p.machine === 'Standard');
+    const enhanced = points.find(p => p.machine === 'Enhanced');
+    const turbo = points.find(p => p.machine === 'Turbo');
+    return { standard, enhanced, turbo, label };
+  };
+
   // Render marker based on machine type
-  const renderMarker = (machine: string, x: number, y: number, key: string) => {
+  const renderMarker = (machine: string, x: number, y: number, key: string, label?: string) => {
     const color = COLORS[machine as keyof typeof COLORS] || '#888';
     const size = 6;
+    const isHovered = hoveredLabel === label;
+    const actualSize = isHovered ? size * 1.5 : size;
+
+    const handleMouseEnter = () => {
+      if (label) {
+        setHoveredLabel(label);
+      }
+    };
+
+    const handleMouseLeave = () => {
+      setHoveredLabel(null);
+    };
 
     if (machine === 'Standard') {
-      return <circle key={key} cx={x} cy={y} r={size} fill={color} />;
+      return (
+        <circle
+          key={key}
+          cx={x}
+          cy={y}
+          r={actualSize}
+          fill={color}
+          className="cursor-pointer transition-all duration-150"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        />
+      );
     } else if (machine === 'Enhanced') {
-      return <rect key={key} x={x - size} y={y - size} width={size * 2} height={size * 2} fill={color} />;
+      return (
+        <rect
+          key={key}
+          x={x - actualSize}
+          y={y - actualSize}
+          width={actualSize * 2}
+          height={actualSize * 2}
+          fill={color}
+          className="cursor-pointer transition-all duration-150"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        />
+      );
     } else {
       // Triangle for Turbo
-      const points = `${x},${y - size} ${x - size},${y + size} ${x + size},${y + size}`;
-      return <polygon key={key} points={points} fill={color} />;
+      const points = `${x},${y - actualSize} ${x - actualSize},${y + actualSize} ${x + actualSize},${y + actualSize}`;
+      return (
+        <polygon
+          key={key}
+          points={points}
+          fill={color}
+          className="cursor-pointer transition-all duration-150"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        />
+      );
     }
   };
 
+  const tooltipData = hoveredLabel ? getTooltipData(hoveredLabel) : null;
+
   return (
-    <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6 mb-8">
+    <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6 mb-8 relative">
       <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
         Build Cost (Normalized to Standard = 100%)
       </h2>
@@ -135,7 +207,7 @@ export default function BuildCostChart({ data }: BuildCostChartProps) {
         Lower is cheaper. Cost per second calculated as (E2E time × rate per minute / 60).
       </p>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto relative">
         <svg width={width} height={height} className="mx-auto">
           {/* Grid lines */}
           {yTicks.map((tick, i) => (
@@ -206,8 +278,23 @@ export default function BuildCostChart({ data }: BuildCostChartProps) {
             );
           })}
 
+          {/* Vertical hover line */}
+          {hoveredLabel && tooltipData?.standard && (
+            <line
+              x1={scaleX(tooltipData.standard.targetMin)}
+              y1={padding.top}
+              x2={scaleX(tooltipData.standard.targetMin)}
+              y2={height - padding.bottom}
+              stroke="currentColor"
+              strokeWidth={1}
+              strokeOpacity={0.3}
+              strokeDasharray="4,4"
+              className="text-zinc-500"
+            />
+          )}
+
           {/* Data points */}
-          {normalizedData.map((d, i) => renderMarker(d.machine, scaleX(d.targetMin), scaleY(d.percentage), `point-${i}`))}
+          {normalizedData.map((d, i) => renderMarker(d.machine, scaleX(d.targetMin), scaleY(d.percentage), `point-${i}`, d.label))}
 
           {/* Y-axis */}
           <line
@@ -287,6 +374,47 @@ export default function BuildCostChart({ data }: BuildCostChartProps) {
             Target Trigger2Ready (Compilation × FieldRatio)
           </text>
         </svg>
+
+        {/* Tooltip */}
+        {hoveredLabel && tooltipData && (
+          <div
+            className="absolute z-10 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-lg p-3 pointer-events-none"
+            style={{
+              left: tooltipData.standard ? scaleX(tooltipData.standard.targetMin) + 20 : 0,
+              top: padding.top,
+            }}
+          >
+            <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-2 border-b border-zinc-200 dark:border-zinc-700 pb-1">
+              Target: {tooltipData.label}
+            </div>
+            <div className="space-y-1 text-xs">
+              {tooltipData.standard && (
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS.Standard }}></span>
+                  <span className="text-zinc-600 dark:text-zinc-400">Standard:</span>
+                  <span className="font-mono text-zinc-900 dark:text-zinc-100">{tooltipData.standard.percentage.toFixed(1)}%</span>
+                  <span className="text-zinc-500">(${tooltipData.standard.costPerSec.toFixed(3)}, {formatTime(tooltipData.standard.e2eSec)})</span>
+                </div>
+              )}
+              {tooltipData.enhanced && (
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3" style={{ backgroundColor: COLORS.Enhanced }}></span>
+                  <span className="text-zinc-600 dark:text-zinc-400">Enhanced:</span>
+                  <span className="font-mono text-zinc-900 dark:text-zinc-100">{tooltipData.enhanced.percentage.toFixed(1)}%</span>
+                  <span className="text-zinc-500">(${tooltipData.enhanced.costPerSec.toFixed(3)}, {formatTime(tooltipData.enhanced.e2eSec)})</span>
+                </div>
+              )}
+              {tooltipData.turbo && (
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3" style={{ backgroundColor: COLORS.Turbo, clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}></span>
+                  <span className="text-zinc-600 dark:text-zinc-400">Turbo:</span>
+                  <span className="font-mono text-zinc-900 dark:text-zinc-100">{tooltipData.turbo.percentage.toFixed(1)}%</span>
+                  <span className="text-zinc-500">(${tooltipData.turbo.costPerSec.toFixed(3)}, {formatTime(tooltipData.turbo.e2eSec)})</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Legend */}
