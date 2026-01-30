@@ -270,7 +270,8 @@ export default async function Home() {
   };
 
   // Prepare chart data - using Trigger2Ready (E2E) times
-  const chartData = records
+  // First, collect all data points with timestamps for deduplication
+  const chartDataWithTimestamp = records
     .filter(r => r.durations.totalWithDeploymentMs && ['Standard', 'Enhanced', 'Turbo'].includes(r.config.MachineType))
     .map(r => {
       const targetCompilationMin = parseTime(r.config.BuildTimeOnStandard);
@@ -281,9 +282,21 @@ export default async function Home() {
         actualSec: (r.durations.totalWithDeploymentMs || 0) / 1000,
         machine: r.config.MachineType as 'Standard' | 'Enhanced' | 'Turbo',
         label: r.config.BuildTimeOnStandard,
+        timestamp: r.timestamps.buildStarted ? new Date(r.timestamps.buildStarted).getTime() : 0,
       };
     })
     .filter(d => d.targetMin > 0);
+
+  // Deduplicate: keep only the most recent data point for each (label, machine) combination
+  const chartDataMap = new Map<string, typeof chartDataWithTimestamp[0]>();
+  for (const d of chartDataWithTimestamp) {
+    const key = `${d.label}-${d.machine}`;
+    const existing = chartDataMap.get(key);
+    if (!existing || d.timestamp > existing.timestamp) {
+      chartDataMap.set(key, d);
+    }
+  }
+  const chartData = Array.from(chartDataMap.values()).map(({ timestamp, ...rest }) => rest);
 
   // Prepare cost chart data - Build Cost per second
   const COST_PER_MIN = {
@@ -292,7 +305,8 @@ export default async function Home() {
     Turbo: 0.105,
   };
 
-  const costChartData = records
+  // Prepare cost chart data with timestamps for deduplication
+  const costChartDataWithTimestamp = records
     .filter(r => r.durations.totalWithDeploymentMs && ['Standard', 'Enhanced', 'Turbo'].includes(r.config.MachineType))
     .map(r => {
       const targetCompilationMin = parseTime(r.config.BuildTimeOnStandard);
@@ -307,9 +321,21 @@ export default async function Home() {
         machine: machineType,
         label: r.config.BuildTimeOnStandard,
         e2eSec: seconds,
+        timestamp: r.timestamps.buildStarted ? new Date(r.timestamps.buildStarted).getTime() : 0,
       };
     })
     .filter(d => d.targetMin > 0);
+
+  // Deduplicate: keep only the most recent data point for each (label, machine) combination
+  const costChartDataMap = new Map<string, typeof costChartDataWithTimestamp[0]>();
+  for (const d of costChartDataWithTimestamp) {
+    const key = `${d.label}-${d.machine}`;
+    const existing = costChartDataMap.get(key);
+    if (!existing || d.timestamp > existing.timestamp) {
+      costChartDataMap.set(key, d);
+    }
+  }
+  const costChartData = Array.from(costChartDataMap.values()).map(({ timestamp, ...rest }) => rest);
 
   // Helper function to get deployment inspection URL
   const getDeploymentUrl = (record: TimingRecord): string | null => {
