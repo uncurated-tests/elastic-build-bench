@@ -401,14 +401,14 @@ function getDeployBufferMs(type) {
     const parsed = parseInt(override, 10);
     return Number.isFinite(parsed) ? parsed : 0;
   }
-  // Buffer for post-build overhead: upload, edge propagation, DNS (~50-80s observed)
+  // Buffer for post-build overhead: upload, edge propagation, DNS (~80-90s observed)
   // This is time AFTER our delay until deployment is truly ready
   const buffers = {
-    Standard: 60000,
-    Enhanced: 55000,
-    Turbo: 50000,
+    Standard: 85000,
+    Enhanced: 85000,
+    Turbo: 85000,
   };
-  return buffers[type] ?? 60000;
+  return buffers[type] ?? 85000;
 }
 
 // Build run metadata
