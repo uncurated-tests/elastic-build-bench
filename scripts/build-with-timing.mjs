@@ -361,53 +361,6 @@ function detectMachineType() {
 const machineType = detectMachineType();
 config.MachineType = machineType;
 
-// Field ratios for calculating Target Trigger2Ready from Target Compilation
-const FIELD_RATIOS = {
-  1: 1.82,
-  2: 1.38,
-  4: 1.28,
-  5: 1.23,
-  8: 1.19,
-  10: 1.14,
-  15: 1.10,
-  20: 1.09,
-  30: 1.11,
-};
-
-function parseBuildMinutes(label) {
-  if (!label) return null;
-  const match = String(label).match(/(\d+)/);
-  return match ? parseInt(match[1], 10) : null;
-}
-
-function getFieldRatio(buildMin) {
-  if (!buildMin) return null;
-  if (FIELD_RATIOS[buildMin]) return FIELD_RATIOS[buildMin];
-  // Approximate using formula: multiplier ≈ 1 + (0.82 / buildMinutes^0.6)
-  return 1 + (0.82 / Math.pow(buildMin, 0.6));
-}
-
-function getTargetTrigger2ReadyMs(buildTimeLabel) {
-  const buildMin = parseBuildMinutes(buildTimeLabel);
-  if (!buildMin) return null;
-  const ratio = getFieldRatio(buildMin);
-  if (!ratio) return null;
-  return Math.round(buildMin * ratio * 60 * 1000);
-}
-
-function getDeployBufferMs() {
-  const override = process.env.TRIGGER2READY_DEPLOY_BUFFER_MS;
-  if (override) {
-    const parsed = parseInt(override, 10);
-    return Number.isFinite(parsed) ? parsed : 0;
-  }
-  // Since we now record deploymentComplete at script exit, we don't need to buffer
-  // for post-script overhead (edge propagation) in the delay calculation.
-  // We want the script duration itself to match the T2R target.
-  // Leaving a tiny 2s buffer for final cleanup/upload operations.
-  return 2000;
-}
-
 // Build run metadata
 const runId = `build-${Date.now()}`;
 const gitCommit = getGitCommit();
@@ -597,38 +550,6 @@ async function main() {
   console.log(`\n[TIMING] 3. COMPILATION FINISHED: ${timingData.timestamps.compilationFinished}`);
   console.log(`[TIMING]    Compilation phase duration: ${timingData.durations.compilationPhaseMs}ms`);
   await uploadTimingData('compilation_finished');
-
-  // Phase 3.5: Post-compilation delay to align Trigger2Ready target
-  const targetT2RMs = getTargetTrigger2ReadyMs(config.BuildTimeOnStandard);
-  if (targetT2RMs) {
-    const elapsedMs = new Date(timingData.timestamps.compilationFinished).getTime() -
-      new Date(timingData.timestamps.buildStarted).getTime();
-    const deployBufferMs = getDeployBufferMs();
-    const jitterMs = process.env.TRIGGER2READY_DISABLE_JITTER ? 0 : Math.floor((Math.random() * 6000) - 3000);
-    const fixedDelayOverride = process.env.TRIGGER2READY_DELAY_MS;
-    const computedDelayMs = targetT2RMs - elapsedMs - deployBufferMs + jitterMs;
-    let delayMs = Math.max(0, computedDelayMs);
-    if (fixedDelayOverride) {
-      const parsed = parseInt(fixedDelayOverride, 10);
-      delayMs = Number.isFinite(parsed) ? Math.max(0, parsed) : 0;
-    }
-    const MAX_DELAY_MS = 10 * 60 * 1000;
-    const finalDelayMs = Math.min(delayMs, MAX_DELAY_MS);
-
-    if (finalDelayMs > 0) {
-      console.log(`\n[TIMING] 3.5. POST-COMPILATION DELAY`);
-      console.log(`[TIMING]    Target Trigger2Ready: ${(targetT2RMs / 1000).toFixed(2)}s`);
-      console.log(`[TIMING]    Elapsed build time: ${(elapsedMs / 1000).toFixed(2)}s`);
-      console.log(`[TIMING]    Deploy buffer: ${(deployBufferMs / 1000).toFixed(2)}s`);
-      console.log(`[TIMING]    Jitter: ${(jitterMs / 1000).toFixed(2)}s`);
-      console.log(`[TIMING]    Sleeping for ${(finalDelayMs / 1000).toFixed(2)}s to align Trigger2Ready...`);
-      await new Promise(resolve => setTimeout(resolve, finalDelayMs));
-      console.log(`[TIMING]    Post-compilation delay complete.`);
-    } else {
-      console.log(`\n[TIMING] 3.5. POST-COMPILATION DELAY`);
-      console.log(`[TIMING]    No delay needed (target already met).`);
-    }
-  }
 
   // Calculate total build time (without deployment)
   timingData.durations.totalMs = 
