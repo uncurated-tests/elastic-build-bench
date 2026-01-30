@@ -633,18 +633,26 @@ async function main() {
     }
   }
 
-  // Phase 4: Deployment complete will be logged by the post-deploy script
-  // For now, we mark the build output as ready
-  console.log(`\n[TIMING] Build output ready. Deployment timing will be recorded post-deploy.`);
-  
   // Calculate total build time (without deployment)
   timingData.durations.totalMs = 
     new Date(timingData.timestamps.compilationFinished).getTime() - 
     new Date(timingData.timestamps.buildStarted).getTime();
+
+  // Phase 4: Record deployment completion time
+  // This is when the build script finishes - a consistent proxy for deployment readiness
+  // (More accurate than dashboard auto-complete which depends on when someone views the page)
+  timingData.timestamps.deploymentComplete = timestamp();
+  timingData.durations.deploymentPhaseMs = 
+    new Date(timingData.timestamps.deploymentComplete).getTime() - 
+    new Date(timingData.timestamps.compilationFinished).getTime();
+  timingData.durations.totalWithDeploymentMs = 
+    new Date(timingData.timestamps.deploymentComplete).getTime() - 
+    new Date(timingData.timestamps.buildStarted).getTime();
   
   console.log('\n' + '='.repeat(60));
   console.log('[TIMING] Build Summary:');
-  console.log(`[TIMING]   Total build time: ${timingData.durations.totalMs}ms (${(timingData.durations.totalMs / 1000).toFixed(2)}s)`);
+  console.log(`[TIMING]   Compilation time: ${timingData.durations.totalMs}ms (${(timingData.durations.totalMs / 1000).toFixed(2)}s)`);
+  console.log(`[TIMING]   Trigger2Ready time: ${timingData.durations.totalWithDeploymentMs}ms (${(timingData.durations.totalWithDeploymentMs / 1000).toFixed(2)}s)`);
   console.log('='.repeat(60));
 
   await uploadTimingData('build_complete');
