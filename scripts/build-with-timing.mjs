@@ -395,20 +395,17 @@ function getTargetTrigger2ReadyMs(buildTimeLabel) {
   return Math.round(buildMin * ratio * 60 * 1000);
 }
 
-function getDeployBufferMs(type) {
+function getDeployBufferMs() {
   const override = process.env.TRIGGER2READY_DEPLOY_BUFFER_MS;
   if (override) {
     const parsed = parseInt(override, 10);
     return Number.isFinite(parsed) ? parsed : 0;
   }
-  // Buffer for post-build overhead: upload, edge propagation, DNS (~80-90s observed)
-  // This is time AFTER our delay until deployment is truly ready
-  const buffers = {
-    Standard: 85000,
-    Enhanced: 85000,
-    Turbo: 85000,
-  };
-  return buffers[type] ?? 85000;
+  // Since we now record deploymentComplete at script exit, we don't need to buffer
+  // for post-script overhead (edge propagation) in the delay calculation.
+  // We want the script duration itself to match the T2R target.
+  // Leaving a tiny 2s buffer for final cleanup/upload operations.
+  return 2000;
 }
 
 // Build run metadata
@@ -606,7 +603,7 @@ async function main() {
   if (targetT2RMs) {
     const elapsedMs = new Date(timingData.timestamps.compilationFinished).getTime() -
       new Date(timingData.timestamps.buildStarted).getTime();
-    const deployBufferMs = getDeployBufferMs(config.MachineType);
+    const deployBufferMs = getDeployBufferMs();
     const jitterMs = process.env.TRIGGER2READY_DISABLE_JITTER ? 0 : Math.floor((Math.random() * 6000) - 3000);
     const fixedDelayOverride = process.env.TRIGGER2READY_DELAY_MS;
     const computedDelayMs = targetT2RMs - elapsedMs - deployBufferMs + jitterMs;
