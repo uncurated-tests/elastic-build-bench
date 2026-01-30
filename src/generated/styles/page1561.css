@@ -1,0 +1,17 @@
+/* Page 1561 styles */
+.page-1561 {
+  --page-index: 1561;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1561-header {
+  font-size: calc(1rem + 1px);
+  color: hsl(157, 70%, 50%);
+}
+
+.page-1561-content {
+  padding: 2rem;
+  border-radius: 5px;
+}
