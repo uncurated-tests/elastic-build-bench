@@ -5,7 +5,7 @@
   "ssgPages": 2000,
   "sharedComponents": 500,
   "apiRoutes": 5,
-  "prebuildCpuBurnSeconds": 2205,
+  "prebuildCpuBurnSeconds": 1208,
   "strategy": "ssg-cpu-burn-v26",
-  "generatedAt": "2026-01-31T00:12:21Z"
+  "generatedAt": "2026-01-31T00:43:08Z"
 }
