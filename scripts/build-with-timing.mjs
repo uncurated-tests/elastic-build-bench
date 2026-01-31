@@ -390,6 +390,7 @@ const timingData = {
     BuildTimeOnStandard: config.BuildTimeOnStandard,
     FullTimeOnStandard: config.FullTimeOnStandard,
     MachineType: config.MachineType,
+    prebuildCpuBurnSeconds: configFromFile.prebuildCpuBurnSeconds || 0,
   },
   timestamps: {
     buildStarted: null,
