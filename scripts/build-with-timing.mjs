@@ -357,6 +357,18 @@ function detectMachineType() {
   }
 }
 
+// Get the actual vCPU count for a machine type
+// NOTE: os.cpus().length returns 8 on ALL Vercel tiers, so we can't rely on it!
+// These are the documented vCPU counts from Vercel's pricing page
+function getVCpuCount(machineType) {
+  switch (machineType) {
+    case 'Turbo': return 30;
+    case 'Enhanced': return 8;
+    case 'Standard': 
+    default: return 4;
+  }
+}
+
 // Override machine type based on Vercel project
 const machineType = detectMachineType();
 config.MachineType = machineType;
@@ -393,7 +405,8 @@ const timingData = {
     prebuildCpuBurnSeconds: configFromFile.prebuildCpuBurnSeconds || 0,
   },
   system: {
-    detectedCpus: cpus().length,
+    reportedCpus: cpus().length,
+    usedVCpus: getVCpuCount(machineType),
     cpuModel: cpus()[0]?.model || 'unknown',
   },
   timestamps: {
@@ -524,9 +537,13 @@ async function main() {
   const prebuildCpuBurnSeconds = configFromFile.prebuildCpuBurnSeconds || 0;
   if (prebuildCpuBurnSeconds > 0) {
     console.log(`\n[TIMING] 2.5. PREBUILD CPU BURN (Multi-threaded)`);
-    const numCpus = cpus().length;
+    // Use hardcoded vCPU count based on machine type, NOT os.cpus().length
+    // os.cpus() returns 8 on ALL Vercel tiers which breaks the scaling!
+    const numCpus = getVCpuCount(config.MachineType);
+    const reportedCpus = cpus().length;
     console.log(`[TIMING]    Target duration: ${prebuildCpuBurnSeconds}s`);
-    console.log(`[TIMING]    Available CPUs: ${numCpus}`);
+    console.log(`[TIMING]    Machine type: ${config.MachineType}`);
+    console.log(`[TIMING]    Using vCPU count: ${numCpus} (os.cpus reports: ${reportedCpus})`);
     console.log(`[TIMING]    Starting ${numCpus} workers for real CPU work...`);
     
     const cpuBurnStart = Date.now();
