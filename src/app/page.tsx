@@ -752,21 +752,25 @@ export default async function Home() {
               synthetic Next.js applications with predictable build times using real CPU work.
             </p>
             
-            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Synthetic Load Generation</h3>
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Synthetic Load Generation (v26)</h3>
             <ul className="list-disc list-inside space-y-2 ml-2">
               <li>
                 <strong>SSG Pages:</strong> Up to 2,000 statically generated pages with shared React components 
-                and CSS files. Each page adds ~0.045s to build time, providing up to ~90s of build work.
+                and CSS files. Each page adds ~0.056s to build time (plus ~13s base overhead), providing up 
+                to ~113s of SSG-based build work.
               </li>
               <li>
                 <strong>Multi-threaded CPU Burn:</strong> For builds targeting &gt;2 minutes, a prebuild phase 
                 performs real CPU-intensive math operations using Node.js worker threads. Work is calibrated 
-                at 5M iterations/second/core and <em>divided among available cores</em>, so machines with more 
-                cores complete faster (e.g., Turbo with 30 cores finishes ~7.5x faster than Standard with 4 cores).
+                with duration-dependent multipliers (0.75x for short burns, up to 1.8x for very long burns) 
+                to account for thermal throttling and GC overhead. Work is <em>divided among available cores</em>, 
+                so machines with more cores complete faster.
               </li>
               <li>
-                <strong>E2E Ratio:</strong> The Target Ratio (currently 1.4x) represents the expected E2E time 
-                relative to build time, accounting for deployment overhead after compilation completes.
+                <strong>Trigger2Ready Ratio:</strong> The ratio between total E2E time and compilation time 
+                varies by build duration: ~1.8x for 1-minute builds (deployment overhead dominates), decreasing 
+                to ~1.1x for 20+ minute builds (compilation dominates). These ratios are derived from empirical 
+                measurements on Standard machines.
               </li>
             </ul>
             
