@@ -392,6 +392,10 @@ const timingData = {
     MachineType: config.MachineType,
     prebuildCpuBurnSeconds: configFromFile.prebuildCpuBurnSeconds || 0,
   },
+  system: {
+    detectedCpus: cpus().length,
+    cpuModel: cpus()[0]?.model || 'unknown',
+  },
   timestamps: {
     buildStarted: null,
     dependenciesReady: null,
