@@ -2,17 +2,18 @@
 /**
  * Generate synthetic load for build time testing
  * 
- * v11 Strategy: SSG Pages + Controlled Prebuild Delay
- * - SSG pages drive base build time (~0.13s per page + 19s overhead)
- * - Max ~2000 pages before OOM (~260s or 4.3min of page time)
- * - For builds > 4.3min, use controlled prebuild delay for remaining time
- * - No heavy icon library imports (they hang Turbopack)
- * - No MDX (incompatible with Turbopack)
+ * v27 Strategy: SSG Pages + Fixed CPU Burn Iterations
+ * - SSG pages provide base build time (~0.04s per page + ~75s overhead)
+ * - CPU burn uses FIXED total iterations (no machine-type fudging)
+ * - More cores = faster burn completion (natural parallelism)
  * 
- * This is a pragmatic approach that produces PREDICTABLE build times.
+ * Calibration approach:
+ * - Measure actual iteration rate on Standard (8 reported cores)
+ * - Calculate total iterations needed for target time
+ * - Let the machine's actual parallelism determine completion time
  * 
- * Usage: node scripts/generate-load.mjs <buildMinutes> <e2eMultiplier>
- * Example: node scripts/generate-load.mjs 4 2  # 4min build, 2x E2E (8min total)
+ * Usage: node scripts/generate-load.mjs <buildMinutes>
+ * Example: node scripts/generate-load.mjs 4  # 4min build target on Standard
  */
 
 import { writeFileSync, mkdirSync, rmSync, existsSync } from 'fs';
@@ -25,110 +26,69 @@ const projectRoot = join(__dirname, '..');
 
 // Parse arguments
 const buildMinutes = parseFloat(process.argv[2] || '1');
-const e2eMultiplier = parseFloat(process.argv[3] || '2');
 
 console.log(`\n========================================`);
-console.log(`v26 Load Generator: SSG + Multi-threaded CPU Burn`);
+console.log(`v27 Load Generator: SSG + Fixed CPU Burn Iterations`);
 console.log(`========================================`);
-console.log(`Target: ${buildMinutes}min build, ${e2eMultiplier}x E2E multiplier`);
+console.log(`Target: ${buildMinutes}min build on Standard`);
 
 // =============================================================================
-// v26 CALIBRATION - Based on empirical data from 2026-01-22 builds
+// v27 CALIBRATION - Based on empirical data from 2026-02-01 builds
 // =============================================================================
 //
-// Build time components (on Standard 4 vCPU):
-//   1. Base overhead: ~13.2s (Next.js startup, compile setup)
-//   2. SSG pages: ~0.0563s per page (up to 2000 pages max due to OOM)
-//   3. CPU burn: Multiplier varies with duration (longer burns run slower)
+// Build time components (on Standard, which reports 8 CPUs via os.cpus()):
+//   1. Base overhead: ~75s (Next.js startup, compile, SSG with 2000 pages)
+//   2. CPU burn rate: ~40M iterations/second total (8 cores × ~5M iter/s/core)
 //
-// Calibration data (actual measurements from 2026-01-22):
-//   | Target | Config Burn | Actual Build | Actual Burn | Multiplier |
-//   |--------|-------------|--------------|-------------|------------|
-//   | 4min   |        131s |         223s |         97s |      0.74x |
-//   | 8min   |        371s |         576s |        450s |      1.21x |
-//   | 10min  |        491s |         830s |        704s |      1.43x |
-//   | 15min  |        842s |        1463s |       1337s |      1.59x |
-//   | 20min  |       1091s |        2110s |       1984s |      1.82x |
+// For target time T on Standard:
+//   - If T <= 75s: use fewer SSG pages (no CPU burn)
+//   - If T > 75s: use 2000 SSG pages + CPU burn for remaining time
+//   - CPU burn iterations = (T - 75) × 40M
 //
-// Key insight: CPU burn multiplier INCREASES with duration, likely due to:
-//   - Memory pressure / GC overhead on longer runs
-//   - Thermal throttling on sustained CPU load
-//   - Worker thread coordination overhead
-//
-// v26 approach:
-//   - Use duration-dependent multiplier based on empirical data
-//   - Short burns (<150s needed): 0.75x (burn completes faster than config)
-//   - Medium burns (150-400s): 1.2x
-//   - Long burns (400-800s): 1.5x  
-//   - Very long burns (>800s): 1.8x
+// On Enhanced (also reports 8 CPUs): same burn rate, same time
+// On Turbo (reports 8 CPUs but has 30 vCPUs): faster burn (more actual cores)
 //
 // =============================================================================
 
-const BASE_OVERHEAD = 13.2;         // seconds (Next.js startup)
-const MAX_SSG_PAGES = 2000;         // Cap to avoid OOM errors
-const SECONDS_PER_PAGE = 0.0563;    // Calibrated from 2026-01-22 data
-const MAX_PAGE_BUILD_TIME = MAX_SSG_PAGES * SECONDS_PER_PAGE; // ~113s
-
-// Duration-dependent CPU burn multiplier
-function getCpuBurnMultiplier(neededBurnSeconds) {
-  if (neededBurnSeconds < 150) return 0.75;
-  if (neededBurnSeconds < 400) return 1.2;
-  if (neededBurnSeconds < 800) return 1.5;
-  return 1.8;
-}
+const BASE_BUILD_TIME = 75;           // seconds for 2000 SSG pages on Standard
+const MAX_SSG_PAGES = 2000;           // Cap to avoid OOM errors
+const SECONDS_PER_PAGE = 0.035;       // Empirical: ~70s for 2000 pages
+const ITERATIONS_PER_SECOND = 40_000_000;  // Total rate on Standard (8 reported cores)
 
 // Target build time in seconds
 const targetSeconds = buildMinutes * 60;
-const targetE2EMinutes = buildMinutes * e2eMultiplier;
-
-// Calculate how much time SSG pages can provide
-const maxTimeFromPages = BASE_OVERHEAD + MAX_PAGE_BUILD_TIME; // ~150s or ~2.5min
 
 // Calculate SSG pages needed
-// For very long builds (>25min), use minimal SSG pages to reduce overhead
-// This helps stay within Vercel's 45 minute build limit
 let numSSGPages;
-const pagesNeededForTarget = Math.ceil((targetSeconds - BASE_OVERHEAD) / SECONDS_PER_PAGE);
+let prebuildCpuBurnIterations = 0;
 
-if (pagesNeededForTarget <= MAX_SSG_PAGES) {
-  // SSG only - no CPU burn needed
-  numSSGPages = Math.max(100, pagesNeededForTarget);
-} else if (targetSeconds > 25 * 60) {
-  // Very long builds (>25min): use minimal SSG pages to stay within 45min limit
-  // 100 pages = ~5.6s SSG time, leaves more headroom for CPU burn
-  numSSGPages = 100;
+if (targetSeconds <= BASE_BUILD_TIME) {
+  // Short build - use fewer pages, no CPU burn
+  const pagesNeeded = Math.max(100, Math.ceil((targetSeconds - 5) / SECONDS_PER_PAGE));
+  numSSGPages = Math.min(pagesNeeded, MAX_SSG_PAGES);
 } else {
-  // Need CPU burn - use max pages
+  // Longer build - use max pages + CPU burn
   numSSGPages = MAX_SSG_PAGES;
-}
-
-// Calculate prebuild CPU burn needed (if any)
-// This is REAL CPU work, not sleep delay
-const ssgTime = BASE_OVERHEAD + (numSSGPages * SECONDS_PER_PAGE);
-let prebuildCpuBurnSeconds = 0;
-let cpuBurnMultiplier = 1.0;
-
-if (targetSeconds > ssgTime) {
-  const remainingTime = targetSeconds - ssgTime;
-  cpuBurnMultiplier = getCpuBurnMultiplier(remainingTime);
-  prebuildCpuBurnSeconds = Math.ceil(remainingTime / cpuBurnMultiplier);
+  const cpuBurnTime = targetSeconds - BASE_BUILD_TIME;
+  prebuildCpuBurnIterations = Math.round(cpuBurnTime * ITERATIONS_PER_SECOND);
 }
 
 // Calculate expected build time
-const expectedBuildTime = ssgTime + (prebuildCpuBurnSeconds * cpuBurnMultiplier);
+const expectedSsgTime = 5 + (numSSGPages * SECONDS_PER_PAGE);
+const expectedCpuBurnTime = prebuildCpuBurnIterations / ITERATIONS_PER_SECOND;
+const expectedBuildTime = expectedSsgTime + expectedCpuBurnTime;
 
 // Fixed values
 const numSharedComponents = 500;
 const numApiRoutes = 5;
 
-console.log(`\nv26 Load Composition:`);
+console.log(`\nv27 Load Composition:`);
 console.log(`  Target: ${targetSeconds}s (${buildMinutes}min)`);
-console.log(`  Base overhead: ${BASE_OVERHEAD}s`);
-console.log(`  SSG pages: ${numSSGPages} (~${Math.round(numSSGPages * SECONDS_PER_PAGE)}s)`);
-if (prebuildCpuBurnSeconds > 0) {
-  console.log(`  Prebuild CPU burn: ${prebuildCpuBurnSeconds}s config × ${cpuBurnMultiplier}x = ~${Math.round(prebuildCpuBurnSeconds * cpuBurnMultiplier)}s actual`);
+console.log(`  SSG pages: ${numSSGPages} (~${Math.round(expectedSsgTime)}s)`);
+if (prebuildCpuBurnIterations > 0) {
+  console.log(`  CPU burn: ${prebuildCpuBurnIterations.toLocaleString()} iterations (~${Math.round(expectedCpuBurnTime)}s on Standard)`);
 }
-console.log(`  Expected total: ~${Math.round(expectedBuildTime)}s`);
+console.log(`  Expected total on Standard: ~${Math.round(expectedBuildTime)}s`);
 
 // =============================================================================
 // Clean up previous generated files
@@ -282,13 +242,12 @@ export async function GET() {
 function updateBuildConfig() {
   const config = {
     BuildTimeOnStandard: `${buildMinutes}min`,
-    FullTimeOnStandard: `${targetE2EMinutes}min`,
     MachineType: "Standard",
     ssgPages: numSSGPages,
     sharedComponents: numSharedComponents,
     apiRoutes: numApiRoutes,
-    prebuildCpuBurnSeconds: prebuildCpuBurnSeconds,
-    strategy: "ssg-cpu-burn-v26",
+    prebuildCpuBurnIterations: prebuildCpuBurnIterations,
+    strategy: "ssg-cpu-burn-v27",
     generatedAt: new Date().toISOString(),
     buildId: randomUUID(),
   };
@@ -357,10 +316,9 @@ updateBuildConfig();
 console.log('\n========================================');
 console.log('Generation complete!');
 console.log('========================================');
-console.log(`Strategy: SSG + Multi-threaded CPU Burn v26`);
-console.log(`Expected build time on Standard: ~${buildMinutes} min (~${Math.round(expectedBuildTime)}s)`);
-if (prebuildCpuBurnSeconds > 0) {
-  console.log(`  (includes ${prebuildCpuBurnSeconds}s CPU burn config × ${cpuBurnMultiplier}x → ~${Math.round(prebuildCpuBurnSeconds * cpuBurnMultiplier)}s actual)`);
+console.log(`Strategy: SSG + Fixed CPU Burn Iterations v27`);
+console.log(`Expected build time on Standard: ~${buildMinutes}min (~${Math.round(expectedBuildTime)}s)`);
+if (prebuildCpuBurnIterations > 0) {
+  console.log(`  (includes ${prebuildCpuBurnIterations.toLocaleString()} CPU burn iterations)`);
 }
-console.log(`Expected E2E time on Standard: ~${targetE2EMinutes} min`);
 console.log('');

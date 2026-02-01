@@ -255,34 +255,38 @@ export default function BenchPage${index}() {
  * Multi-threaded CPU burn using worker threads
  * Each worker performs CPU-intensive calculations to consume real CPU time
  * 
- * @param {number} targetSeconds - Target duration in seconds
+ * v27: Simple, honest approach:
+ * - totalIterations is a FIXED amount of work (from config)
+ * - Work is divided equally among available CPU cores
+ * - More cores = faster completion (natural parallelism, no fudging)
+ * 
+ * @param {number} totalIterations - Total iterations to perform across all workers
  * @param {number} numWorkers - Number of worker threads to spawn
  * @returns {Promise<void>}
  */
-async function runMultiThreadedCpuBurn(targetSeconds, numWorkers) {
+async function runMultiThreadedCpuBurn(totalIterations, numWorkers) {
   const workerPath = join(__dirname, 'cpu-burn-worker.mjs');
   
   // Check if worker file exists
   if (!existsSync(workerPath)) {
     console.log(`[CPU-BURN] Worker file not found, using inline CPU burn`);
     // Fallback to inline single-threaded burn
-    await runInlineCpuBurn(targetSeconds);
+    await runInlineCpuBurn(totalIterations);
     return;
   }
   
   const workers = [];
   const promises = [];
   
-  // Standard machine has 4 cores - this is our baseline for calibration
-  const STANDARD_CORES = 4;
+  // Divide work equally among workers
+  const iterationsPerWorker = Math.ceil(totalIterations / numWorkers);
   
   for (let i = 0; i < numWorkers; i++) {
     const worker = new Worker(workerPath, {
       workerData: {
-        targetSeconds,
         workerId: i + 1,
         totalWorkers: numWorkers,
-        standardCores: STANDARD_CORES
+        iterationsPerWorker
       }
     });
     
@@ -303,10 +307,10 @@ async function runMultiThreadedCpuBurn(targetSeconds, numWorkers) {
   const results = await Promise.all(promises);
   
   // Log summary
-  const totalIterations = results.reduce((sum, r) => sum + r.iterations, 0);
+  const actualTotalIterations = results.reduce((sum, r) => sum + r.iterations, 0);
   const maxElapsed = Math.max(...results.map(r => r.elapsed));
   console.log(`[CPU-BURN] All ${numWorkers} workers complete`);
-  console.log(`[CPU-BURN] Total iterations: ${totalIterations.toLocaleString()}`);
+  console.log(`[CPU-BURN] Total iterations: ${actualTotalIterations.toLocaleString()}`);
   console.log(`[CPU-BURN] Wall clock time: ${(maxElapsed / 1000).toFixed(2)}s`);
 }
 
@@ -314,10 +318,7 @@ async function runMultiThreadedCpuBurn(targetSeconds, numWorkers) {
  * Fallback inline CPU burn (single-threaded)
  * Used when worker file is not available
  */
-async function runInlineCpuBurn(targetSeconds) {
-  const ITERATIONS_PER_SECOND = 2_500_000;
-  const totalIterations = targetSeconds * ITERATIONS_PER_SECOND;
-  
+async function runInlineCpuBurn(totalIterations) {
   console.log(`[CPU-BURN] Running inline burn: ${totalIterations.toLocaleString()} iterations`);
   
   const startTime = Date.now();
@@ -357,17 +358,7 @@ function detectMachineType() {
   }
 }
 
-// Get the actual vCPU count for a machine type
-// NOTE: os.cpus().length returns 8 on ALL Vercel tiers, so we can't rely on it!
-// These are the documented vCPU counts from Vercel's pricing page
-function getVCpuCount(machineType) {
-  switch (machineType) {
-    case 'Turbo': return 30;
-    case 'Enhanced': return 8;
-    case 'Standard': 
-    default: return 4;
-  }
-}
+
 
 // Override machine type based on Vercel project
 const machineType = detectMachineType();
@@ -402,11 +393,10 @@ const timingData = {
     BuildTimeOnStandard: config.BuildTimeOnStandard,
     FullTimeOnStandard: config.FullTimeOnStandard,
     MachineType: config.MachineType,
-    prebuildCpuBurnSeconds: configFromFile.prebuildCpuBurnSeconds || 0,
+    prebuildCpuBurnIterations: configFromFile.prebuildCpuBurnIterations || 0,
   },
   system: {
-    reportedCpus: cpus().length,
-    usedVCpus: getVCpuCount(machineType),
+    cpuCount: cpus().length,
     cpuModel: cpus()[0]?.model || 'unknown',
   },
   timestamps: {
@@ -533,21 +523,18 @@ async function main() {
     console.log(`[TIMING]    This adds CPU work during PostCSS processing`);
   }
 
-  // v17: Execute prebuild CPU burn if configured (multi-threaded, real work)
-  const prebuildCpuBurnSeconds = configFromFile.prebuildCpuBurnSeconds || 0;
-  if (prebuildCpuBurnSeconds > 0) {
+  // v27: Execute prebuild CPU burn if configured (multi-threaded, real work)
+  // Uses total iterations - a fixed amount of work that scales naturally with core count
+  const prebuildCpuBurnIterations = configFromFile.prebuildCpuBurnIterations || 0;
+  if (prebuildCpuBurnIterations > 0) {
     console.log(`\n[TIMING] 2.5. PREBUILD CPU BURN (Multi-threaded)`);
-    // Use hardcoded vCPU count based on machine type, NOT os.cpus().length
-    // os.cpus() returns 8 on ALL Vercel tiers which breaks the scaling!
-    const numCpus = getVCpuCount(config.MachineType);
-    const reportedCpus = cpus().length;
-    console.log(`[TIMING]    Target duration: ${prebuildCpuBurnSeconds}s`);
-    console.log(`[TIMING]    Machine type: ${config.MachineType}`);
-    console.log(`[TIMING]    Using vCPU count: ${numCpus} (os.cpus reports: ${reportedCpus})`);
-    console.log(`[TIMING]    Starting ${numCpus} workers for real CPU work...`);
+    const numCpus = cpus().length;
+    console.log(`[TIMING]    Total iterations: ${prebuildCpuBurnIterations.toLocaleString()}`);
+    console.log(`[TIMING]    CPU cores available: ${numCpus}`);
+    console.log(`[TIMING]    Starting ${numCpus} workers...`);
     
     const cpuBurnStart = Date.now();
-    await runMultiThreadedCpuBurn(prebuildCpuBurnSeconds, numCpus);
+    await runMultiThreadedCpuBurn(prebuildCpuBurnIterations, numCpus);
     const cpuBurnDuration = (Date.now() - cpuBurnStart) / 1000;
     
     console.log(`[TIMING]    Prebuild CPU burn complete in ${cpuBurnDuration.toFixed(2)}s`);
