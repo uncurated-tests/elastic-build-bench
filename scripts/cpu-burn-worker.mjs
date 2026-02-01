@@ -3,36 +3,17 @@
  * Performs CPU-intensive work for a specified duration
  * Used by build-with-timing.mjs for multi-threaded prebuild CPU burn
  * 
- * v20: Work is now DIVIDED among workers so more cores = faster builds
- * The total work is calibrated for Standard (4 cores), then divided by actual core count
+ * v27: Simple approach - each worker does a FIXED number of iterations.
+ * Total work = totalIterations (passed from main script)
+ * Work is divided equally among all available workers.
+ * More cores = faster completion (naturally, no artificial adjustment).
  */
 
 import { parentPort, workerData } from 'worker_threads';
 
-const { targetSeconds, workerId, totalWorkers, standardCores } = workerData;
+const { workerId, totalWorkers, iterationsPerWorker } = workerData;
 
-// Calibration: iterations per second on a single core
-// This determines how much TOTAL work we need for the target time on Standard
-// v20: 8.5M (20min build took 32min on Standard - 1.62x too slow)
-// v21: 14M (8.5M * 1.62 correction factor)
-// v22: 20M (14M * 1.4 correction factor) - builds still 2.5-4x too slow!
-// v23: 5M - based on actual measured rate from v22 results:
-//      - 4min target took 10min (10.48B iters in 491s CPU burn = 5.3M/core)
-//      - 8min target took 32min (29.68B iters in 1811s CPU burn = 4.1M/core)
-//      Using 5M as the calibrated rate based on actual Vercel Standard performance
-const ITERATIONS_PER_SECOND_PER_CORE = 5_000_000;
-
-// Standard machine has 4 cores - this is our baseline
-const STANDARD_CORES = standardCores || 4;
-
-// Total work needed = targetSeconds worth of work on Standard (4 cores running in parallel)
-// We multiply by STANDARD_CORES because all 4 cores work simultaneously
-const totalIterations = targetSeconds * ITERATIONS_PER_SECOND_PER_CORE * STANDARD_CORES;
-
-// Divide work among actual workers - more workers = less work per worker = faster completion
-const iterationsPerWorker = Math.ceil(totalIterations / totalWorkers);
-
-console.log(`[CPU-BURN] Worker ${workerId}/${totalWorkers}: Starting ${iterationsPerWorker.toLocaleString()} iterations (total work divided by ${totalWorkers} cores)`);
+console.log(`[CPU-BURN] Worker ${workerId}/${totalWorkers}: Starting ${iterationsPerWorker.toLocaleString()} iterations`);
 
 const startTime = Date.now();
 let result = workerId; // Seed with worker ID for uniqueness
