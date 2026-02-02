@@ -16,13 +16,14 @@ export function middleware(request: NextRequest) {
   const startTime = Date.now();
   response.headers.set('x-edge-start', String(startTime));
   
-  // Geolocation headers (if available)
-  const geo = request.geo;
-  if (geo) {
-    response.headers.set('x-geo-country', geo.country || 'unknown');
-    response.headers.set('x-geo-region', geo.region || 'unknown');
-    response.headers.set('x-geo-city', geo.city || 'unknown');
-  }
+  // Geolocation headers from Vercel's injected headers
+  const country = request.headers.get('x-vercel-ip-country');
+  const region = request.headers.get('x-vercel-ip-country-region');
+  const city = request.headers.get('x-vercel-ip-city');
+  
+  if (country) response.headers.set('x-geo-country', country);
+  if (region) response.headers.set('x-geo-region', region);
+  if (city) response.headers.set('x-geo-city', city);
   
   // Add cache control for static assets
   if (request.nextUrl.pathname.startsWith('/images/')) {

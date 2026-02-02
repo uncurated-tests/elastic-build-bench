@@ -12,7 +12,13 @@ export async function GET(request: NextRequest) {
   
   // Get request info
   const url = new URL(request.url);
-  const geo = request.geo;
+  
+  // Get geo info from headers (Vercel adds these)
+  const geo = {
+    country: request.headers.get('x-vercel-ip-country') || 'unknown',
+    region: request.headers.get('x-vercel-ip-country-region') || 'unknown',
+    city: request.headers.get('x-vercel-ip-city') || 'unknown',
+  };
   
   // Simulate some edge computation
   const data = {
@@ -24,13 +30,7 @@ export async function GET(request: NextRequest) {
       userAgent: request.headers.get('user-agent'),
       acceptLanguage: request.headers.get('accept-language'),
     },
-    geo: geo ? {
-      country: geo.country,
-      region: geo.region,
-      city: geo.city,
-      latitude: geo.latitude,
-      longitude: geo.longitude,
-    } : null,
+    geo,
     runtime: 'edge',
     processingTimeMs: Date.now() - startTime,
   };
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
   return NextResponse.json(data, {
     headers: {
       'Cache-Control': 'public, max-age=60, stale-while-revalidate=300',
-      'X-Edge-Region': geo?.region || 'unknown',
+      'X-Edge-Region': geo.region,
     },
   });
 }
