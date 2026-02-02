@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Elastic Build Bench
 
-## Getting Started
+Benchmarks Vercel build performance across Standard, Enhanced, and Turbo machine types using synthetic Next.js workloads.
 
-First, run the development server:
+## Architecture
+
+- Dashboard: Next.js app in `src/app/page.tsx` renders latest timing data, charts, and cost comparisons.
+- Build instrumentation: `scripts/build-with-timing.mjs` records build start, compile finish, and deployment completion, then uploads JSON to Vercel Blob.
+- Synthetic load: `scripts/generate-load.mjs` generates SSG pages plus fixed-iteration CPU burn; branches hold pre-generated loads per target build time.
+- CPU burn: `scripts/cpu-burn-worker.mjs` executes fixed iteration work in worker threads; Standard is capped to 4 workers to mimic 4 vCPU.
+- Data storage: timing records stored in Vercel Blob under `timing/` and read by the dashboard.
+- Cost chart: normalized to Standard; includes a 100%–130% acceptable-cost band.
+- Tooltips: build cost chart hover shows actual Trigger2Ready and compilation times.
+
+## Branch Model
+
+- `main`: dashboard and baseline.
+- `build-<X>min-RealXTotal`: synthetic loads targeting X-minute compilation time on Standard.
+
+## Key Projects
+
+- Standard: `elastic-build-bench`
+- Enhanced: `elastic-build-bench-enhanced`
+- Turbo: `elastic-build-bench-turbo`
+
+## Environment
+
+- `BLOB_READ_WRITE_TOKEN` required for timing uploads.
+- `VERCEL_FORCE_NO_BUILD_CACHE=1` recommended for accurate benchmarks.
+
+## Local Dev
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open `http://localhost:3000`.

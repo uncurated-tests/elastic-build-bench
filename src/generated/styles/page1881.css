@@ -1,0 +1,17 @@
+/* Page 1881 styles */
+.page-1881 {
+  --page-index: 1881;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1881-header {
+  font-size: calc(1rem + 1px);
+  color: hsl(117, 70%, 50%);
+}
+
+.page-1881-content {
+  padding: 2rem;
+  border-radius: 5px;
+}

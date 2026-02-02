@@ -1,0 +1,78 @@
+{
+  "description": "E2E/Build time multipliers based on historical field data analysis",
+  "source": "Analysis of Vercel deployment logs from production workloads",
+  "lastUpdated": "2026-01-20",
+  "notes": [
+    "Shorter builds have higher E2E overhead ratios due to fixed deployment costs",
+    "As build time increases, the E2E overhead becomes proportionally smaller",
+    "These ratios represent real-world deployment scenarios including:",
+    "  - Dependency installation",
+    "  - Build compilation",
+    "  - Lambda function creation",
+    "  - Edge network propagation",
+    "  - Serverless function preparation"
+  ],
+  "ratios": {
+    "1min": {
+      "buildMinutes": 1,
+      "e2eMultiplier": 1.82,
+      "expectedE2EMinutes": 1.82,
+      "confidence": "high",
+      "source": "measured"
+    },
+    "2min": {
+      "buildMinutes": 2,
+      "e2eMultiplier": 1.38,
+      "expectedE2EMinutes": 2.76,
+      "confidence": "high",
+      "source": "measured"
+    },
+    "4min": {
+      "buildMinutes": 4,
+      "e2eMultiplier": 1.28,
+      "expectedE2EMinutes": 5.12,
+      "confidence": "high",
+      "source": "measured"
+    },
+    "5min": {
+      "buildMinutes": 5,
+      "e2eMultiplier": 1.23,
+      "expectedE2EMinutes": 6.15,
+      "confidence": "medium",
+      "source": "interpolated"
+    },
+    "8min": {
+      "buildMinutes": 8,
+      "e2eMultiplier": 1.19,
+      "expectedE2EMinutes": 9.52,
+      "confidence": "high",
+      "source": "measured"
+    },
+    "10min": {
+      "buildMinutes": 10,
+      "e2eMultiplier": 1.14,
+      "expectedE2EMinutes": 11.4,
+      "confidence": "high",
+      "source": "measured"
+    },
+    "20min": {
+      "buildMinutes": 20,
+      "e2eMultiplier": 1.09,
+      "expectedE2EMinutes": 21.8,
+      "confidence": "medium",
+      "source": "extrapolated"
+    },
+    "30min": {
+      "buildMinutes": 30,
+      "e2eMultiplier": 1.11,
+      "expectedE2EMinutes": 33.2,
+      "confidence": "medium",
+      "source": "extrapolated"
+    }
+  },
+  "formula": {
+    "description": "E2E multiplier decreases as build time increases (overhead becomes smaller proportion)",
+    "approximation": "multiplier ≈ 1 + (0.82 / buildMinutes^0.6)",
+    "notes": "This follows a power law decay pattern"
+  }
+}

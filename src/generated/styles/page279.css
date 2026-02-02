@@ -1,0 +1,17 @@
+/* Page 279 styles */
+.page-279 {
+  --page-index: 279;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-279-header {
+  font-size: calc(1rem + 9px);
+  color: hsl(243, 70%, 50%);
+}
+
+.page-279-content {
+  padding: 4rem;
+  border-radius: 11px;
+}

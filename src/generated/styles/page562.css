@@ -1,0 +1,17 @@
+/* Page 562 styles */
+.page-562 {
+  --page-index: 562;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-562-header {
+  font-size: calc(1rem + 2px);
+  color: hsl(274, 70%, 50%);
+}
+
+.page-562-content {
+  padding: 3rem;
+  border-radius: 6px;
+}

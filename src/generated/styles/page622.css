@@ -1,0 +1,17 @@
+/* Page 622 styles */
+.page-622 {
+  --page-index: 622;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-622-header {
+  font-size: calc(1rem + 2px);
+  color: hsl(334, 70%, 50%);
+}
+
+.page-622-content {
+  padding: 3rem;
+  border-radius: 10px;
+}
