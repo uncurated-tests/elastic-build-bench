@@ -748,7 +748,7 @@ export default async function Home() {
               synthetic Next.js applications with predictable build times using real CPU work and realistic dependencies.
             </p>
             
-            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Synthetic Load Generation (v31)</h3>
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Synthetic Load Generation (v32)</h3>
             <ul className="list-disc list-inside space-y-2 ml-2">
               <li>
                 <strong>SSG Pages:</strong> Up to 2,000 statically generated pages with shared React components 
@@ -758,6 +758,27 @@ export default async function Home() {
                 <strong>Multi-threaded CPU Burn:</strong> For longer targets, a prebuild phase performs real CPU
                 math using Node.js worker threads. Standard is capped to 4 workers, while Enhanced and Turbo 
                 use all reported cores.
+              </li>
+              <li>
+                <strong>Image Assets:</strong> 150 SVG placeholder images (50 images × 3 sizes: 1200×800, 800×600, 
+                400×300) processed by Next.js Image optimization. Increases deployment artifact size and git clone time.
+              </li>
+              <li>
+                <strong>ISR Pages:</strong> Gallery pages using Incremental Static Regeneration with 60-second 
+                revalidation intervals. Includes /gallery index and 10 dynamic /gallery/[id] pages generated via 
+                generateStaticParams().
+              </li>
+              <li>
+                <strong>Data Fetching Simulation:</strong> SSG pages include simulated database/API latency 
+                (50-150ms per page) to represent real-world data fetching patterns during static generation.
+              </li>
+              <li>
+                <strong>Middleware:</strong> Edge middleware runs on all requests, adding security headers, 
+                geolocation tracking, and cache control. Bundled separately for edge deployment.
+              </li>
+              <li>
+                <strong>Edge API Routes:</strong> Two edge runtime API endpoints (/api/edge and /api/edge/compute) 
+                that require separate bundling and deployment to edge locations.
               </li>
             </ul>
 
@@ -869,55 +890,52 @@ export default async function Home() {
                 regardless of dependency count. Real first-time builds take longer.
               </li>
               <li>
-                <strong>No Image Optimization:</strong> Real apps with images trigger Next.js image processing, 
-                adding deployment overhead.
+                <strong>Fixed Overhead Dominance:</strong> For faster machines (Enhanced/Turbo), the fixed overhead 
+                (git clone, npm install, deployment) becomes a larger percentage of total T2R time, causing naturally 
+                higher ratios. This is physical reality, not a benchmark limitation.
               </li>
               <li>
-                <strong>No External APIs:</strong> Real SSR/SSG builds often make database or API calls, adding 
-                latency that scales with page count.
+                <strong>T2R Delta Variance:</strong> Current builds show ~10-12% variance from target ratios. 
+                Standard runs slightly over target (+12%), while Enhanced (-8.5%) and Turbo (-10%) run under. 
+                This is considered acceptable for benchmarking purposes.
               </li>
             </ul>
 
-            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Proposed Changes to Improve T2R Accuracy</h3>
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Remaining Options to Improve T2R Accuracy</h3>
             <p className="text-xs text-zinc-500 dark:text-zinc-500 mb-3">
-              Current results show Standard at -10%, Enhanced at -7%, and Turbo at +34% vs target ratios. 
-              The following changes could bring measurements closer to real-world behavior:
+              Items 1-4 have been implemented in v32. The following options remain for further tuning:
             </p>
             
             <div className="space-y-4">
-              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded p-3">
-                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">1. Add Image Assets (High Impact)</p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-500">
-                  Include 50-200 real images (JPG/PNG/WebP) that trigger Next.js image optimization during build. 
-                  This increases both compilation time (image processing) and deployment artifact size (optimized 
-                  variants at multiple sizes). Expected impact: +15-30s deployment overhead.
+              <div className="bg-green-50 dark:bg-green-900/20 rounded p-3 border border-green-200 dark:border-green-800">
+                <p className="font-medium text-green-700 dark:text-green-300 mb-1">1. Image Assets - IMPLEMENTED</p>
+                <p className="text-xs text-green-600 dark:text-green-400">
+                  Added 150 SVG placeholder images (50 × 3 sizes) in public/images/. Used by ImageGallery component 
+                  with Next.js Image optimization. Increases git clone time and deployment artifact size.
                 </p>
               </div>
               
-              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded p-3">
-                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">2. Add ISR Pages (Medium Impact)</p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-500">
-                  Convert some SSG pages to Incremental Static Regeneration with revalidation intervals. ISR pages 
-                  generate edge function metadata and require additional deployment configuration. This adds 
-                  realistic overhead for apps with dynamic content. Expected impact: +5-15s overhead.
+              <div className="bg-green-50 dark:bg-green-900/20 rounded p-3 border border-green-200 dark:border-green-800">
+                <p className="font-medium text-green-700 dark:text-green-300 mb-1">2. ISR Pages - IMPLEMENTED</p>
+                <p className="text-xs text-green-600 dark:text-green-400">
+                  Added /gallery with revalidate=60 and 10 dynamic /gallery/[id] pages using generateStaticParams(). 
+                  These use Incremental Static Regeneration for realistic edge function overhead.
                 </p>
               </div>
               
-              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded p-3">
-                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">3. Simulate Data Fetching (Medium Impact)</p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-500">
-                  Add artificial delays in getStaticProps/generateStaticParams to simulate database or API calls 
-                  during SSG. Real apps fetch data for each page, adding latency that scales with page count. 
-                  Could use setTimeout or a mock API server. Expected impact: +10-60s depending on page count.
+              <div className="bg-green-50 dark:bg-green-900/20 rounded p-3 border border-green-200 dark:border-green-800">
+                <p className="font-medium text-green-700 dark:text-green-300 mb-1">3. Data Fetching Simulation - IMPLEMENTED</p>
+                <p className="text-xs text-green-600 dark:text-green-400">
+                  Gallery pages include fetchGalleryData() with 100ms latency and fetchGalleryById() with 50-150ms 
+                  random latency per page, simulating real database/API calls during SSG.
                 </p>
               </div>
               
-              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded p-3">
-                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">4. Add Middleware/Edge Functions (Low Impact)</p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-500">
-                  Include Next.js middleware and edge API routes that require separate bundling and deployment 
-                  to edge locations. This adds deployment complexity representative of auth/redirect logic 
-                  in real apps. Expected impact: +5-10s overhead.
+              <div className="bg-green-50 dark:bg-green-900/20 rounded p-3 border border-green-200 dark:border-green-800">
+                <p className="font-medium text-green-700 dark:text-green-300 mb-1">4. Middleware/Edge Functions - IMPLEMENTED</p>
+                <p className="text-xs text-green-600 dark:text-green-400">
+                  Added src/middleware.ts (security headers, geo tracking, cache control) and two edge API routes 
+                  (/api/edge, /api/edge/compute) with runtime=&apos;edge&apos;. Bundled separately for edge deployment.
                 </p>
               </div>
               
