@@ -2,6 +2,7 @@ import { list, put } from '@vercel/blob';
 import BenchmarkTable from './components/BenchmarkTable';
 import BuildTimeChart from './components/BuildTimeChart';
 import BuildCostChart from './components/BuildCostChart';
+import DeploymentBeacon from './components/DeploymentBeacon';
 
 // Revalidate every 60 seconds to pick up new build data
 export const revalidate = 60;
@@ -406,6 +407,7 @@ export default async function Home() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-8">
       <main className="max-w-6xl mx-auto">
+        <DeploymentBeacon />
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
             Elastic Build Benchmark
