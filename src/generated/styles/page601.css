@@ -1,0 +1,17 @@
+/* Page 601 styles */
+.page-601 {
+  --page-index: 601;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-601-header {
+  font-size: calc(1rem + 1px);
+  color: hsl(277, 70%, 50%);
+}
+
+.page-601-content {
+  padding: 2rem;
+  border-radius: 5px;
+}

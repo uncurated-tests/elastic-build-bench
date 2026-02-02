@@ -1,0 +1,17 @@
+/* Page 749 styles */
+.page-749 {
+  --page-index: 749;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-749-header {
+  font-size: calc(1rem + 9px);
+  color: hsl(353, 70%, 50%);
+}
+
+.page-749-content {
+  padding: 2rem;
+  border-radius: 9px;
+}

@@ -1,0 +1,17 @@
+/* Page 163 styles */
+.page-163 {
+  --page-index: 163;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-163-header {
+  font-size: calc(1rem + 3px);
+  color: hsl(271, 70%, 50%);
+}
+
+.page-163-content {
+  padding: 4rem;
+  border-radius: 7px;
+}

@@ -1,0 +1,17 @@
+/* Page 435 styles */
+.page-435 {
+  --page-index: 435;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-435-header {
+  font-size: calc(1rem + 5px);
+  color: hsl(255, 70%, 50%);
+}
+
+.page-435-content {
+  padding: 4rem;
+  border-radius: 7px;
+}

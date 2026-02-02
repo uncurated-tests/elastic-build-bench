@@ -13,12 +13,15 @@ interface TimingData {
     MachineType: string;
   };
   timestamps: {
+    deploymentTriggered?: string | null;
+    installComplete?: string | null;
     buildStarted: string | null;
     dependenciesReady: string | null;
     compilationFinished: string | null;
     deploymentComplete: string | null;
   };
   durations: {
+    installPhaseMs?: number | null;
     dependencyPhaseMs: number | null;
     compilationPhaseMs: number | null;
     deploymentPhaseMs: number | null;
@@ -44,9 +47,17 @@ async function recordDeploymentCompletion(runId: string, deploymentTime?: string
   const response = await fetch(completeBlob.url);
   const timingData: TimingData = await response.json();
 
-  // Skip if already recorded
+  // Skip if already recorded unless the new time is later
   if (timingData.timestamps.deploymentComplete) {
-    return timingData;
+    if (!deploymentTime) {
+      return timingData;
+    }
+
+    const existingTime = new Date(timingData.timestamps.deploymentComplete).getTime();
+    const incomingTime = new Date(deploymentTime).getTime();
+    if (!Number.isFinite(incomingTime) || incomingTime <= existingTime) {
+      return timingData;
+    }
   }
 
   // Update with deployment completion
@@ -61,10 +72,12 @@ async function recordDeploymentCompletion(runId: string, deploymentTime?: string
   }
 
   // Calculate total time including deployment
-  if (timingData.timestamps.buildStarted) {
+  // Use deploymentTriggered if available, otherwise fall back to buildStarted
+  const t2rStartTime = timingData.timestamps.deploymentTriggered || timingData.timestamps.buildStarted;
+  if (t2rStartTime) {
     timingData.durations.totalWithDeploymentMs = 
       new Date(deploymentComplete).getTime() - 
-      new Date(timingData.timestamps.buildStarted).getTime();
+      new Date(t2rStartTime).getTime();
   }
 
   // Upload updated timing data
@@ -134,13 +147,13 @@ export async function POST(request: Request) {
     }
     
     // Single runId mode
-    const { runId } = body;
+    const { runId, deploymentTime } = body;
     
     if (!runId) {
       return NextResponse.json({ error: 'runId is required' }, { status: 400 });
     }
 
-    const timingData = await recordDeploymentCompletion(runId);
+    const timingData = await recordDeploymentCompletion(runId, deploymentTime);
     
     if (!timingData) {
       const { blobs } = await list({ prefix: `timing/${runId}` });

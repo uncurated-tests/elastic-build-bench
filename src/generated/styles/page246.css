@@ -1,0 +1,17 @@
+/* Page 246 styles */
+.page-246 {
+  --page-index: 246;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-246-header {
+  font-size: calc(1rem + 6px);
+  color: hsl(102, 70%, 50%);
+}
+
+.page-246-content {
+  padding: 3rem;
+  border-radius: 10px;
+}
