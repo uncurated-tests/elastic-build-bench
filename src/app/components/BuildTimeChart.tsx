@@ -386,7 +386,7 @@ export default function BuildTimeChart({ data }: BuildTimeChartProps) {
             }}
           >
             <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-2 border-b border-zinc-200 dark:border-zinc-700 pb-1">
-              Target: {tooltipData.label}
+              Actual times
             </div>
             <div className="space-y-1 text-xs">
               {tooltipData.standard && (
