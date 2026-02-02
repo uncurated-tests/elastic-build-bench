@@ -17,9 +17,12 @@ interface NormalizedDataPoint {
   machine: 'Standard' | 'Enhanced' | 'Turbo';
   label?: string;
   costPerSec: number;
+  costPerMin: number;
   e2eSec: number;
   compilationSec: number;
 }
+
+type PricingMode = 'per-second' | 'per-minute';
 
 interface BuildCostChartProps {
   data: DataPoint[];
@@ -40,8 +43,16 @@ const formatTime = (seconds: number): string => {
   return `${mins}m ${secs}s`;
 };
 
+// Cost rates per minute for each machine type
+const COST_PER_MIN = {
+  Standard: 0.014,
+  Enhanced: 0.028,
+  Turbo: 0.105,
+};
+
 export default function BuildCostChart({ data }: BuildCostChartProps) {
   const [hoveredLabel, setHoveredLabel] = useState<string | null>(null);
+  const [pricingMode, setPricingMode] = useState<PricingMode>('per-second');
 
   if (data.length === 0) return null;
 
@@ -53,20 +64,37 @@ export default function BuildCostChart({ data }: BuildCostChartProps) {
     byLabel[key].push(d);
   }
 
-  // Normalize: Standard = 100%, others as percentage of Standard
+  // Calculate costs and normalize: Standard = 100%, others as percentage of Standard
   const normalizedData: NormalizedDataPoint[] = [];
   for (const [label, points] of Object.entries(byLabel)) {
     const standardPoint = points.find(p => p.machine === 'Standard');
     if (!standardPoint) continue;
 
     for (const p of points) {
+      const e2eSec = p.e2eSec || 0;
+      // Per-second cost: exact seconds × rate/60
+      const costPerSec = e2eSec * (COST_PER_MIN[p.machine] / 60);
+      // Per-minute cost: ceiling of minutes × rate
+      const costPerMin = Math.ceil(e2eSec / 60) * COST_PER_MIN[p.machine];
+      
+      // Calculate standard costs for comparison
+      const standardE2eSec = standardPoint.e2eSec || 0;
+      const standardCostPerSec = standardE2eSec * (COST_PER_MIN.Standard / 60);
+      const standardCostPerMin = Math.ceil(standardE2eSec / 60) * COST_PER_MIN.Standard;
+      
+      // Calculate percentage based on pricing mode
+      const percentage = pricingMode === 'per-second'
+        ? (costPerSec / standardCostPerSec) * 100
+        : (costPerMin / standardCostPerMin) * 100;
+
       normalizedData.push({
         targetMin: p.targetMin,
-        percentage: (p.costPerSec / standardPoint.costPerSec) * 100,
+        percentage,
         machine: p.machine,
         label: p.label,
-        costPerSec: p.costPerSec,
-        e2eSec: p.e2eSec || 0,
+        costPerSec,
+        costPerMin,
+        e2eSec,
         compilationSec: p.compilationSec || 0,
       });
     }
@@ -206,12 +234,42 @@ export default function BuildCostChart({ data }: BuildCostChartProps) {
 
   return (
     <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6 mb-8 relative">
-      <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
-        Build Cost (Normalized to Standard = 100%)
-      </h2>
-      <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">
-        Lower is cheaper. Cost per second calculated as (E2E time × rate per minute / 60).
-      </p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+        <div>
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-1">
+            Build Cost (Normalized to Standard = 100%)
+          </h2>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            Lower is cheaper. {pricingMode === 'per-second' 
+              ? 'Cost calculated as (E2E time × rate per minute / 60).' 
+              : 'Cost calculated as (ceiling of minutes × rate per minute).'}
+          </p>
+        </div>
+        
+        {/* Pricing Mode Toggle */}
+        <div className="flex items-center gap-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg p-1">
+          <button
+            onClick={() => setPricingMode('per-second')}
+            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+              pricingMode === 'per-second'
+                ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 shadow-sm'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
+            }`}
+          >
+            Per Second
+          </button>
+          <button
+            onClick={() => setPricingMode('per-minute')}
+            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+              pricingMode === 'per-minute'
+                ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 shadow-sm'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
+            }`}
+          >
+            Per Minute
+          </button>
+        </div>
+      </div>
 
       <div className="overflow-x-auto relative">
         <svg width={width} height={height} className="mx-auto">
@@ -416,24 +474,36 @@ export default function BuildCostChart({ data }: BuildCostChartProps) {
                 <div className="flex items-center gap-2">
                   <span className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS.Standard }}></span>
                   <span className="text-zinc-600 dark:text-zinc-400">Standard:</span>
+                  <span className="text-zinc-900 dark:text-zinc-100 font-medium">
+                    ${pricingMode === 'per-second' ? tooltipData.standard.costPerSec.toFixed(3) : tooltipData.standard.costPerMin.toFixed(3)}
+                  </span>
                   <span className="text-zinc-500">T2R {formatTime(tooltipData.standard.e2eSec)}</span>
-                  <span className="text-zinc-500">Compile {formatTime(tooltipData.standard.compilationSec)}</span>
                 </div>
               )}
               {tooltipData.enhanced && (
                 <div className="flex items-center gap-2">
                   <span className="w-3 h-3" style={{ backgroundColor: COLORS.Enhanced }}></span>
                   <span className="text-zinc-600 dark:text-zinc-400">Enhanced:</span>
+                  <span className="text-zinc-900 dark:text-zinc-100 font-medium">
+                    ${pricingMode === 'per-second' ? tooltipData.enhanced.costPerSec.toFixed(3) : tooltipData.enhanced.costPerMin.toFixed(3)}
+                  </span>
                   <span className="text-zinc-500">T2R {formatTime(tooltipData.enhanced.e2eSec)}</span>
-                  <span className="text-zinc-500">Compile {formatTime(tooltipData.enhanced.compilationSec)}</span>
+                  <span className={`font-medium ${tooltipData.enhanced.percentage <= 130 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                    {tooltipData.enhanced.percentage.toFixed(0)}%
+                  </span>
                 </div>
               )}
               {tooltipData.turbo && (
                 <div className="flex items-center gap-2">
                   <span className="w-3 h-3" style={{ backgroundColor: COLORS.Turbo, clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}></span>
                   <span className="text-zinc-600 dark:text-zinc-400">Turbo:</span>
+                  <span className="text-zinc-900 dark:text-zinc-100 font-medium">
+                    ${pricingMode === 'per-second' ? tooltipData.turbo.costPerSec.toFixed(3) : tooltipData.turbo.costPerMin.toFixed(3)}
+                  </span>
                   <span className="text-zinc-500">T2R {formatTime(tooltipData.turbo.e2eSec)}</span>
-                  <span className="text-zinc-500">Compile {formatTime(tooltipData.turbo.compilationSec)}</span>
+                  <span className={`font-medium ${tooltipData.turbo.percentage <= 130 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                    {tooltipData.turbo.percentage.toFixed(0)}%
+                  </span>
                 </div>
               )}
             </div>
