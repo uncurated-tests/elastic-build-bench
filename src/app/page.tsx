@@ -878,25 +878,69 @@ export default async function Home() {
               </li>
             </ul>
 
-            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Options to Improve T2R Accuracy</h3>
-            <ul className="list-disc list-inside space-y-2 ml-2">
-              <li>
-                <strong>Add Image Assets:</strong> Include real images that trigger Next.js optimization pipeline 
-                during build, increasing deployment artifact size and propagation time.
-              </li>
-              <li>
-                <strong>Add ISR Pages:</strong> Incremental Static Regeneration pages add revalidation metadata 
-                and edge function overhead.
-              </li>
-              <li>
-                <strong>Mock API Calls:</strong> Simulate database/API latency during SSG to reflect real-world 
-                data fetching patterns.
-              </li>
-              <li>
-                <strong>Machine-Specific Ratios:</strong> Adjust target ratios per machine type to account for 
-                fixed overhead being a larger percentage on faster machines.
-              </li>
-            </ul>
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Proposed Changes to Improve T2R Accuracy</h3>
+            <p className="text-xs text-zinc-500 dark:text-zinc-500 mb-3">
+              Current results show Standard at -10%, Enhanced at -7%, and Turbo at +34% vs target ratios. 
+              The following changes could bring measurements closer to real-world behavior:
+            </p>
+            
+            <div className="space-y-4">
+              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded p-3">
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">1. Add Image Assets (High Impact)</p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                  Include 50-200 real images (JPG/PNG/WebP) that trigger Next.js image optimization during build. 
+                  This increases both compilation time (image processing) and deployment artifact size (optimized 
+                  variants at multiple sizes). Expected impact: +15-30s deployment overhead.
+                </p>
+              </div>
+              
+              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded p-3">
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">2. Add ISR Pages (Medium Impact)</p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                  Convert some SSG pages to Incremental Static Regeneration with revalidation intervals. ISR pages 
+                  generate edge function metadata and require additional deployment configuration. This adds 
+                  realistic overhead for apps with dynamic content. Expected impact: +5-15s overhead.
+                </p>
+              </div>
+              
+              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded p-3">
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">3. Simulate Data Fetching (Medium Impact)</p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                  Add artificial delays in getStaticProps/generateStaticParams to simulate database or API calls 
+                  during SSG. Real apps fetch data for each page, adding latency that scales with page count. 
+                  Could use setTimeout or a mock API server. Expected impact: +10-60s depending on page count.
+                </p>
+              </div>
+              
+              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded p-3">
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">4. Add Middleware/Edge Functions (Low Impact)</p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                  Include Next.js middleware and edge API routes that require separate bundling and deployment 
+                  to edge locations. This adds deployment complexity representative of auth/redirect logic 
+                  in real apps. Expected impact: +5-10s overhead.
+                </p>
+              </div>
+              
+              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded p-3">
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">5. Machine-Specific Target Ratios (Alternative)</p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                  Instead of matching a single target ratio, adjust expectations per machine type. Since fixed 
+                  overhead (install ~10s, deploy ~30s) doesn&apos;t scale with machine speed, faster machines will 
+                  always have higher T2R ratios for short builds. Formula: target_ratio = 1 + (overhead_seconds / 
+                  compilation_seconds). This accepts the physical reality rather than trying to artificially 
+                  inflate overhead.
+                </p>
+              </div>
+              
+              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded p-3">
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">6. Larger Git Repository (Low Impact)</p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                  Add realistic commit history and binary assets (fonts, locale files, JSON fixtures) to increase 
+                  git clone time. Currently the repo is lightweight; real monorepos can take 10-30s to clone. 
+                  Could also add Git LFS objects for design assets. Expected impact: +5-20s clone time.
+                </p>
+              </div>
+            </div>
             
             <p className="text-xs text-zinc-500 dark:text-zinc-500 mt-4">
               Source code: <a 
