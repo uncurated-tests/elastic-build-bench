@@ -753,7 +753,7 @@ export default async function Home() {
               synthetic Next.js applications with predictable build times using real CPU work.
             </p>
             
-            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Synthetic Load Generation (v26)</h3>
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Synthetic Load Generation (v30)</h3>
             <ul className="list-disc list-inside space-y-2 ml-2">
               <li>
                 <strong>SSG Pages:</strong> Up to 2,000 statically generated pages with shared React components 
@@ -761,11 +761,10 @@ export default async function Home() {
                 to ~113s of SSG-based build work.
               </li>
               <li>
-                <strong>Multi-threaded CPU Burn:</strong> For builds targeting &gt;2 minutes, a prebuild phase 
-                performs real CPU-intensive math operations using Node.js worker threads. Work is calibrated 
-                with duration-dependent multipliers (0.75x for short burns, up to 1.8x for very long burns) 
-                to account for thermal throttling and GC overhead. Work is <em>divided among available cores</em>, 
-                so machines with more cores complete faster.
+                <strong>Multi-threaded CPU Burn:</strong> For longer targets, a prebuild phase performs real CPU
+                math using Node.js worker threads. The workload is specified as a <em>fixed iteration count</em>
+                (not a time delay) and divided across workers, so faster machines finish sooner. Standard is
+                capped to 4 workers to mimic a 4 vCPU ceiling.
               </li>
               <li>
                 <strong>Trigger2Ready Ratio:</strong> The ratio between total E2E time and compilation time 
