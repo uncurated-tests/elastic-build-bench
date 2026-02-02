@@ -8,6 +8,7 @@ interface DataPoint {
   machine: 'Standard' | 'Enhanced' | 'Turbo';
   label?: string;
   e2eSec?: number;
+  compilationSec?: number;
 }
 
 interface NormalizedDataPoint {
@@ -17,6 +18,7 @@ interface NormalizedDataPoint {
   label?: string;
   costPerSec: number;
   e2eSec: number;
+  compilationSec: number;
 }
 
 interface BuildCostChartProps {
@@ -31,6 +33,7 @@ const COLORS = {
 
 // Format seconds to human readable time
 const formatTime = (seconds: number): string => {
+  if (seconds <= 0 || Number.isNaN(seconds)) return '-';
   if (seconds < 60) return `${seconds.toFixed(1)}s`;
   const mins = Math.floor(seconds / 60);
   const secs = Math.round(seconds % 60);
@@ -64,6 +67,7 @@ export default function BuildCostChart({ data }: BuildCostChartProps) {
         label: p.label,
         costPerSec: p.costPerSec,
         e2eSec: p.e2eSec || 0,
+        compilationSec: p.compilationSec || 0,
       });
     }
   }
@@ -403,24 +407,24 @@ export default function BuildCostChart({ data }: BuildCostChartProps) {
                 <div className="flex items-center gap-2">
                   <span className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS.Standard }}></span>
                   <span className="text-zinc-600 dark:text-zinc-400">Standard:</span>
-                  <span className="font-mono text-zinc-900 dark:text-zinc-100">{tooltipData.standard.percentage.toFixed(1)}%</span>
-                  <span className="text-zinc-500">(${tooltipData.standard.costPerSec.toFixed(3)}, {formatTime(tooltipData.standard.e2eSec)})</span>
+                  <span className="text-zinc-500">T2R {formatTime(tooltipData.standard.e2eSec)}</span>
+                  <span className="text-zinc-500">Compile {formatTime(tooltipData.standard.compilationSec)}</span>
                 </div>
               )}
               {tooltipData.enhanced && (
                 <div className="flex items-center gap-2">
                   <span className="w-3 h-3" style={{ backgroundColor: COLORS.Enhanced }}></span>
                   <span className="text-zinc-600 dark:text-zinc-400">Enhanced:</span>
-                  <span className="font-mono text-zinc-900 dark:text-zinc-100">{tooltipData.enhanced.percentage.toFixed(1)}%</span>
-                  <span className="text-zinc-500">(${tooltipData.enhanced.costPerSec.toFixed(3)}, {formatTime(tooltipData.enhanced.e2eSec)})</span>
+                  <span className="text-zinc-500">T2R {formatTime(tooltipData.enhanced.e2eSec)}</span>
+                  <span className="text-zinc-500">Compile {formatTime(tooltipData.enhanced.compilationSec)}</span>
                 </div>
               )}
               {tooltipData.turbo && (
                 <div className="flex items-center gap-2">
                   <span className="w-3 h-3" style={{ backgroundColor: COLORS.Turbo, clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}></span>
                   <span className="text-zinc-600 dark:text-zinc-400">Turbo:</span>
-                  <span className="font-mono text-zinc-900 dark:text-zinc-100">{tooltipData.turbo.percentage.toFixed(1)}%</span>
-                  <span className="text-zinc-500">(${tooltipData.turbo.costPerSec.toFixed(3)}, {formatTime(tooltipData.turbo.e2eSec)})</span>
+                  <span className="text-zinc-500">T2R {formatTime(tooltipData.turbo.e2eSec)}</span>
+                  <span className="text-zinc-500">Compile {formatTime(tooltipData.turbo.compilationSec)}</span>
                 </div>
               )}
             </div>

@@ -321,6 +321,7 @@ export default async function Home() {
         machine: machineType,
         label: r.config.BuildTimeOnStandard,
         e2eSec: seconds,
+        compilationSec: (r.durations.totalMs || 0) / 1000,
         timestamp: r.timestamps.buildStarted ? new Date(r.timestamps.buildStarted).getTime() : 0,
       };
     })
