@@ -366,6 +366,7 @@ config.MachineType = machineType;
 
 // Build run metadata
 const runId = `build-${Date.now()}`;
+const buildTimestamp = new Date().toISOString();
 const gitCommit = getGitCommit();
 const gitBranch = getGitBranch();
 const deploymentId = process.env.VERCEL_DEPLOYMENT_ID || null;
@@ -412,6 +413,20 @@ const timingData = {
     totalMs: null,
   },
 };
+
+// Persist runId for client-side deployment beacon
+try {
+  const generatedDir = join(projectRoot, 'src', 'generated');
+  mkdirSync(generatedDir, { recursive: true });
+  const runIdFile = join(generatedDir, 'run-id.ts');
+  writeFileSync(
+    runIdFile,
+    `export const buildRunId = '${runId}';\nexport const buildTimestamp = '${buildTimestamp}';\n`
+  );
+  console.log(`[TIMING] Wrote runId for client beacon: ${runIdFile}`);
+} catch (error) {
+  console.warn('[TIMING] Failed to write runId for client beacon:', error);
+}
 
 function getGitCommit() {
   try {
@@ -469,6 +484,32 @@ async function uploadTimingData(phase) {
     console.error(`[TIMING] Error name: ${error.name}`);
     console.error(`[TIMING] Error message: ${error.message}`);
     console.error(`[TIMING] Error stack: ${error.stack}`);
+  }
+}
+
+async function attemptDeploymentRecord(runId) {
+  const deploymentHost = process.env.VERCEL_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  if (!deploymentHost) {
+    console.warn('[TIMING] No deployment host available for record-deploy');
+    return;
+  }
+
+  const url = `https://${deploymentHost}/api/record-deploy`;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 3000);
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ runId, deploymentTime: new Date().toISOString(), source: 'build-script' }),
+      signal: controller.signal,
+    });
+    console.log(`[TIMING] record-deploy response: ${response.status}`);
+  } catch (error) {
+    console.warn('[TIMING] record-deploy attempt failed:', error);
+  } finally {
+    clearTimeout(timeout);
   }
 }
 
@@ -568,24 +609,18 @@ async function main() {
     new Date(timingData.timestamps.compilationFinished).getTime() - 
     new Date(timingData.timestamps.buildStarted).getTime();
 
-  // Phase 4: Record deployment completion time
-  // This is when the build script finishes - a consistent proxy for deployment readiness
-  // (More accurate than dashboard auto-complete which depends on when someone views the page)
-  timingData.timestamps.deploymentComplete = timestamp();
-  timingData.durations.deploymentPhaseMs = 
-    new Date(timingData.timestamps.deploymentComplete).getTime() - 
-    new Date(timingData.timestamps.compilationFinished).getTime();
-  timingData.durations.totalWithDeploymentMs = 
-    new Date(timingData.timestamps.deploymentComplete).getTime() - 
-    new Date(timingData.timestamps.buildStarted).getTime();
-  
+  // Phase 4: Deployment completion is recorded asynchronously by the app runtime
+  // (client beacon + record-deploy API). Leave deployment times null here.
   console.log('\n' + '='.repeat(60));
   console.log('[TIMING] Build Summary:');
   console.log(`[TIMING]   Compilation time: ${timingData.durations.totalMs}ms (${(timingData.durations.totalMs / 1000).toFixed(2)}s)`);
-  console.log(`[TIMING]   Trigger2Ready time: ${timingData.durations.totalWithDeploymentMs}ms (${(timingData.durations.totalWithDeploymentMs / 1000).toFixed(2)}s)`);
+  console.log('[TIMING]   Trigger2Ready time: pending (recorded after deployment)');
   console.log('='.repeat(60));
 
   await uploadTimingData('build_complete');
+
+  // Best-effort: try to record deployment completion (may fail if not ready yet)
+  await attemptDeploymentRecord(runId);
 }
 
 main().catch((error) => {
