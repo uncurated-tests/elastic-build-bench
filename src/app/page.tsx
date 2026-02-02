@@ -282,6 +282,7 @@ export default async function Home() {
         actualSec: (r.durations.totalWithDeploymentMs || 0) / 1000,
         machine: r.config.MachineType as 'Standard' | 'Enhanced' | 'Turbo',
         label: r.config.BuildTimeOnStandard,
+        compilationSec: (r.durations.totalMs || 0) / 1000,
         timestamp: r.timestamps.buildStarted ? new Date(r.timestamps.buildStarted).getTime() : 0,
       };
     })
