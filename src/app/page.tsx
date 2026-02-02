@@ -685,21 +685,6 @@ export default async function Home() {
                   
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div>
-                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Target Compilation</p>
-                      <p className="text-zinc-900 dark:text-zinc-100">{record.config.BuildTimeOnStandard}</p>
-                    </div>
-                    <div>
-                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Target Trigger2Ready</p>
-                      <p className="text-zinc-900 dark:text-zinc-100">
-                        {(() => {
-                          const targetCompilationMin = parseTime(record.config.BuildTimeOnStandard);
-                          const fieldRatio = getFieldRatio(targetCompilationMin);
-                          const targetT2RMin = targetCompilationMin * fieldRatio;
-                          return `${targetT2RMin.toFixed(1)}min`;
-                        })()}
-                      </p>
-                    </div>
-                    <div>
                       <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Actual Compilation</p>
                       <span className="inline-flex items-center gap-1">
                         <span className={`px-2 py-1 rounded text-xs font-mono ${
