@@ -80,14 +80,16 @@ const buildMinutes = parseInt(process.env.BUILD_MINUTES || '0', 10);
 const e2eMultiplier = parseInt(process.env.E2E_MULTIPLIER || '2', 10);
 
 // Component counts based on measured build rates
-// ~28-35 components/second on Vercel Standard machine
+// Measured: ~50-77 components/second on Vercel Standard machine
+// Using 70 comp/s as average rate for larger builds
+// Rates vary: 1min=51 comp/s, 2min=61 comp/s, 4min=78 comp/s, 8-10min=71-74 comp/s
 const COMPONENT_TARGETS = {
-  1: 1680,    // ~1min build time (28 comp/s)
-  2: 3480,    // ~2min build time (29 comp/s)
-  4: 8400,    // ~4min build time (35 comp/s)
-  8: 16800,   // ~8min build time (35 comp/s)
-  10: 21000,  // ~10min build time (35 comp/s)
-  20: 42000,  // ~20min build time (35 comp/s)
+  1: 3600,    // ~1min build time (60 comp/s, conservative for small builds)
+  2: 7200,    // ~2min build time (60 comp/s)
+  4: 16800,   // ~4min build time (70 comp/s)
+  8: 33600,   // ~8min build time (70 comp/s)
+  10: 42000,  // ~10min build time (70 comp/s)
+  20: 84000,  // ~20min build time (70 comp/s)
 };
 
 // Generate synthetic load if BUILD_MINUTES is set
