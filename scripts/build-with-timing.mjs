@@ -19,9 +19,10 @@ import { cpus } from 'os';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, '..');
 
-// Estimated install duration in milliseconds based on dependency count
-// With ~80 heavy dependencies, install takes approximately 30-60 seconds
-const ESTIMATED_INSTALL_DURATION_MS = 45000; // 45 seconds average
+// Estimated install duration in milliseconds
+// Git clone + npm install with Vercel's caching typically takes ~5-15 seconds
+// Using 10 seconds as a reasonable estimate for cached installs
+const ESTIMATED_INSTALL_DURATION_MS = 10000; // 10 seconds average
 
 // Read install completion timestamp if available
 function getInstallCompleteTimestamp() {

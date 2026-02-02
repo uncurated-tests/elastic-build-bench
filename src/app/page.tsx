@@ -3,6 +3,7 @@ import BenchmarkTable from './components/BenchmarkTable';
 import BuildTimeChart from './components/BuildTimeChart';
 import BuildCostChart from './components/BuildCostChart';
 import DeploymentBeacon from './components/DeploymentBeacon';
+import HeavyDependencies from './components/HeavyDependencies';
 
 // Revalidate every 60 seconds to pick up new build data
 export const revalidate = 60;
@@ -419,6 +420,9 @@ export default async function Home() {
             Build timing data for different configurations
           </p>
         </div>
+
+        {/* Hidden component that forces heavy dependencies to be bundled */}
+        <HeavyDependencies showContent={false} />
 
         {records.length === 0 ? (
           <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-8 text-center">
