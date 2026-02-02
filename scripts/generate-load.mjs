@@ -33,22 +33,22 @@ console.log(`========================================`);
 console.log(`Target: ${buildMinutes}min build on Standard`);
 
 // =============================================================================
-// v28 CALIBRATION - Based on empirical data from 2026-02-01 builds
+// v29 CALIBRATION - Based on empirical data with Standard capped to 4 workers
 // =============================================================================
 //
 // Build time components (on Standard, which reports 8 CPUs via os.cpus()):
 //   1. Base overhead: ~75s (Next.js startup, compile, SSG with 2000 pages)
 //   2. CPU burn rate: VARIES with duration due to thermal throttling/GC
 //
-// Measured rates (M iterations/second):
-//   - Short burns (< 100s): ~60 M/s
-//   - Medium burns (100-300s): ~47 M/s
-//   - Long burns (300-600s): ~35 M/s
-//   - Very long burns (> 600s): ~30 M/s
+// Measured rates (M iterations/second) on Standard with 4-worker cap:
+//   - Short burns (< 100s): ~37 M/s
+//   - Medium burns (100-400s): ~24 M/s
+//   - Long burns (400-700s): ~20 M/s
+//   - Very long burns (700-1100s): ~17 M/s
+//   - Extreme burns (> 1100s): ~15.5 M/s
 //
-// NOTE: All Vercel machine types (Standard/Enhanced/Turbo) report 8 CPUs
-// and perform identically for this workload. The "vCPU" count in pricing
-// does not translate to more parallelism for CPU burn.
+// NOTE: Standard is capped to 4 workers in build-with-timing.mjs, so
+// calibration here targets Standard accuracy. Enhanced/Turbo will be faster.
 //
 // =============================================================================
 
@@ -59,10 +59,11 @@ const SECONDS_PER_PAGE = 0.035;       // Empirical: ~70s for 2000 pages
 // Get iteration rate based on expected CPU burn duration
 // Rate decreases for longer burns due to thermal throttling and GC
 function getIterationRate(cpuBurnSeconds) {
-  if (cpuBurnSeconds < 100) return 60_000_000;   // 60 M/s for short burns
-  if (cpuBurnSeconds < 300) return 47_000_000;   // 47 M/s for medium burns  
-  if (cpuBurnSeconds < 600) return 35_000_000;   // 35 M/s for long burns
-  return 30_000_000;                              // 30 M/s for very long burns
+  if (cpuBurnSeconds < 100) return 37_000_000;   // 37 M/s for short burns
+  if (cpuBurnSeconds < 400) return 24_000_000;   // 24 M/s for medium burns
+  if (cpuBurnSeconds < 700) return 20_000_000;   // 20 M/s for long burns
+  if (cpuBurnSeconds < 1100) return 17_000_000;  // 17 M/s for very long burns
+  return 15_500_000;                              // 15.5 M/s for extreme burns
 }
 
 // Target build time in seconds
@@ -95,7 +96,7 @@ const expectedBuildTime = expectedSsgTime + expectedCpuBurnTime;
 const numSharedComponents = 500;
 const numApiRoutes = 5;
 
-console.log(`\nv28 Load Composition:`);
+console.log(`\nv29 Load Composition:`);
 console.log(`  Target: ${targetSeconds}s (${buildMinutes}min)`);
 console.log(`  SSG pages: ${numSSGPages} (~${Math.round(expectedSsgTime)}s)`);
 if (prebuildCpuBurnIterations > 0) {
@@ -260,7 +261,7 @@ function updateBuildConfig() {
     sharedComponents: numSharedComponents,
     apiRoutes: numApiRoutes,
     prebuildCpuBurnIterations: prebuildCpuBurnIterations,
-    strategy: "ssg-cpu-burn-v28",
+    strategy: "ssg-cpu-burn-v29",
     generatedAt: new Date().toISOString(),
     buildId: randomUUID(),
   };
@@ -329,7 +330,7 @@ updateBuildConfig();
 console.log('\n========================================');
 console.log('Generation complete!');
 console.log('========================================');
-console.log(`Strategy: SSG + Fixed CPU Burn Iterations v28`);
+console.log(`Strategy: SSG + Fixed CPU Burn Iterations v29`);
 console.log(`Expected build time on Standard: ~${buildMinutes}min (~${Math.round(expectedBuildTime)}s)`);
 if (prebuildCpuBurnIterations > 0) {
   const rateUsed = getIterationRate(targetSeconds - BASE_BUILD_TIME);
