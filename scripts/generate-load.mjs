@@ -33,27 +33,37 @@ console.log(`========================================`);
 console.log(`Target: ${buildMinutes}min build on Standard`);
 
 // =============================================================================
-// v27 CALIBRATION - Based on empirical data from 2026-02-01 builds
+// v28 CALIBRATION - Based on empirical data from 2026-02-01 builds
 // =============================================================================
 //
 // Build time components (on Standard, which reports 8 CPUs via os.cpus()):
 //   1. Base overhead: ~75s (Next.js startup, compile, SSG with 2000 pages)
-//   2. CPU burn rate: ~40M iterations/second total (8 cores × ~5M iter/s/core)
+//   2. CPU burn rate: VARIES with duration due to thermal throttling/GC
 //
-// For target time T on Standard:
-//   - If T <= 75s: use fewer SSG pages (no CPU burn)
-//   - If T > 75s: use 2000 SSG pages + CPU burn for remaining time
-//   - CPU burn iterations = (T - 75) × 40M
+// Measured rates (M iterations/second):
+//   - Short burns (< 100s): ~60 M/s
+//   - Medium burns (100-300s): ~47 M/s
+//   - Long burns (300-600s): ~35 M/s
+//   - Very long burns (> 600s): ~30 M/s
 //
-// On Enhanced (also reports 8 CPUs): same burn rate, same time
-// On Turbo (reports 8 CPUs but has 30 vCPUs): faster burn (more actual cores)
+// NOTE: All Vercel machine types (Standard/Enhanced/Turbo) report 8 CPUs
+// and perform identically for this workload. The "vCPU" count in pricing
+// does not translate to more parallelism for CPU burn.
 //
 // =============================================================================
 
 const BASE_BUILD_TIME = 75;           // seconds for 2000 SSG pages on Standard
 const MAX_SSG_PAGES = 2000;           // Cap to avoid OOM errors
 const SECONDS_PER_PAGE = 0.035;       // Empirical: ~70s for 2000 pages
-const ITERATIONS_PER_SECOND = 40_000_000;  // Total rate on Standard (8 reported cores)
+
+// Get iteration rate based on expected CPU burn duration
+// Rate decreases for longer burns due to thermal throttling and GC
+function getIterationRate(cpuBurnSeconds) {
+  if (cpuBurnSeconds < 100) return 60_000_000;   // 60 M/s for short burns
+  if (cpuBurnSeconds < 300) return 47_000_000;   // 47 M/s for medium burns  
+  if (cpuBurnSeconds < 600) return 35_000_000;   // 35 M/s for long burns
+  return 30_000_000;                              // 30 M/s for very long burns
+}
 
 // Target build time in seconds
 const targetSeconds = buildMinutes * 60;
@@ -70,19 +80,22 @@ if (targetSeconds <= BASE_BUILD_TIME) {
   // Longer build - use max pages + CPU burn
   numSSGPages = MAX_SSG_PAGES;
   const cpuBurnTime = targetSeconds - BASE_BUILD_TIME;
-  prebuildCpuBurnIterations = Math.round(cpuBurnTime * ITERATIONS_PER_SECOND);
+  const iterRate = getIterationRate(cpuBurnTime);
+  prebuildCpuBurnIterations = Math.round(cpuBurnTime * iterRate);
 }
 
 // Calculate expected build time
 const expectedSsgTime = 5 + (numSSGPages * SECONDS_PER_PAGE);
-const expectedCpuBurnTime = prebuildCpuBurnIterations / ITERATIONS_PER_SECOND;
+const cpuBurnTime = targetSeconds - BASE_BUILD_TIME;
+const iterRate = cpuBurnTime > 0 ? getIterationRate(cpuBurnTime) : 60_000_000;
+const expectedCpuBurnTime = prebuildCpuBurnIterations / iterRate;
 const expectedBuildTime = expectedSsgTime + expectedCpuBurnTime;
 
 // Fixed values
 const numSharedComponents = 500;
 const numApiRoutes = 5;
 
-console.log(`\nv27 Load Composition:`);
+console.log(`\nv28 Load Composition:`);
 console.log(`  Target: ${targetSeconds}s (${buildMinutes}min)`);
 console.log(`  SSG pages: ${numSSGPages} (~${Math.round(expectedSsgTime)}s)`);
 if (prebuildCpuBurnIterations > 0) {
@@ -247,7 +260,7 @@ function updateBuildConfig() {
     sharedComponents: numSharedComponents,
     apiRoutes: numApiRoutes,
     prebuildCpuBurnIterations: prebuildCpuBurnIterations,
-    strategy: "ssg-cpu-burn-v27",
+    strategy: "ssg-cpu-burn-v28",
     generatedAt: new Date().toISOString(),
     buildId: randomUUID(),
   };
@@ -316,9 +329,10 @@ updateBuildConfig();
 console.log('\n========================================');
 console.log('Generation complete!');
 console.log('========================================');
-console.log(`Strategy: SSG + Fixed CPU Burn Iterations v27`);
+console.log(`Strategy: SSG + Fixed CPU Burn Iterations v28`);
 console.log(`Expected build time on Standard: ~${buildMinutes}min (~${Math.round(expectedBuildTime)}s)`);
 if (prebuildCpuBurnIterations > 0) {
-  console.log(`  (includes ${prebuildCpuBurnIterations.toLocaleString()} CPU burn iterations)`);
+  const rateUsed = getIterationRate(targetSeconds - BASE_BUILD_TIME);
+  console.log(`  (includes ${prebuildCpuBurnIterations.toLocaleString()} iterations @ ${(rateUsed/1e6).toFixed(0)}M/s)`);
 }
 console.log('');
