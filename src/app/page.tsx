@@ -233,6 +233,12 @@ export default async function Home() {
     return isRealXTotalA - isRealXTotalB;
   });
 
+  const fastestRecords = records
+    .filter((record) => record.durations.totalMs !== null)
+    .sort((a, b) => (a.durations.totalMs ?? Infinity) - (b.durations.totalMs ?? Infinity));
+
+  const displayRecords = fastestRecords.length > 0 ? fastestRecords.slice(0, 3) : records;
+
   // Build a lookup map for Standard E2E times by (BuildTimeOnStandard, FullTimeOnStandard)
   const standardE2EMap = new Map<string, number>();
   // Build a lookup map for Standard Build times by (BuildTimeOnStandard, FullTimeOnStandard)
@@ -248,6 +254,29 @@ export default async function Home() {
       }
     }
   }
+
+  const aiSummary = (() => {
+    if (displayRecords.length === 0) {
+      return 'AI summary will appear once build data is available.';
+    }
+
+    const fastest = displayRecords[0];
+    const fastestTime = formatDuration(fastest.durations.totalMs);
+    const fastestMachine = fastest.config.MachineType;
+    const fastestTarget = fastest.config.BuildTimeOnStandard;
+
+    const machineCounts = displayRecords.reduce<Record<string, number>>((acc, record) => {
+      const key = record.config.MachineType;
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {});
+
+    const split = Object.entries(machineCounts)
+      .map(([machine, count]) => `${machine} ${count}`)
+      .join(', ');
+
+    return `Fastest compilation is ${fastestTime} on ${fastestMachine} (${fastestTarget}). Top 3 split: ${split}.`;
+  })();
 
   // Field ratios for calculating Target Trigger2Ready from Target Compilation
   const fieldRatios: Record<number, number> = {
@@ -271,7 +300,7 @@ export default async function Home() {
 
   // Prepare chart data - using Trigger2Ready (E2E) times
   // First, collect all data points with timestamps for deduplication
-  const chartDataWithTimestamp = records
+  const chartDataWithTimestamp = displayRecords
     .filter(r => r.durations.totalWithDeploymentMs && ['Standard', 'Enhanced', 'Turbo'].includes(r.config.MachineType))
     .map(r => {
       const targetCompilationMin = parseTime(r.config.BuildTimeOnStandard);
@@ -306,7 +335,7 @@ export default async function Home() {
   };
 
   // Prepare cost chart data with timestamps for deduplication
-  const costChartDataWithTimestamp = records
+  const costChartDataWithTimestamp = displayRecords
     .filter(r => r.durations.totalWithDeploymentMs && ['Standard', 'Enhanced', 'Turbo'].includes(r.config.MachineType))
     .map(r => {
       const targetCompilationMin = parseTime(r.config.BuildTimeOnStandard);
@@ -405,15 +434,23 @@ export default async function Home() {
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-8">
       <main className="max-w-6xl mx-auto">
         <div className="mb-8">
+          <div className="mb-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-3">
+            <p className="text-xs uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+              AI Summary
+            </p>
+            <p className="text-sm text-zinc-700 dark:text-zinc-200">
+              {aiSummary}
+            </p>
+          </div>
           <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
-            Elastic Build Benchmark
+            Build benchmarks from recent runs (Top 3 fastest only)
           </h1>
           <p className="text-zinc-600 dark:text-zinc-400">
             Build timing data for different configurations
           </p>
         </div>
 
-        {records.length === 0 ? (
+        {displayRecords.length === 0 ? (
           <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-8 text-center">
             <p className="text-zinc-500 dark:text-zinc-400">No build timing data available yet.</p>
           </div>
@@ -455,7 +492,7 @@ export default async function Home() {
                   </tr>
                 </thead>
                 <tbody>
-                  {records.map((record, index) => (
+                  {displayRecords.map((record, index) => (
                     <tr 
                       key={record.runId}
                       className={`border-b border-zinc-100 dark:border-zinc-800 ${
@@ -637,7 +674,7 @@ export default async function Home() {
 
             {/* Mobile Card View */}
             <div className="lg:hidden space-y-4">
-              {records.map((record) => (
+              {displayRecords.map((record) => (
                 <div 
                   key={record.runId}
                   className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-4"
