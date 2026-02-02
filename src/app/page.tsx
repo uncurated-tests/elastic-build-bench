@@ -758,19 +758,22 @@ export default async function Home() {
               <li>
                 <strong>SSG Pages:</strong> Up to 2,000 statically generated pages with shared React components 
                 and CSS files. Each page adds ~0.056s to build time (plus ~13s base overhead), providing up 
-                to ~113s of SSG-based build work.
+                to ~113s of SSG-based build work. The page count is capped to avoid memory pressure and ensure 
+                consistent compile behavior across machine types.
               </li>
               <li>
                 <strong>Multi-threaded CPU Burn:</strong> For longer targets, a prebuild phase performs real CPU
                 math using Node.js worker threads. The workload is specified as a <em>fixed iteration count</em>
                 (not a time delay) and divided across workers, so faster machines finish sooner. Standard is
-                capped to 4 workers to mimic a 4 vCPU ceiling.
+                capped to 4 workers to mimic a 4 vCPU ceiling, while Enhanced and Turbo use all reported cores.
+                Iteration rates are calibrated by duration band (short, medium, long, very long) to account for
+                thermal throttling and GC overhead during extended burns.
               </li>
               <li>
                 <strong>Trigger2Ready Ratio:</strong> The ratio between total E2E time and compilation time 
                 varies by build duration: ~1.8x for 1-minute builds (deployment overhead dominates), decreasing 
                 to ~1.1x for 20+ minute builds (compilation dominates). These ratios are derived from empirical 
-                measurements on Standard machines.
+                measurements on Standard machines and applied uniformly to all machine types for comparison.
               </li>
             </ul>
             
@@ -779,15 +782,18 @@ export default async function Home() {
               <li>
                 <strong>Timing Instrumentation:</strong> A custom build script records timestamps at each phase 
                 (build start, compilation complete, deployment complete) and uploads them to Vercel Blob storage.
+                Each phase is emitted as a separate JSON blob and later deduplicated by (target, machine, branch).
               </li>
               <li>
                 <strong>Machine Comparison:</strong> The same codebase is deployed to three Vercel projects 
                 configured with Standard (4 vCPU, $0.014/min), Enhanced (8 vCPU, $0.028/min), and 
-                Turbo (30 vCPU, $0.105/min) machine types.
+                Turbo (30 vCPU, $0.105/min) machine types. Comparisons use the latest run per target/machine to
+                avoid stale results from earlier calibrations.
               </li>
               <li>
                 <strong>Delta Calculations:</strong> Percentage changes for build time, E2E time, and cost 
                 are calculated relative to the Standard machine baseline for the same target configuration.
+                The cost chart normalizes Standard to 100% and highlights a 100%–130% acceptable upgrade band.
               </li>
             </ul>
             
