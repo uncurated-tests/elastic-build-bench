@@ -18,6 +18,46 @@ import { cpus } from 'os';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, '..');
+
+// Read install completion timestamp if available
+function getInstallCompleteTimestamp() {
+  const installCompleteFile = join(projectRoot, 'src', 'generated', 'install-complete.json');
+  if (existsSync(installCompleteFile)) {
+    try {
+      const data = JSON.parse(readFileSync(installCompleteFile, 'utf-8'));
+      console.log('[TIMING] Found install-complete.json:', data.installCompleteAt);
+      return data.installCompleteAt;
+    } catch (e) {
+      console.warn('[TIMING] Failed to read install-complete.json:', e.message);
+    }
+  }
+  return null;
+}
+
+// Get deployment start time from Vercel API if available
+async function getDeploymentStartTime() {
+  const deploymentId = process.env.VERCEL_DEPLOYMENT_ID;
+  const teamId = process.env.VERCEL_TEAM_ID || 'team_MtLD9hKuWAvoDd3KmiHs9zUg';
+  const token = process.env.VERCEL_TOKEN; // Would need to be set
+  
+  if (!deploymentId || !token) {
+    return null;
+  }
+  
+  try {
+    const response = await fetch(`https://api.vercel.com/v13/deployments/${deploymentId}?teamId=${teamId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (response.ok) {
+      const data = await response.json();
+      // createdAt is when deployment was triggered
+      return data.createdAt ? new Date(data.createdAt).toISOString() : null;
+    }
+  } catch (e) {
+    console.warn('[TIMING] Failed to get deployment start time from API:', e.message);
+  }
+  return null;
+}
 const configPath = join(projectRoot, 'build-config.json');
 
 // Get build target from environment variable
@@ -383,6 +423,9 @@ function getVercelProjectName() {
 
 const vercelProjectName = getVercelProjectName();
 
+// Get install completion timestamp
+const installCompleteTimestamp = getInstallCompleteTimestamp();
+
 // Timing data structure
 const timingData = {
   runId,
@@ -401,16 +444,27 @@ const timingData = {
     cpuModel: cpus()[0]?.model || 'unknown',
   },
   timestamps: {
+    // deploymentTriggered: when the deployment was triggered (from Vercel API if available)
+    deploymentTriggered: null,
+    // installComplete: when npm install finished (from postinstall script)
+    installComplete: installCompleteTimestamp,
+    // buildStarted: when this build script started (compilation phase)
     buildStarted: null,
     dependenciesReady: null,
     compilationFinished: null,
     deploymentComplete: null,
   },
   durations: {
+    // installPhaseMs: time from deployment trigger to install complete
+    installPhaseMs: null,
     dependencyPhaseMs: null,
+    // compilationPhaseMs: time for next build (the "compilation" phase)
     compilationPhaseMs: null,
     deploymentPhaseMs: null,
+    // totalMs: compilation time only (buildStarted to compilationFinished)
     totalMs: null,
+    // totalWithDeploymentMs: full T2R (deploymentTriggered to deploymentComplete)
+    totalWithDeploymentMs: null,
   },
 };
 
@@ -540,14 +594,31 @@ async function main() {
   console.log(`[TIMING] Config:`, JSON.stringify(config, null, 2));
   console.log('='.repeat(60));
 
-  // Phase 1: Build Started
+  // Try to get deployment start time from Vercel API
+  const deploymentStartTime = await getDeploymentStartTime();
+  if (deploymentStartTime) {
+    timingData.timestamps.deploymentTriggered = deploymentStartTime;
+    console.log(`[TIMING] Deployment triggered at: ${deploymentStartTime}`);
+  }
+
+  // Phase 1: Build Script Started (compilation phase begins)
+  // Note: npm install has already completed by this point
   timingData.timestamps.buildStarted = timestamp();
-  console.log(`\n[TIMING] 1. BUILD STARTED: ${timingData.timestamps.buildStarted}`);
+  console.log(`\n[TIMING] 1. BUILD SCRIPT STARTED: ${timingData.timestamps.buildStarted}`);
+  
+  // Calculate install phase duration if we have both timestamps
+  if (timingData.timestamps.installComplete && timingData.timestamps.deploymentTriggered) {
+    timingData.durations.installPhaseMs = 
+      new Date(timingData.timestamps.installComplete).getTime() - 
+      new Date(timingData.timestamps.deploymentTriggered).getTime();
+    console.log(`[TIMING]    Install phase (trigger to postinstall): ${timingData.durations.installPhaseMs}ms`);
+  } else if (timingData.timestamps.installComplete) {
+    console.log(`[TIMING]    Install completed at: ${timingData.timestamps.installComplete}`);
+  }
+  
   await uploadTimingData('build_started');
 
-  // Phase 2: Dependencies Ready (git clone + dep download + install already done by Vercel)
-  // In Vercel's build process, dependencies are installed before this script runs
-  // So we mark this immediately
+  // Phase 2: Dependencies Ready (already done, we're measuring from build script start)
   timingData.timestamps.dependenciesReady = timestamp();
   timingData.durations.dependencyPhaseMs = 
     new Date(timingData.timestamps.dependenciesReady).getTime() - 
@@ -586,7 +657,7 @@ async function main() {
   
   // v11 fallback: Execute prebuild delay if configured (sleep-based, for backwards compatibility)
   const prebuildDelaySeconds = configFromFile.prebuildDelaySeconds || 0;
-  if (prebuildDelaySeconds > 0 && prebuildCpuBurnSeconds === 0) {
+  if (prebuildDelaySeconds > 0 && prebuildCpuBurnIterations === 0) {
     console.log(`\n[TIMING] 2.5. PREBUILD DELAY (Sleep-based fallback)`);
     console.log(`[TIMING]    Sleeping for ${prebuildDelaySeconds}s to reach target build time...`);
     await new Promise(resolve => setTimeout(resolve, prebuildDelaySeconds * 1000));
