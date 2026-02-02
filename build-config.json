@@ -4,8 +4,8 @@
   "ssgPages": 2000,
   "sharedComponents": 500,
   "apiRoutes": 5,
-  "prebuildCpuBurnIterations": 3960000000,
-  "strategy": "ssg-cpu-burn-v29",
-  "generatedAt": "2026-02-02T03:02:34.253Z",
-  "buildId": "f2cee3ed-e12e-434b-a3a1-97c248818b65"
+  "prebuildCpuBurnIterations": 5280000000,
+  "strategy": "ssg-cpu-burn-v30",
+  "generatedAt": "2026-02-02T03:17:29.793Z",
+  "buildId": "d8c63f26-787f-43e5-8a50-f6c0c526dbdc"
 }
