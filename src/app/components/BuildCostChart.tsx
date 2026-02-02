@@ -99,6 +99,8 @@ export default function BuildCostChart({ data }: BuildCostChartProps) {
 
   // Generate 100% baseline line
   const baselineY = scaleY(100);
+  const acceptableTopY = scaleY(130);
+  const acceptableBottomY = scaleY(100);
 
   // Generate Y-axis ticks
   const yTickCount = 4;
@@ -209,6 +211,15 @@ export default function BuildCostChart({ data }: BuildCostChartProps) {
 
       <div className="overflow-x-auto relative">
         <svg width={width} height={height} className="mx-auto">
+          {/* Acceptable cost zone (100% - 130% of Standard) */}
+          <rect
+            x={padding.left}
+            y={acceptableTopY}
+            width={chartWidth}
+            height={Math.max(0, acceptableBottomY - acceptableTopY)}
+            fill="#22c55e"
+            fillOpacity={0.12}
+          />
           {/* Grid lines */}
           {yTicks.map((tick, i) => (
             <line
