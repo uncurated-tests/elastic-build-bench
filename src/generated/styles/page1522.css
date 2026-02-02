@@ -1,0 +1,17 @@
+/* Page 1522 styles */
+.page-1522 {
+  --page-index: 1522;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1522-header {
+  font-size: calc(1rem + 2px);
+  color: hsl(154, 70%, 50%);
+}
+
+.page-1522-content {
+  padding: 3rem;
+  border-radius: 6px;
+}

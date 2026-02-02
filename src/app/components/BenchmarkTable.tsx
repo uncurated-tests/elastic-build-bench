@@ -29,6 +29,7 @@ interface TimingRecord {
 interface BenchmarkTableProps {
   records: TimingRecord[];
   standardE2EMap: Map<string, number>;
+  standardBuildMap: Map<string, number>;
 }
 
 function formatDuration(ms: number | null | undefined): string {
@@ -41,7 +42,7 @@ function formatDuration(ms: number | null | undefined): string {
   return `${minutes}m ${remainingSeconds}s`;
 }
 
-function getBuildTimeReduction(record: TimingRecord, standardE2EMap: Map<string, number>): string {
+function getE2EReduction(record: TimingRecord, standardE2EMap: Map<string, number>): string {
   if (record.config.MachineType === 'Standard') {
     return '-';
   }
@@ -63,7 +64,29 @@ function getBuildTimeReduction(record: TimingRecord, standardE2EMap: Map<string,
   return '0%';
 }
 
-export default function BenchmarkTable({ records, standardE2EMap }: BenchmarkTableProps) {
+function getBuildReduction(record: TimingRecord, standardBuildMap: Map<string, number>): string {
+  if (record.config.MachineType === 'Standard') {
+    return '-';
+  }
+  
+  const key = `${record.config.BuildTimeOnStandard}-${record.config.FullTimeOnStandard}`;
+  const standardBuild = standardBuildMap.get(key);
+  const currentBuild = record.durations.totalMs;
+  
+  if (!standardBuild || !currentBuild) {
+    return '-';
+  }
+  
+  const reduction = ((standardBuild - currentBuild) / standardBuild) * 100;
+  if (reduction > 0) {
+    return `-${reduction.toFixed(0)}%`;
+  } else if (reduction < 0) {
+    return `+${Math.abs(reduction).toFixed(0)}%`;
+  }
+  return '0%';
+}
+
+export default function BenchmarkTable({ records, standardE2EMap, standardBuildMap }: BenchmarkTableProps) {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
   const [showBranch, setShowBranch] = useState(false);
 
@@ -79,7 +102,9 @@ export default function BenchmarkTable({ records, standardE2EMap }: BenchmarkTab
 
   // Convert Map to object for client-side use
   const standardE2EObj = Object.fromEntries(standardE2EMap);
+  const standardBuildObj = Object.fromEntries(standardBuildMap);
   const getStandardE2E = (key: string) => standardE2EObj[key];
+  const getStandardBuild = (key: string) => standardBuildObj[key];
 
   return (
     <div className="space-y-4">
@@ -115,7 +140,10 @@ export default function BenchmarkTable({ records, standardE2EMap }: BenchmarkTab
                   E2E
                 </th>
                 <th className="px-3 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100 whitespace-nowrap">
-                  vs Std
+                  Actual Ratio
+                </th>
+                <th className="px-3 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100 whitespace-nowrap">
+                  Cost
                 </th>
                 {showBranch && (
                   <th className="px-3 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100 whitespace-nowrap">
@@ -130,8 +158,10 @@ export default function BenchmarkTable({ records, standardE2EMap }: BenchmarkTab
             <tbody>
               {records.map((record, index) => {
                 const isExpanded = expandedRows.has(record.runId);
-                const reduction = getBuildTimeReduction(record, standardE2EMap);
-                const isReduction = reduction.startsWith('-');
+                const e2eReduction = getE2EReduction(record, standardE2EMap);
+                const buildReduction = getBuildReduction(record, standardBuildMap);
+                const isE2EReduction = e2eReduction.startsWith('-');
+                const isBuildReduction = buildReduction.startsWith('-');
                 
                 return (
                   <>
@@ -156,39 +186,92 @@ export default function BenchmarkTable({ records, standardE2EMap }: BenchmarkTab
                             ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
                             : 'bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-300'
                         }`}>
-                          {record.config.MachineType}
+                          {record.config.MachineType === 'Standard' && 'Standard - $0.014/min'}
+                          {record.config.MachineType === 'Enhanced' && 'Enhanced - $0.028/min'}
+                          {record.config.MachineType === 'Turbo' && 'Turbo - $0.105/min'}
                         </span>
                       </td>
                       <td className="px-3 py-2.5 text-sm font-mono whitespace-nowrap">
-                        <span className={`px-2 py-0.5 rounded text-xs ${
-                          record.durations.totalMs 
-                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
-                            : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500'
-                        }`}>
-                          {formatDuration(record.durations.totalMs)}
-                        </span>
-                      </td>
-                      <td className="px-3 py-2.5 text-sm font-mono whitespace-nowrap">
-                        <span className={`px-2 py-0.5 rounded text-xs ${
-                          record.durations.totalWithDeploymentMs 
-                            ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' 
-                            : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500'
-                        }`}>
-                          {formatDuration(record.durations.totalWithDeploymentMs)}
-                        </span>
-                      </td>
-                      <td className="px-3 py-2.5 text-sm font-mono whitespace-nowrap">
-                        {reduction === '-' ? (
-                          <span className="text-zinc-400 text-xs">baseline</span>
-                        ) : (
-                          <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                            isReduction
-                              ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                              : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-                          }`}>
-                            {reduction}
+                        <span className="inline-flex items-center gap-1">
+                          <span className="text-zinc-900 dark:text-zinc-100">
+                            {record.durations.totalMs ? formatDuration(record.durations.totalMs) : '-'}
                           </span>
-                        )}
+                          {buildReduction !== '-' && (
+                            <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+                              isBuildReduction
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                            }`}>
+                              {buildReduction}
+                            </span>
+                          )}
+                        </span>
+                      </td>
+                      <td className="px-3 py-2.5 text-sm font-mono whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1">
+                          <span className="text-zinc-900 dark:text-zinc-100">
+                            {record.durations.totalWithDeploymentMs ? formatDuration(record.durations.totalWithDeploymentMs) : '-'}
+                          </span>
+                          {e2eReduction !== '-' && (
+                            <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+                              isE2EReduction
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                            }`}>
+                              {e2eReduction}
+                            </span>
+                          )}
+                        </span>
+                      </td>
+                      <td className="px-3 py-2.5 text-sm font-mono text-zinc-600 dark:text-zinc-400 whitespace-nowrap">
+                        {(() => {
+                          const e2e = record.durations.totalWithDeploymentMs;
+                          const build = record.durations.totalMs;
+                          if (!e2e || !build) return '-';
+                          const ratio = e2e / build;
+                          return `${ratio.toFixed(2)}x`;
+                        })()}
+                      </td>
+                      <td className="px-3 py-2.5 text-sm font-mono whitespace-nowrap">
+                        {(() => {
+                          if (!record.durations.totalWithDeploymentMs) {
+                            return <span className="text-zinc-400">-</span>;
+                          }
+                          const minutes = Math.ceil(record.durations.totalWithDeploymentMs / 60000);
+                          const costPerMin = record.config.MachineType === 'Turbo' ? 0.105 
+                            : record.config.MachineType === 'Enhanced' ? 0.028 
+                            : 0.014;
+                          const cost = (minutes * costPerMin).toFixed(3);
+                          
+                          // Calculate Standard cost for comparison
+                          const key = `${record.config.BuildTimeOnStandard}-${record.config.FullTimeOnStandard}`;
+                          const standardE2E = standardE2EMap.get(key);
+                          let costDelta = null;
+                          if (record.config.MachineType !== 'Standard' && standardE2E) {
+                            const standardMinutes = Math.ceil(standardE2E / 60000);
+                            const standardCost = standardMinutes * 0.014;
+                            const currentCost = minutes * costPerMin;
+                            const delta = ((currentCost - standardCost) / standardCost) * 100;
+                            costDelta = delta;
+                          }
+                          
+                          return (
+                            <span className="inline-flex items-center gap-1">
+                              <span className="text-zinc-900 dark:text-zinc-100">
+                                ${cost}
+                              </span>
+                              {costDelta !== null && (
+                                <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+                                  costDelta < 0
+                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                                }`}>
+                                  {costDelta < 0 ? `${costDelta.toFixed(0)}%` : `+${costDelta.toFixed(0)}%`}
+                                </span>
+                              )}
+                            </span>
+                          );
+                        })()}
                       </td>
                       {showBranch && (
                         <td className="px-3 py-2.5 text-xs text-zinc-500 dark:text-zinc-500 font-mono whitespace-nowrap max-w-[120px] truncate">
@@ -213,7 +296,7 @@ export default function BenchmarkTable({ records, standardE2EMap }: BenchmarkTab
                     </tr>
                     {isExpanded && (
                       <tr key={`${record.runId}-expanded`} className="bg-zinc-50 dark:bg-zinc-800/50">
-                        <td colSpan={showBranch ? 7 : 6} className="px-3 py-3">
+                        <td colSpan={showBranch ? 8 : 7} className="px-3 py-3">
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                             <div>
                               <p className="text-zinc-500 dark:text-zinc-500 mb-1">Branch</p>

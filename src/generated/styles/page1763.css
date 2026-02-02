@@ -1,0 +1,17 @@
+/* Page 1763 styles */
+.page-1763 {
+  --page-index: 1763;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1763-header {
+  font-size: calc(1rem + 3px);
+  color: hsl(71, 70%, 50%);
+}
+
+.page-1763-content {
+  padding: 4rem;
+  border-radius: 7px;
+}

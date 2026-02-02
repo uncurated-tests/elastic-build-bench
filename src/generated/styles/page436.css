@@ -1,0 +1,17 @@
+/* Page 436 styles */
+.page-436 {
+  --page-index: 436;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-436-header {
+  font-size: calc(1rem + 6px);
+  color: hsl(292, 70%, 50%);
+}
+
+.page-436-content {
+  padding: 1rem;
+  border-radius: 8px;
+}

@@ -1,0 +1,17 @@
+/* Page 385 styles */
+.page-385 {
+  --page-index: 385;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-385-header {
+  font-size: calc(1rem + 5px);
+  color: hsl(205, 70%, 50%);
+}
+
+.page-385-content {
+  padding: 2rem;
+  border-radius: 5px;
+}

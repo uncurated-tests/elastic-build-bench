@@ -1,0 +1,17 @@
+/* Page 570 styles */
+.page-570 {
+  --page-index: 570;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-570-header {
+  font-size: calc(1rem + 0px);
+  color: hsl(210, 70%, 50%);
+}
+
+.page-570-content {
+  padding: 3rem;
+  border-radius: 6px;
+}
