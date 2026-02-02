@@ -89,7 +89,7 @@ const COMPONENT_TARGETS = {
   4: 16800,   // ~4min build time (70 comp/s)
   8: 33600,   // ~8min build time (70 comp/s)
   10: 42000,  // ~10min build time (70 comp/s)
-  20: 84000,  // ~20min build time (70 comp/s)
+  20: 50000,  // ~12min build time (reduced from 84000 to avoid memory/timeout issues)
 };
 
 // Generate synthetic load if BUILD_MINUTES is set
