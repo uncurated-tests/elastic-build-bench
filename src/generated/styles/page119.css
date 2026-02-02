@@ -1,0 +1,17 @@
+/* Page 119 styles */
+.page-119 {
+  --page-index: 119;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-119-header {
+  font-size: calc(1rem + 9px);
+  color: hsl(83, 70%, 50%);
+}
+
+.page-119-content {
+  padding: 4rem;
+  border-radius: 11px;
+}

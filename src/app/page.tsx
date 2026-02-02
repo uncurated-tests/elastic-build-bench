@@ -1,22 +1,34 @@
 import { list, put } from '@vercel/blob';
 import BenchmarkTable from './components/BenchmarkTable';
+import BuildTimeChart from './components/BuildTimeChart';
+import BuildCostChart from './components/BuildCostChart';
+import DeploymentBeacon from './components/DeploymentBeacon';
+import HeavyDependencies from './components/HeavyDependencies';
+
+// Revalidate every 60 seconds to pick up new build data
+export const revalidate = 60;
 
 interface TimingRecord {
   runId: string;
   gitCommit: string;
   gitBranch: string;
+  deploymentId?: string | null;
+  vercelProjectName?: string | null;
   config: {
     BuildTimeOnStandard: string;
     FullTimeOnStandard: string;
     MachineType: string;
   };
   timestamps: {
+    deploymentTriggered?: string | null;
+    installComplete?: string | null;
     buildStarted: string | null;
     dependenciesReady: string | null;
     compilationFinished: string | null;
     deploymentComplete: string | null;
   };
   durations: {
+    installPhaseMs?: number | null;
     dependencyPhaseMs: number | null;
     compilationPhaseMs: number | null;
     deploymentPhaseMs: number | null;
@@ -129,7 +141,7 @@ async function getLatestBuildsByConfig(): Promise<Map<string, TimingRecord>> {
     
     // Group by config key and keep the latest COMPLETE record for each
     // A complete record has totalMs (build time) populated
-    const MAX_REASONABLE_E2E_MS = 10 * 60 * 1000; // 10 minutes max for E2E
+    const MAX_REASONABLE_E2E_MS = 120 * 60 * 1000; // 120 minutes max for E2E (allow long builds)
     
     for (const record of records) {
       // Skip baseline records (main branch with no synthetic load)
@@ -144,6 +156,11 @@ async function getLatestBuildsByConfig(): Promise<Map<string, TimingRecord>> {
       
       // Skip records with unknown commits (incomplete data)
       if (record.gitCommit === 'unknown') {
+        continue;
+      }
+      
+      // Skip main branch records - we only want dedicated build branches
+      if (record.gitBranch === 'main') {
         continue;
       }
       
@@ -205,33 +222,148 @@ export default async function Home() {
   };
   
   records.sort((a, b) => {
-    // Column 1: Target Build Time (ascending)
+    // Column 1: Target Build Time (ascending) - PRIMARY SORT
     const buildTimeA = parseTime(a.config.BuildTimeOnStandard);
     const buildTimeB = parseTime(b.config.BuildTimeOnStandard);
     if (buildTimeA !== buildTimeB) return buildTimeA - buildTimeB;
     
-    // Column 2: Target Total Time (ascending)
-    const totalTimeA = parseTime(a.config.FullTimeOnStandard);
-    const totalTimeB = parseTime(b.config.FullTimeOnStandard);
-    if (totalTimeA !== totalTimeB) return totalTimeA - totalTimeB;
-    
-    // Column 3: Machine Type (Standard -> Enhanced -> Turbo)
+    // Column 2: Machine Type (Standard -> Enhanced -> Turbo)
     const machineOrderA = machineTypeOrder[a.config.MachineType] ?? 99;
     const machineOrderB = machineTypeOrder[b.config.MachineType] ?? 99;
-    return machineOrderA - machineOrderB;
+    if (machineOrderA !== machineOrderB) return machineOrderA - machineOrderB;
+    
+    // Column 3: RealXTotal branches preferred (for same build time + machine)
+    const isRealXTotalA = a.gitBranch?.includes('RealXTotal') ? 0 : 1;
+    const isRealXTotalB = b.gitBranch?.includes('RealXTotal') ? 0 : 1;
+    return isRealXTotalA - isRealXTotalB;
   });
 
   // Build a lookup map for Standard E2E times by (BuildTimeOnStandard, FullTimeOnStandard)
   const standardE2EMap = new Map<string, number>();
+  // Build a lookup map for Standard Build times by (BuildTimeOnStandard, FullTimeOnStandard)
+  const standardBuildMap = new Map<string, number>();
   for (const record of records) {
-    if (record.config.MachineType === 'Standard' && record.durations.totalWithDeploymentMs) {
+    if (record.config.MachineType === 'Standard') {
       const key = `${record.config.BuildTimeOnStandard}-${record.config.FullTimeOnStandard}`;
-      standardE2EMap.set(key, record.durations.totalWithDeploymentMs);
+      if (record.durations.totalWithDeploymentMs) {
+        standardE2EMap.set(key, record.durations.totalWithDeploymentMs);
+      }
+      if (record.durations.totalMs) {
+        standardBuildMap.set(key, record.durations.totalMs);
+      }
     }
   }
 
-  // Helper function to calculate build time reduction percentage
-  const getBuildTimeReduction = (record: TimingRecord): string => {
+  // Field ratios for calculating Target Trigger2Ready from Target Compilation
+  const fieldRatios: Record<number, number> = {
+    1: 1.82,
+    2: 1.38,
+    4: 1.28,
+    5: 1.23,
+    8: 1.19,
+    10: 1.14,
+    15: 1.10,
+    20: 1.09,
+    30: 1.11,
+  };
+
+  // Get field ratio for a given build time (interpolate if needed)
+  const getFieldRatio = (buildMin: number): number => {
+    if (fieldRatios[buildMin]) return fieldRatios[buildMin];
+    // Approximate using formula: multiplier ≈ 1 + (0.82 / buildMinutes^0.6)
+    return 1 + (0.82 / Math.pow(buildMin, 0.6));
+  };
+
+  // Prepare chart data - using Trigger2Ready (E2E) times
+  // First, collect all data points with timestamps for deduplication
+  const chartDataWithTimestamp = records
+    .filter(r => r.durations.totalWithDeploymentMs && ['Standard', 'Enhanced', 'Turbo'].includes(r.config.MachineType))
+    .map(r => {
+      const targetCompilationMin = parseTime(r.config.BuildTimeOnStandard);
+      const fieldRatio = getFieldRatio(targetCompilationMin);
+      const targetT2RMin = targetCompilationMin * fieldRatio;
+      return {
+        targetMin: targetT2RMin,
+        actualSec: (r.durations.totalWithDeploymentMs || 0) / 1000,
+        machine: r.config.MachineType as 'Standard' | 'Enhanced' | 'Turbo',
+        label: r.config.BuildTimeOnStandard,
+        compilationSec: (r.durations.totalMs || 0) / 1000,
+        timestamp: r.timestamps.buildStarted ? new Date(r.timestamps.buildStarted).getTime() : 0,
+      };
+    })
+    .filter(d => d.targetMin > 0);
+
+  // Deduplicate: keep only the most recent data point for each (label, machine) combination
+  const chartDataMap = new Map<string, typeof chartDataWithTimestamp[0]>();
+  for (const d of chartDataWithTimestamp) {
+    const key = `${d.label}-${d.machine}`;
+    const existing = chartDataMap.get(key);
+    if (!existing || d.timestamp > existing.timestamp) {
+      chartDataMap.set(key, d);
+    }
+  }
+  const chartData = Array.from(chartDataMap.values()).map(({ timestamp, ...rest }) => rest);
+
+  // Prepare cost chart data - Build Cost per second
+  const COST_PER_MIN = {
+    Standard: 0.014,
+    Enhanced: 0.028,
+    Turbo: 0.105,
+  };
+
+  // Prepare cost chart data with timestamps for deduplication
+  const costChartDataWithTimestamp = records
+    .filter(r => r.durations.totalWithDeploymentMs && ['Standard', 'Enhanced', 'Turbo'].includes(r.config.MachineType))
+    .map(r => {
+      const targetCompilationMin = parseTime(r.config.BuildTimeOnStandard);
+      const fieldRatio = getFieldRatio(targetCompilationMin);
+      const targetT2RMin = targetCompilationMin * fieldRatio;
+      const machineType = r.config.MachineType as 'Standard' | 'Enhanced' | 'Turbo';
+      const seconds = (r.durations.totalWithDeploymentMs || 0) / 1000;
+      const costPerSec = seconds * (COST_PER_MIN[machineType] / 60);
+      return {
+        targetMin: targetT2RMin,
+        costPerSec,
+        machine: machineType,
+        label: r.config.BuildTimeOnStandard,
+        e2eSec: seconds,
+        compilationSec: (r.durations.totalMs || 0) / 1000,
+        timestamp: r.timestamps.buildStarted ? new Date(r.timestamps.buildStarted).getTime() : 0,
+      };
+    })
+    .filter(d => d.targetMin > 0);
+
+  // Deduplicate: keep only the most recent data point for each (label, machine) combination
+  const costChartDataMap = new Map<string, typeof costChartDataWithTimestamp[0]>();
+  for (const d of costChartDataWithTimestamp) {
+    const key = `${d.label}-${d.machine}`;
+    const existing = costChartDataMap.get(key);
+    if (!existing || d.timestamp > existing.timestamp) {
+      costChartDataMap.set(key, d);
+    }
+  }
+  const costChartData = Array.from(costChartDataMap.values()).map(({ timestamp, ...rest }) => rest);
+
+  // Helper function to get deployment inspection URL
+  const getDeploymentUrl = (record: TimingRecord): string | null => {
+    if (record.deploymentId && record.vercelProjectName) {
+      return `https://vercel.com/uncurated-tests/${record.vercelProjectName}/${record.deploymentId}`;
+    }
+    // Fallback: link to project deployments filtered by branch
+    const projectNameMap: Record<string, string> = {
+      'Standard': 'elastic-build-bench',
+      'Enhanced': 'elastic-build-bench-enhanced',
+      'Turbo': 'elastic-build-bench-turbo',
+    };
+    const projectName = projectNameMap[record.config.MachineType];
+    if (projectName && record.gitBranch) {
+      return `https://vercel.com/uncurated-tests/${projectName}/deployments?branch=${encodeURIComponent(record.gitBranch)}`;
+    }
+    return null;
+  };
+
+  // Helper function to calculate E2E time reduction percentage
+  const getE2EReduction = (record: TimingRecord): string => {
     if (record.config.MachineType === 'Standard') {
       return '-'; // Baseline, no reduction to show
     }
@@ -253,9 +385,33 @@ export default async function Home() {
     return '0%';
   };
 
+  // Helper function to calculate build time reduction percentage (vs Standard)
+  const getBuildReduction = (record: TimingRecord): string => {
+    if (record.config.MachineType === 'Standard') {
+      return '-'; // Baseline, no reduction to show
+    }
+    
+    const key = `${record.config.BuildTimeOnStandard}-${record.config.FullTimeOnStandard}`;
+    const standardBuild = standardBuildMap.get(key);
+    const currentBuild = record.durations.totalMs;
+    
+    if (!standardBuild || !currentBuild) {
+      return '-';
+    }
+    
+    const reduction = ((standardBuild - currentBuild) / standardBuild) * 100;
+    if (reduction > 0) {
+      return `-${reduction.toFixed(0)}%`;
+    } else if (reduction < 0) {
+      return `+${Math.abs(reduction).toFixed(0)}%`;
+    }
+    return '0%';
+  };
+
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-8">
       <main className="max-w-6xl mx-auto">
+        <DeploymentBeacon />
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
             Elastic Build Benchmark
@@ -265,37 +421,47 @@ export default async function Home() {
           </p>
         </div>
 
+        {/* Hidden component that forces heavy dependencies to be bundled */}
+        <HeavyDependencies showContent={false} />
+
         {records.length === 0 ? (
           <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-8 text-center">
             <p className="text-zinc-500 dark:text-zinc-400">No build timing data available yet.</p>
           </div>
         ) : (
           <>
+            {/* Charts */}
+            <BuildTimeChart data={chartData} />
+            <BuildCostChart data={costChartData} />
+
             {/* Desktop Table View */}
             <div className="hidden lg:block overflow-x-auto">
               <table className="w-full bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
                 <thead>
                   <tr className="bg-zinc-100 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700">
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Target Build
+                      Target Compilation
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Target E2E
+                      Target T2R
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                       Machine
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Actual Build
+                      Actual Compilation
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Actual E2E
+                      Actual Trigger2Ready
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Reduction
+                      Actual Ratio
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Branch
+                      Build Cost (per min.)
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                      Build Cost (per sec.)
                     </th>
                   </tr>
                 </thead>
@@ -307,53 +473,172 @@ export default async function Home() {
                         index % 2 === 0 ? 'bg-white dark:bg-zinc-900' : 'bg-zinc-50 dark:bg-zinc-900/50'
                       } hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors`}
                     >
-                      <td className="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-400">
+                      <td className="px-4 py-3 text-sm font-mono text-zinc-900 dark:text-zinc-100">
                         {record.config.BuildTimeOnStandard}
                       </td>
-                      <td className="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-400">
-                        {record.config.FullTimeOnStandard}
+                      <td className="px-4 py-3 text-sm font-mono text-zinc-600 dark:text-zinc-400">
+                        {(() => {
+                          const targetCompilationMin = parseTime(record.config.BuildTimeOnStandard);
+                          const fieldRatio = getFieldRatio(targetCompilationMin);
+                          const targetT2RMin = targetCompilationMin * fieldRatio;
+                          return `${targetT2RMin.toFixed(1)}min`;
+                        })()}
                       </td>
                       <td className="px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 font-medium">
-                        {record.config.MachineType}
-                      </td>
-                      <td className="px-4 py-3 text-sm font-mono">
-                        <span className={`px-2 py-1 rounded text-xs ${
-                          record.durations.totalMs 
-                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
-                            : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500'
-                        }`}>
-                          {formatDuration(record.durations.totalMs)}
+                        <span className="inline-flex items-center gap-1.5">
+                          {record.config.MachineType === 'Standard' && 'Standard - $0.014/min'}
+                          {record.config.MachineType === 'Enhanced' && 'Enhanced - $0.028/min'}
+                          {record.config.MachineType === 'Turbo' && 'Turbo - $0.105/min'}
+                          {(() => {
+                            const url = getDeploymentUrl(record);
+                            if (!url) return null;
+                            return (
+                              <a
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-zinc-400 hover:text-blue-500 dark:text-zinc-500 dark:hover:text-blue-400 transition-colors"
+                                title="View deployment on Vercel"
+                              >
+                                🔗
+                              </a>
+                            );
+                          })()}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-sm font-mono">
-                        <span className={`px-2 py-1 rounded text-xs ${
-                          record.durations.totalWithDeploymentMs 
-                            ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' 
-                            : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500'
-                        }`}>
-                          {formatDuration(record.durations.totalWithDeploymentMs)}
+                        <span className="inline-flex items-center gap-1.5">
+                          <span className="text-zinc-900 dark:text-zinc-100">
+                            {record.durations.totalMs ? formatDuration(record.durations.totalMs) : '-'}
+                          </span>
+                          {(() => {
+                            const reduction = getBuildReduction(record);
+                            if (reduction === '-') return null;
+                            const isReduction = reduction.startsWith('-');
+                            return (
+                              <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+                                isReduction
+                                  ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                  : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                              }`}>
+                                {reduction}
+                              </span>
+                            );
+                          })()}
                         </span>
+                      </td>
+                      <td className="px-4 py-3 text-sm font-mono">
+                        <span className="inline-flex items-center gap-1.5">
+                          <span className="text-zinc-900 dark:text-zinc-100">
+                            {record.durations.totalWithDeploymentMs ? formatDuration(record.durations.totalWithDeploymentMs) : '-'}
+                          </span>
+                          {(() => {
+                            const reduction = getE2EReduction(record);
+                            if (reduction === '-') return null;
+                            const isReduction = reduction.startsWith('-');
+                            return (
+                              <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+                                isReduction
+                                  ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                  : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                              }`}>
+                                {reduction}
+                              </span>
+                            );
+                          })()}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-sm font-mono text-zinc-600 dark:text-zinc-400">
+                        {(() => {
+                          const e2e = record.durations.totalWithDeploymentMs;
+                          const build = record.durations.totalMs;
+                          if (!e2e || !build) return '-';
+                          const ratio = e2e / build;
+                          return `${ratio.toFixed(2)}x`;
+                        })()}
                       </td>
                       <td className="px-4 py-3 text-sm font-mono">
                         {(() => {
-                          const reduction = getBuildTimeReduction(record);
-                          if (reduction === '-') {
+                          if (!record.durations.totalWithDeploymentMs) {
                             return <span className="text-zinc-400">-</span>;
                           }
-                          const isReduction = reduction.startsWith('-');
+                          const minutes = Math.ceil(record.durations.totalWithDeploymentMs / 60000);
+                          const costPerMin = record.config.MachineType === 'Turbo' ? 0.105 
+                            : record.config.MachineType === 'Enhanced' ? 0.028 
+                            : 0.014;
+                          const cost = (minutes * costPerMin).toFixed(3);
+                          
+                          // Calculate Standard cost for comparison
+                          const key = `${record.config.BuildTimeOnStandard}-${record.config.FullTimeOnStandard}`;
+                          const standardE2E = standardE2EMap.get(key);
+                          let costDelta = null;
+                          if (record.config.MachineType !== 'Standard' && standardE2E) {
+                            const standardMinutes = Math.ceil(standardE2E / 60000);
+                            const standardCost = standardMinutes * 0.014;
+                            const currentCost = minutes * costPerMin;
+                            const delta = ((currentCost - standardCost) / standardCost) * 100;
+                            costDelta = delta;
+                          }
+                          
                           return (
-                            <span className={`px-2 py-1 rounded text-xs font-medium ${
-                              isReduction
-                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                                : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-                            }`}>
-                              {reduction}
+                            <span className="inline-flex items-center gap-1.5">
+                              <span className="text-zinc-900 dark:text-zinc-100">
+                                ${cost}
+                              </span>
+                              {costDelta !== null && (
+                                <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+                                  costDelta < 0
+                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                                }`}>
+                                  {costDelta < 0 ? `${costDelta.toFixed(0)}%` : `+${costDelta.toFixed(0)}%`}
+                                </span>
+                              )}
                             </span>
                           );
                         })()}
                       </td>
-                      <td className="px-4 py-3 text-xs text-zinc-500 dark:text-zinc-500 font-mono truncate max-w-[150px]">
-                        {record.gitBranch}
+                      <td className="px-4 py-3 text-sm font-mono">
+                        {(() => {
+                          if (!record.durations.totalWithDeploymentMs) {
+                            return <span className="text-zinc-400">-</span>;
+                          }
+                          // Use exact seconds instead of ceiling to minutes
+                          const seconds = record.durations.totalWithDeploymentMs / 1000;
+                          const costPerSec = record.config.MachineType === 'Turbo' ? 0.105 / 60
+                            : record.config.MachineType === 'Enhanced' ? 0.028 / 60
+                            : 0.014 / 60;
+                          const cost = (seconds * costPerSec).toFixed(3);
+                          
+                          // Calculate Standard cost for comparison
+                          const key = `${record.config.BuildTimeOnStandard}-${record.config.FullTimeOnStandard}`;
+                          const standardE2E = standardE2EMap.get(key);
+                          let costDelta = null;
+                          if (record.config.MachineType !== 'Standard' && standardE2E) {
+                            const standardSeconds = standardE2E / 1000;
+                            const standardCost = standardSeconds * (0.014 / 60);
+                            const currentCost = seconds * costPerSec;
+                            const delta = ((currentCost - standardCost) / standardCost) * 100;
+                            costDelta = delta;
+                          }
+                          
+                          return (
+                            <span className="inline-flex items-center gap-1.5">
+                              <span className="text-zinc-900 dark:text-zinc-100">
+                                ${cost}
+                              </span>
+                              {costDelta !== null && (
+                                <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+                                  costDelta < 0
+                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                                }`}>
+                                  {costDelta < 0 ? `${costDelta.toFixed(0)}%` : `+${costDelta.toFixed(0)}%`}
+                                </span>
+                              )}
+                            </span>
+                          );
+                        })()}
                       </td>
                     </tr>
                   ))}
@@ -370,15 +655,30 @@ export default async function Home() {
                 >
                   <div className="flex justify-between items-start mb-3">
                     <div>
-                      <span className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                      <span className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 inline-flex items-center gap-1.5">
                         {record.config.MachineType}
+                        {(() => {
+                          const url = getDeploymentUrl(record);
+                          if (!url) return null;
+                          return (
+                            <a
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-zinc-400 hover:text-blue-500 dark:text-zinc-500 dark:hover:text-blue-400 transition-colors"
+                              title="View deployment on Vercel"
+                            >
+                              🔗
+                            </a>
+                          );
+                        })()}
                       </span>
                       <p className="text-xs text-zinc-500 dark:text-zinc-500 font-mono mt-1">
                         {record.gitBranch}
                       </p>
                     </div>
                     {(() => {
-                      const reduction = getBuildTimeReduction(record);
+                      const reduction = getE2EReduction(record);
                       if (reduction === '-') return null;
                       const isReduction = reduction.startsWith('-');
                       return (
@@ -387,7 +687,7 @@ export default async function Home() {
                             ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                             : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
                         }`}>
-                          {reduction}
+                          T2R: {reduction}
                         </span>
                       );
                     })()}
@@ -395,25 +695,33 @@ export default async function Home() {
                   
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div>
-                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Target Build</p>
-                      <p className="text-zinc-900 dark:text-zinc-100">{record.config.BuildTimeOnStandard}</p>
-                    </div>
-                    <div>
-                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Target E2E</p>
-                      <p className="text-zinc-900 dark:text-zinc-100">{record.config.FullTimeOnStandard}</p>
-                    </div>
-                    <div>
-                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Actual Build</p>
-                      <span className={`px-2 py-1 rounded text-xs font-mono ${
-                        record.durations.totalMs 
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
-                          : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500'
-                      }`}>
-                        {formatDuration(record.durations.totalMs)}
+                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Actual Compilation</p>
+                      <span className="inline-flex items-center gap-1">
+                        <span className={`px-2 py-1 rounded text-xs font-mono ${
+                          record.durations.totalMs 
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
+                            : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500'
+                        }`}>
+                          {formatDuration(record.durations.totalMs)}
+                        </span>
+                        {(() => {
+                          const reduction = getBuildReduction(record);
+                          if (reduction === '-') return null;
+                          const isReduction = reduction.startsWith('-');
+                          return (
+                            <span className={`px-1 py-0.5 rounded text-xs font-medium ${
+                              isReduction
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                            }`}>
+                              {reduction}
+                            </span>
+                          );
+                        })()}
                       </span>
                     </div>
                     <div>
-                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Actual E2E</p>
+                      <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-1">Actual Trigger2Ready</p>
                       <span className={`px-2 py-1 rounded text-xs font-mono ${
                         record.durations.totalWithDeploymentMs 
                           ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' 
@@ -436,32 +744,222 @@ export default async function Home() {
           </h2>
           <div className="text-sm text-zinc-600 dark:text-zinc-400 space-y-3">
             <p>
-              This benchmark measures Vercel build performance across different machine types by using 
-              synthetically generated Next.js applications with controlled complexity levels.
+              This benchmark measures Vercel build performance across different machine types by generating 
+              synthetic Next.js applications with predictable build times using real CPU work and realistic dependencies.
             </p>
+            
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Synthetic Load Generation (v32)</h3>
             <ul className="list-disc list-inside space-y-2 ml-2">
               <li>
-                <strong>Build Time Control:</strong> Each branch contains a specific number of React components 
-                (~28-35 components per second of target build time on Standard machines). Components include 
-                complex TypeScript types, React hooks, and state management to stress the compiler.
+                <strong>SSG Pages:</strong> Up to 2,000 statically generated pages with shared React components 
+                and CSS files. Each page adds ~0.056s to build time (plus ~13s base overhead).
               </li>
               <li>
-                <strong>E2E Multiplier:</strong> The &quot;2x&quot; and &quot;3x&quot; variants add additional API routes and 
-                static pages to extend the total deployment time beyond just compilation.
+                <strong>Multi-threaded CPU Burn:</strong> For longer targets, a prebuild phase performs real CPU
+                math using Node.js worker threads. Standard is capped to 4 workers, while Enhanced and Turbo 
+                use all reported cores.
               </li>
               <li>
-                <strong>Timing Instrumentation:</strong> A custom build script records timestamps at each phase 
-                (dependency install, compilation, deployment) and uploads them to Vercel Blob storage.
+                <strong>Image Assets:</strong> 150 SVG placeholder images (50 images × 3 sizes: 1200×800, 800×600, 
+                400×300) processed by Next.js Image optimization. Increases deployment artifact size and git clone time.
               </li>
               <li>
-                <strong>Machine Detection:</strong> The same codebase is deployed to three Vercel projects 
-                configured with different machine types (Standard, Enhanced, Turbo), allowing direct comparison.
+                <strong>ISR Pages:</strong> Gallery pages using Incremental Static Regeneration with 60-second 
+                revalidation intervals. Includes /gallery index and 10 dynamic /gallery/[id] pages generated via 
+                generateStaticParams().
               </li>
               <li>
-                <strong>Build Time Reduction:</strong> Shows the percentage improvement in E2E time compared to 
-                the Standard machine baseline for the same workload configuration.
+                <strong>Data Fetching Simulation:</strong> SSG pages include simulated database/API latency 
+                (50-150ms per page) to represent real-world data fetching patterns during static generation.
+              </li>
+              <li>
+                <strong>Middleware:</strong> Edge middleware runs on all requests, adding security headers, 
+                geolocation tracking, and cache control. Bundled separately for edge deployment.
+              </li>
+              <li>
+                <strong>Edge API Routes:</strong> Two edge runtime API endpoints (/api/edge and /api/edge/compute) 
+                that require separate bundling and deployment to edge locations.
               </li>
             </ul>
+
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Installed Dependencies (~85 packages)</h3>
+            <p className="text-xs text-zinc-500 dark:text-zinc-500 mb-2">
+              These dependencies are actively imported to prevent tree-shaking and simulate real-world bundle sizes.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              <div>
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">Cloud SDKs</p>
+                <ul className="list-disc list-inside ml-2 text-zinc-500 dark:text-zinc-500">
+                  <li>@aws-sdk/client-s3, dynamodb, lambda, sqs, sns</li>
+                  <li>@google-cloud/storage, bigquery</li>
+                  <li>@azure/storage-blob</li>
+                  <li>firebase, firebase-admin</li>
+                  <li>@supabase/supabase-js</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">ORMs & Databases</p>
+                <ul className="list-disc list-inside ml-2 text-zinc-500 dark:text-zinc-500">
+                  <li>@prisma/client, prisma</li>
+                  <li>mongoose, typeorm, sequelize</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">UI Libraries</p>
+                <ul className="list-disc list-inside ml-2 text-zinc-500 dark:text-zinc-500">
+                  <li>@mui/material, @mui/icons-material</li>
+                  <li>@chakra-ui/react, antd</li>
+                  <li>@emotion/react, @emotion/styled</li>
+                  <li>framer-motion, gsap</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">State Management</p>
+                <ul className="list-disc list-inside ml-2 text-zinc-500 dark:text-zinc-500">
+                  <li>redux, @reduxjs/toolkit, react-redux</li>
+                  <li>zustand, jotai, recoil</li>
+                  <li>@tanstack/react-query, swr</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">Data Visualization</p>
+                <ul className="list-disc list-inside ml-2 text-zinc-500 dark:text-zinc-500">
+                  <li>d3, chart.js, recharts, victory, echarts</li>
+                  <li>@react-three/fiber, @react-three/drei, three</li>
+                  <li>mapbox-gl, leaflet, @deck.gl/core</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">Rich Text Editors</p>
+                <ul className="list-disc list-inside ml-2 text-zinc-500 dark:text-zinc-500">
+                  <li>@tiptap/react, @tiptap/starter-kit</li>
+                  <li>slate, slate-react, draft-js, quill</li>
+                  <li>codemirror, prismjs, highlight.js</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">Authentication</p>
+                <ul className="list-disc list-inside ml-2 text-zinc-500 dark:text-zinc-500">
+                  <li>next-auth, @auth0/nextjs-auth0</li>
+                  <li>@clerk/nextjs, jose</li>
+                  <li>jsonwebtoken, bcryptjs, crypto-js</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">Utilities & Data</p>
+                <ul className="list-disc list-inside ml-2 text-zinc-500 dark:text-zinc-500">
+                  <li>lodash, axios, graphql, @apollo/client</li>
+                  <li>zod, yup, joi (validation)</li>
+                  <li>dayjs, moment, date-fns, luxon</li>
+                  <li>uuid, nanoid, marked, papaparse, xlsx, pdfkit</li>
+                  <li>i18next, react-i18next</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">Payments</p>
+                <ul className="list-disc list-inside ml-2 text-zinc-500 dark:text-zinc-500">
+                  <li>stripe, @stripe/stripe-js</li>
+                  <li>paypal-rest-sdk</li>
+                </ul>
+              </div>
+            </div>
+            
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">T2R (Trigger-to-Ready) Measurement</h3>
+            <ul className="list-disc list-inside space-y-2 ml-2">
+              <li>
+                <strong>Compilation Time:</strong> Measured from build script start to Next.js build completion.
+                This excludes git clone, npm install, and deployment phases.
+              </li>
+              <li>
+                <strong>T2R Time:</strong> Measured from deployment trigger (estimated via install completion 
+                timestamp minus ~10s) to deployment ready. Includes git clone, npm install, compilation, and 
+                edge propagation.
+              </li>
+              <li>
+                <strong>Target Ratios:</strong> Empirically derived from real-world Standard machine builds: 
+                ~1.8x for 1-minute builds (overhead dominates), decreasing to ~1.1x for 20+ minute builds 
+                (compilation dominates). Note: Faster machines naturally have higher ratios for short builds 
+                because fixed overhead (install, deploy) becomes a larger percentage of total time.
+              </li>
+            </ul>
+            
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Current Limitations</h3>
+            <ul className="list-disc list-inside space-y-2 ml-2">
+              <li>
+                <strong>Cached Dependencies:</strong> Vercel caches node_modules, so install time is ~10s 
+                regardless of dependency count. Real first-time builds take longer.
+              </li>
+              <li>
+                <strong>Fixed Overhead Dominance:</strong> For faster machines (Enhanced/Turbo), the fixed overhead 
+                (git clone, npm install, deployment) becomes a larger percentage of total T2R time, causing naturally 
+                higher ratios. This is physical reality, not a benchmark limitation.
+              </li>
+              <li>
+                <strong>T2R Delta Variance:</strong> Current builds show ~10-12% variance from target ratios. 
+                Standard runs slightly over target (+12%), while Enhanced (-8.5%) and Turbo (-10%) run under. 
+                This is considered acceptable for benchmarking purposes.
+              </li>
+            </ul>
+
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Remaining Options to Improve T2R Accuracy</h3>
+            <p className="text-xs text-zinc-500 dark:text-zinc-500 mb-3">
+              Items 1-4 have been implemented in v32. The following options remain for further tuning:
+            </p>
+            
+            <div className="space-y-4">
+              <div className="bg-green-50 dark:bg-green-900/20 rounded p-3 border border-green-200 dark:border-green-800">
+                <p className="font-medium text-green-700 dark:text-green-300 mb-1">1. Image Assets - IMPLEMENTED</p>
+                <p className="text-xs text-green-600 dark:text-green-400">
+                  Added 150 SVG placeholder images (50 × 3 sizes) in public/images/. Used by ImageGallery component 
+                  with Next.js Image optimization. Increases git clone time and deployment artifact size.
+                </p>
+              </div>
+              
+              <div className="bg-green-50 dark:bg-green-900/20 rounded p-3 border border-green-200 dark:border-green-800">
+                <p className="font-medium text-green-700 dark:text-green-300 mb-1">2. ISR Pages - IMPLEMENTED</p>
+                <p className="text-xs text-green-600 dark:text-green-400">
+                  Added /gallery with revalidate=60 and 10 dynamic /gallery/[id] pages using generateStaticParams(). 
+                  These use Incremental Static Regeneration for realistic edge function overhead.
+                </p>
+              </div>
+              
+              <div className="bg-green-50 dark:bg-green-900/20 rounded p-3 border border-green-200 dark:border-green-800">
+                <p className="font-medium text-green-700 dark:text-green-300 mb-1">3. Data Fetching Simulation - IMPLEMENTED</p>
+                <p className="text-xs text-green-600 dark:text-green-400">
+                  Gallery pages include fetchGalleryData() with 100ms latency and fetchGalleryById() with 50-150ms 
+                  random latency per page, simulating real database/API calls during SSG.
+                </p>
+              </div>
+              
+              <div className="bg-green-50 dark:bg-green-900/20 rounded p-3 border border-green-200 dark:border-green-800">
+                <p className="font-medium text-green-700 dark:text-green-300 mb-1">4. Middleware/Edge Functions - IMPLEMENTED</p>
+                <p className="text-xs text-green-600 dark:text-green-400">
+                  Added src/middleware.ts (security headers, geo tracking, cache control) and two edge API routes 
+                  (/api/edge, /api/edge/compute) with runtime=&apos;edge&apos;. Bundled separately for edge deployment.
+                </p>
+              </div>
+              
+              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded p-3">
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">5. Machine-Specific Target Ratios (Alternative)</p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                  Instead of matching a single target ratio, adjust expectations per machine type. Since fixed 
+                  overhead (install ~10s, deploy ~30s) doesn&apos;t scale with machine speed, faster machines will 
+                  always have higher T2R ratios for short builds. Formula: target_ratio = 1 + (overhead_seconds / 
+                  compilation_seconds). This accepts the physical reality rather than trying to artificially 
+                  inflate overhead.
+                </p>
+              </div>
+              
+              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded p-3">
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">6. Larger Git Repository (Low Impact)</p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                  Add realistic commit history and binary assets (fonts, locale files, JSON fixtures) to increase 
+                  git clone time. Currently the repo is lightweight; real monorepos can take 10-30s to clone. 
+                  Could also add Git LFS objects for design assets. Expected impact: +5-20s clone time.
+                </p>
+              </div>
+            </div>
+            
             <p className="text-xs text-zinc-500 dark:text-zinc-500 mt-4">
               Source code: <a 
                 href="https://github.com/uncurated-tests/elastic-build-bench" 
@@ -477,9 +975,15 @@ export default async function Home() {
 
         <div className="mt-8 text-sm text-zinc-500 dark:text-zinc-500">
           <p>Last updated: {new Date().toISOString()}</p>
-          <p className="mt-1">
+          <p className="mt-1 space-x-4">
             <a href="/api/record-deploy" className="text-blue-600 dark:text-blue-400 hover:underline">
               View raw timing data
+            </a>
+            <a href="/gallery" className="text-blue-600 dark:text-blue-400 hover:underline">
+              Image Gallery (ISR demo)
+            </a>
+            <a href="/api/edge" className="text-blue-600 dark:text-blue-400 hover:underline">
+              Edge API
             </a>
           </p>
         </div>

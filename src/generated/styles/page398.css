@@ -1,0 +1,17 @@
+/* Page 398 styles */
+.page-398 {
+  --page-index: 398;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-398-header {
+  font-size: calc(1rem + 8px);
+  color: hsl(326, 70%, 50%);
+}
+
+.page-398-content {
+  padding: 3rem;
+  border-radius: 10px;
+}
