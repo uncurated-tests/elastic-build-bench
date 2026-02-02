@@ -159,6 +159,11 @@ async function getLatestBuildsByConfig(): Promise<Map<string, TimingRecord>> {
         continue;
       }
       
+      // Skip main branch records - we only want dedicated build branches
+      if (record.gitBranch === 'main') {
+        continue;
+      }
+      
       const configKey = `${record.config.MachineType}-${record.config.BuildTimeOnStandard}-${record.config.FullTimeOnStandard}`;
       const existing = configMap.get(configKey);
       
