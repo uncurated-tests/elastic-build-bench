@@ -745,50 +745,79 @@ export default async function Home() {
           <div className="text-sm text-zinc-600 dark:text-zinc-400 space-y-3">
             <p>
               This benchmark measures Vercel build performance across different machine types by generating 
-              synthetic Next.js applications with predictable build times using real CPU work.
+              synthetic Next.js applications with predictable build times using real CPU work and realistic dependencies.
             </p>
             
-            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Synthetic Load Generation (v30)</h3>
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Synthetic Load Generation (v31)</h3>
             <ul className="list-disc list-inside space-y-2 ml-2">
               <li>
+                <strong>Heavy Dependencies:</strong> ~80 production dependencies including AWS SDK, GCP, Azure, 
+                Firebase, Prisma, MUI, Chakra UI, D3, Chart.js, Three.js, Redux, and authentication/payment 
+                libraries. These are actively imported to prevent tree-shaking and increase bundle size.
+              </li>
+              <li>
                 <strong>SSG Pages:</strong> Up to 2,000 statically generated pages with shared React components 
-                and CSS files. Each page adds ~0.056s to build time (plus ~13s base overhead), providing up 
-                to ~113s of SSG-based build work. The page count is capped to avoid memory pressure and ensure 
-                consistent compile behavior across machine types.
+                and CSS files. Each page adds ~0.056s to build time (plus ~13s base overhead).
               </li>
               <li>
                 <strong>Multi-threaded CPU Burn:</strong> For longer targets, a prebuild phase performs real CPU
-                math using Node.js worker threads. The workload is specified as a <em>fixed iteration count</em>
-                (not a time delay) and divided across workers, so faster machines finish sooner. Standard is
-                capped to 4 workers to mimic a 4 vCPU ceiling, while Enhanced and Turbo use all reported cores.
-                Iteration rates are calibrated by duration band (short, medium, long, very long) to account for
-                thermal throttling and GC overhead during extended burns.
-              </li>
-              <li>
-                <strong>Trigger2Ready Ratio:</strong> The ratio between total E2E time and compilation time 
-                varies by build duration: ~1.8x for 1-minute builds (deployment overhead dominates), decreasing 
-                to ~1.1x for 20+ minute builds (compilation dominates). These ratios are derived from empirical 
-                measurements on Standard machines and applied uniformly to all machine types for comparison.
+                math using Node.js worker threads. Standard is capped to 4 workers, while Enhanced and Turbo 
+                use all reported cores.
               </li>
             </ul>
             
-            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Measurement</h3>
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">T2R (Trigger-to-Ready) Measurement</h3>
             <ul className="list-disc list-inside space-y-2 ml-2">
               <li>
-                <strong>Timing Instrumentation:</strong> A custom build script records timestamps at each phase 
-                (build start, compilation complete, deployment complete) and uploads them to Vercel Blob storage.
-                Each phase is emitted as a separate JSON blob and later deduplicated by (target, machine, branch).
+                <strong>Compilation Time:</strong> Measured from build script start to Next.js build completion.
+                This excludes git clone, npm install, and deployment phases.
               </li>
               <li>
-                <strong>Machine Comparison:</strong> The same codebase is deployed to three Vercel projects 
-                configured with Standard (4 vCPU, $0.014/min), Enhanced (8 vCPU, $0.028/min), and 
-                Turbo (30 vCPU, $0.105/min) machine types. Comparisons use the latest run per target/machine to
-                avoid stale results from earlier calibrations.
+                <strong>T2R Time:</strong> Measured from deployment trigger (estimated via install completion 
+                timestamp minus ~10s) to deployment ready. Includes git clone, npm install, compilation, and 
+                edge propagation.
               </li>
               <li>
-                <strong>Delta Calculations:</strong> Percentage changes for build time, E2E time, and cost 
-                are calculated relative to the Standard machine baseline for the same target configuration.
-                The cost chart normalizes Standard to 100% and highlights a 100%–130% acceptable upgrade band.
+                <strong>Target Ratios:</strong> Empirically derived from real-world Standard machine builds: 
+                ~1.8x for 1-minute builds (overhead dominates), decreasing to ~1.1x for 20+ minute builds 
+                (compilation dominates). Note: Faster machines naturally have higher ratios for short builds 
+                because fixed overhead (install, deploy) becomes a larger percentage of total time.
+              </li>
+            </ul>
+            
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Current Limitations</h3>
+            <ul className="list-disc list-inside space-y-2 ml-2">
+              <li>
+                <strong>Cached Dependencies:</strong> Vercel caches node_modules, so install time is ~10s 
+                regardless of dependency count. Real first-time builds take longer.
+              </li>
+              <li>
+                <strong>No Image Optimization:</strong> Real apps with images trigger Next.js image processing, 
+                adding deployment overhead.
+              </li>
+              <li>
+                <strong>No External APIs:</strong> Real SSR/SSG builds often make database or API calls, adding 
+                latency that scales with page count.
+              </li>
+            </ul>
+
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Options to Improve T2R Accuracy</h3>
+            <ul className="list-disc list-inside space-y-2 ml-2">
+              <li>
+                <strong>Add Image Assets:</strong> Include real images that trigger Next.js optimization pipeline 
+                during build, increasing deployment artifact size and propagation time.
+              </li>
+              <li>
+                <strong>Add ISR Pages:</strong> Incremental Static Regeneration pages add revalidation metadata 
+                and edge function overhead.
+              </li>
+              <li>
+                <strong>Mock API Calls:</strong> Simulate database/API latency during SSG to reflect real-world 
+                data fetching patterns.
+              </li>
+              <li>
+                <strong>Machine-Specific Ratios:</strong> Adjust target ratios per machine type to account for 
+                fixed overhead being a larger percentage on faster machines.
               </li>
             </ul>
             
