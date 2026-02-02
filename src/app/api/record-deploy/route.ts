@@ -44,9 +44,17 @@ async function recordDeploymentCompletion(runId: string, deploymentTime?: string
   const response = await fetch(completeBlob.url);
   const timingData: TimingData = await response.json();
 
-  // Skip if already recorded
+  // Skip if already recorded unless the new time is later
   if (timingData.timestamps.deploymentComplete) {
-    return timingData;
+    if (!deploymentTime) {
+      return timingData;
+    }
+
+    const existingTime = new Date(timingData.timestamps.deploymentComplete).getTime();
+    const incomingTime = new Date(deploymentTime).getTime();
+    if (!Number.isFinite(incomingTime) || incomingTime <= existingTime) {
+      return timingData;
+    }
   }
 
   // Update with deployment completion
@@ -134,13 +142,13 @@ export async function POST(request: Request) {
     }
     
     // Single runId mode
-    const { runId } = body;
+    const { runId, deploymentTime } = body;
     
     if (!runId) {
       return NextResponse.json({ error: 'runId is required' }, { status: 400 });
     }
 
-    const timingData = await recordDeploymentCompletion(runId);
+    const timingData = await recordDeploymentCompletion(runId, deploymentTime);
     
     if (!timingData) {
       const { blobs } = await list({ prefix: `timing/${runId}` });
