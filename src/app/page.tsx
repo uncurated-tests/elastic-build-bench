@@ -751,11 +751,6 @@ export default async function Home() {
             <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Synthetic Load Generation (v31)</h3>
             <ul className="list-disc list-inside space-y-2 ml-2">
               <li>
-                <strong>Heavy Dependencies:</strong> ~80 production dependencies including AWS SDK, GCP, Azure, 
-                Firebase, Prisma, MUI, Chakra UI, D3, Chart.js, Three.js, Redux, and authentication/payment 
-                libraries. These are actively imported to prevent tree-shaking and increase bundle size.
-              </li>
-              <li>
                 <strong>SSG Pages:</strong> Up to 2,000 statically generated pages with shared React components 
                 and CSS files. Each page adds ~0.056s to build time (plus ~13s base overhead).
               </li>
@@ -765,6 +760,88 @@ export default async function Home() {
                 use all reported cores.
               </li>
             </ul>
+
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">Installed Dependencies (~85 packages)</h3>
+            <p className="text-xs text-zinc-500 dark:text-zinc-500 mb-2">
+              These dependencies are actively imported to prevent tree-shaking and simulate real-world bundle sizes.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              <div>
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">Cloud SDKs</p>
+                <ul className="list-disc list-inside ml-2 text-zinc-500 dark:text-zinc-500">
+                  <li>@aws-sdk/client-s3, dynamodb, lambda, sqs, sns</li>
+                  <li>@google-cloud/storage, bigquery</li>
+                  <li>@azure/storage-blob</li>
+                  <li>firebase, firebase-admin</li>
+                  <li>@supabase/supabase-js</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">ORMs & Databases</p>
+                <ul className="list-disc list-inside ml-2 text-zinc-500 dark:text-zinc-500">
+                  <li>@prisma/client, prisma</li>
+                  <li>mongoose, typeorm, sequelize</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">UI Libraries</p>
+                <ul className="list-disc list-inside ml-2 text-zinc-500 dark:text-zinc-500">
+                  <li>@mui/material, @mui/icons-material</li>
+                  <li>@chakra-ui/react, antd</li>
+                  <li>@emotion/react, @emotion/styled</li>
+                  <li>framer-motion, gsap</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">State Management</p>
+                <ul className="list-disc list-inside ml-2 text-zinc-500 dark:text-zinc-500">
+                  <li>redux, @reduxjs/toolkit, react-redux</li>
+                  <li>zustand, jotai, recoil</li>
+                  <li>@tanstack/react-query, swr</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">Data Visualization</p>
+                <ul className="list-disc list-inside ml-2 text-zinc-500 dark:text-zinc-500">
+                  <li>d3, chart.js, recharts, victory, echarts</li>
+                  <li>@react-three/fiber, @react-three/drei, three</li>
+                  <li>mapbox-gl, leaflet, @deck.gl/core</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">Rich Text Editors</p>
+                <ul className="list-disc list-inside ml-2 text-zinc-500 dark:text-zinc-500">
+                  <li>@tiptap/react, @tiptap/starter-kit</li>
+                  <li>slate, slate-react, draft-js, quill</li>
+                  <li>codemirror, prismjs, highlight.js</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">Authentication</p>
+                <ul className="list-disc list-inside ml-2 text-zinc-500 dark:text-zinc-500">
+                  <li>next-auth, @auth0/nextjs-auth0</li>
+                  <li>@clerk/nextjs, jose</li>
+                  <li>jsonwebtoken, bcryptjs, crypto-js</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">Utilities & Data</p>
+                <ul className="list-disc list-inside ml-2 text-zinc-500 dark:text-zinc-500">
+                  <li>lodash, axios, graphql, @apollo/client</li>
+                  <li>zod, yup, joi (validation)</li>
+                  <li>dayjs, moment, date-fns, luxon</li>
+                  <li>uuid, nanoid, marked, papaparse, xlsx, pdfkit</li>
+                  <li>i18next, react-i18next</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-medium text-zinc-700 dark:text-zinc-300 mb-1">Payments</p>
+                <ul className="list-disc list-inside ml-2 text-zinc-500 dark:text-zinc-500">
+                  <li>stripe, @stripe/stripe-js</li>
+                  <li>paypal-rest-sdk</li>
+                </ul>
+              </div>
+            </div>
             
             <h3 className="font-semibold text-zinc-800 dark:text-zinc-200 mt-4">T2R (Trigger-to-Ready) Measurement</h3>
             <ul className="list-disc list-inside space-y-2 ml-2">
