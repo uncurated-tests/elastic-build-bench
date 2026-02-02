@@ -528,9 +528,12 @@ async function main() {
   const prebuildCpuBurnIterations = configFromFile.prebuildCpuBurnIterations || 0;
   if (prebuildCpuBurnIterations > 0) {
     console.log(`\n[TIMING] 2.5. PREBUILD CPU BURN (Multi-threaded)`);
-    const numCpus = cpus().length;
+    const reportedCpus = cpus().length;
+    const maxWorkers = config.MachineType === 'Standard' ? 4 : reportedCpus;
+    const numCpus = Math.min(reportedCpus, maxWorkers);
     console.log(`[TIMING]    Total iterations: ${prebuildCpuBurnIterations.toLocaleString()}`);
-    console.log(`[TIMING]    CPU cores available: ${numCpus}`);
+    console.log(`[TIMING]    CPU cores reported: ${reportedCpus}`);
+    console.log(`[TIMING]    CPU workers used: ${numCpus}`);
     console.log(`[TIMING]    Starting ${numCpus} workers...`);
     
     const cpuBurnStart = Date.now();
