@@ -224,6 +224,15 @@ export default function BuildCostChart({ data }: BuildCostChartProps) {
             fill="#22c55e"
             fillOpacity={0.12}
           />
+          <text
+            x={width - padding.right - 6}
+            y={(acceptableTopY + acceptableBottomY) / 2}
+            textAnchor="end"
+            dominantBaseline="middle"
+            className="text-xs fill-green-600 dark:fill-green-400"
+          >
+            30% cost variation range
+          </text>
           {/* Grid lines */}
           {yTicks.map((tick, i) => (
             <line
