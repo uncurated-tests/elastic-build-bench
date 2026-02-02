@@ -1,0 +1,17 @@
+/* Page 490 styles */
+.page-490 {
+  --page-index: 490;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-490-header {
+  font-size: calc(1rem + 0px);
+  color: hsl(130, 70%, 50%);
+}
+
+.page-490-content {
+  padding: 3rem;
+  border-radius: 6px;
+}

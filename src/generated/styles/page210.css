@@ -1,0 +1,17 @@
+/* Page 210 styles */
+.page-210 {
+  --page-index: 210;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-210-header {
+  font-size: calc(1rem + 0px);
+  color: hsl(210, 70%, 50%);
+}
+
+.page-210-content {
+  padding: 3rem;
+  border-radius: 6px;
+}

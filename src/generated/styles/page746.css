@@ -1,0 +1,17 @@
+/* Page 746 styles */
+.page-746 {
+  --page-index: 746;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-746-header {
+  font-size: calc(1rem + 6px);
+  color: hsl(242, 70%, 50%);
+}
+
+.page-746-content {
+  padding: 3rem;
+  border-radius: 6px;
+}

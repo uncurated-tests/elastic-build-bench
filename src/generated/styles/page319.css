@@ -1,0 +1,17 @@
+/* Page 319 styles */
+.page-319 {
+  --page-index: 319;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-319-header {
+  font-size: calc(1rem + 9px);
+  color: hsl(283, 70%, 50%);
+}
+
+.page-319-content {
+  padding: 4rem;
+  border-radius: 11px;
+}

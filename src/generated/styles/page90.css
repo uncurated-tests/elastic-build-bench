@@ -1,0 +1,17 @@
+/* Page 90 styles */
+.page-90 {
+  --page-index: 90;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-90-header {
+  font-size: calc(1rem + 0px);
+  color: hsl(90, 70%, 50%);
+}
+
+.page-90-content {
+  padding: 3rem;
+  border-radius: 6px;
+}

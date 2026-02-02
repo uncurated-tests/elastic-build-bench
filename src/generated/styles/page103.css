@@ -1,0 +1,17 @@
+/* Page 103 styles */
+.page-103 {
+  --page-index: 103;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-103-header {
+  font-size: calc(1rem + 3px);
+  color: hsl(211, 70%, 50%);
+}
+
+.page-103-content {
+  padding: 4rem;
+  border-radius: 11px;
+}

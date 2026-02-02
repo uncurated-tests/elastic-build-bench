@@ -1,0 +1,17 @@
+/* Page 1586 styles */
+.page-1586 {
+  --page-index: 1586;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1586-header {
+  font-size: calc(1rem + 6px);
+  color: hsl(2, 70%, 50%);
+}
+
+.page-1586-content {
+  padding: 3rem;
+  border-radius: 6px;
+}
