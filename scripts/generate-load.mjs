@@ -33,7 +33,7 @@ console.log(`========================================`);
 console.log(`Target: ${buildMinutes}min build on Standard`);
 
 // =============================================================================
-// v29 CALIBRATION - Based on empirical data with Standard capped to 4 workers
+// v30 CALIBRATION - Adjusted mid-range rate to hit Standard within 10%
 // =============================================================================
 //
 // Build time components (on Standard, which reports 8 CPUs via os.cpus()):
@@ -42,7 +42,7 @@ console.log(`Target: ${buildMinutes}min build on Standard`);
 //
 // Measured rates (M iterations/second) on Standard with 4-worker cap:
 //   - Short burns (< 100s): ~37 M/s
-//   - Medium burns (100-400s): ~24 M/s
+//   - Medium burns (100-400s): ~32 M/s
 //   - Long burns (400-700s): ~20 M/s
 //   - Very long burns (700-1100s): ~17 M/s
 //   - Extreme burns (> 1100s): ~15.5 M/s
@@ -60,7 +60,7 @@ const SECONDS_PER_PAGE = 0.035;       // Empirical: ~70s for 2000 pages
 // Rate decreases for longer burns due to thermal throttling and GC
 function getIterationRate(cpuBurnSeconds) {
   if (cpuBurnSeconds < 100) return 37_000_000;   // 37 M/s for short burns
-  if (cpuBurnSeconds < 400) return 24_000_000;   // 24 M/s for medium burns
+  if (cpuBurnSeconds < 400) return 32_000_000;   // 32 M/s for medium burns
   if (cpuBurnSeconds < 700) return 20_000_000;   // 20 M/s for long burns
   if (cpuBurnSeconds < 1100) return 17_000_000;  // 17 M/s for very long burns
   return 15_500_000;                              // 15.5 M/s for extreme burns
@@ -96,7 +96,7 @@ const expectedBuildTime = expectedSsgTime + expectedCpuBurnTime;
 const numSharedComponents = 500;
 const numApiRoutes = 5;
 
-console.log(`\nv29 Load Composition:`);
+console.log(`\nv30 Load Composition:`);
 console.log(`  Target: ${targetSeconds}s (${buildMinutes}min)`);
 console.log(`  SSG pages: ${numSSGPages} (~${Math.round(expectedSsgTime)}s)`);
 if (prebuildCpuBurnIterations > 0) {
@@ -261,7 +261,7 @@ function updateBuildConfig() {
     sharedComponents: numSharedComponents,
     apiRoutes: numApiRoutes,
     prebuildCpuBurnIterations: prebuildCpuBurnIterations,
-    strategy: "ssg-cpu-burn-v29",
+    strategy: "ssg-cpu-burn-v30",
     generatedAt: new Date().toISOString(),
     buildId: randomUUID(),
   };
@@ -330,7 +330,7 @@ updateBuildConfig();
 console.log('\n========================================');
 console.log('Generation complete!');
 console.log('========================================');
-console.log(`Strategy: SSG + Fixed CPU Burn Iterations v29`);
+console.log(`Strategy: SSG + Fixed CPU Burn Iterations v30`);
 console.log(`Expected build time on Standard: ~${buildMinutes}min (~${Math.round(expectedBuildTime)}s)`);
 if (prebuildCpuBurnIterations > 0) {
   const rateUsed = getIterationRate(targetSeconds - BASE_BUILD_TIME);
