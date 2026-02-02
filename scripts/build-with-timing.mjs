@@ -87,6 +87,7 @@ const COMPONENT_TARGETS = {
   4: 8400,    // ~4min build time (35 comp/s)
   8: 16800,   // ~8min build time (35 comp/s)
   10: 21000,  // ~10min build time (35 comp/s)
+  20: 42000,  // ~20min build time (35 comp/s)
 };
 
 // Generate synthetic load if BUILD_MINUTES is set
@@ -108,15 +109,41 @@ function getGitBranchEarly() {
   }
 }
 
-// Parse config from branch name (e.g., "build-8min-3xtotal" -> { buildMinutes: 8, multiplier: 3 })
+// Field ratios: empirically derived T2R/Compilation ratios from real builds
+// These represent realistic overhead for different build durations
+const FIELD_RATIOS = {
+  1: 1.82,   // 1min build -> 1.82x T2R
+  2: 1.38,   // 2min build -> 1.38x T2R
+  4: 1.14,   // 4min build -> 1.14x T2R
+  8: 1.09,   // 8min build -> 1.09x T2R
+  10: 1.09,  // 10min build -> 1.09x T2R
+  20: 1.04,  // 20min build -> 1.04x T2R
+};
+
+// Parse config from branch name
+// Supports: "build-8min-3xtotal" -> { buildMinutes: 8, multiplier: 3 }
+// Supports: "build-8min-fieldratio" -> { buildMinutes: 8, multiplier: calculated from FIELD_RATIOS }
 function parseConfigFromBranch(branchName) {
-  const match = branchName.match(/build-(\d+)min-(\d+)xtotal/);
-  if (match) {
+  // Match "build-Xmin-Yxtotal" format
+  const xtotalMatch = branchName.match(/build-(\d+)min-(\d+)xtotal/);
+  if (xtotalMatch) {
     return {
-      buildMinutes: parseInt(match[1], 10),
-      multiplier: parseInt(match[2], 10)
+      buildMinutes: parseInt(xtotalMatch[1], 10),
+      multiplier: parseInt(xtotalMatch[2], 10)
     };
   }
+  
+  // Match "build-Xmin-fieldratio" format - use empirical field ratios
+  const fieldratioMatch = branchName.match(/build-(\d+)min-fieldratio/);
+  if (fieldratioMatch) {
+    const minutes = parseInt(fieldratioMatch[1], 10);
+    const ratio = FIELD_RATIOS[minutes] || 1.1; // Default to 1.1x if not found
+    return {
+      buildMinutes: minutes,
+      multiplier: ratio // Use the field ratio as the multiplier
+    };
+  }
+  
   return null;
 }
 
@@ -141,6 +168,20 @@ const config = {
   MachineType: configFromFile.MachineType || 'Standard',
   components: configFromFile.components,
 };
+
+// Auto-generate synthetic load if:
+// 1. We have a valid branch config (parsedConfig exists)
+// 2. The src/generated/components directory doesn't exist or is empty
+// This allows branches to work without pre-committed generated files
+const srcGeneratedComponents = join(projectRoot, 'src', 'generated', 'components');
+const needsGeneration = parsedConfig && (!existsSync(srcGeneratedComponents) || readdirSync(srcGeneratedComponents).length === 0);
+
+if (needsGeneration) {
+  console.log('[LOAD] Auto-generating synthetic load from branch config...');
+  console.log(`[LOAD] Branch: ${gitBranchForConfig}`);
+  console.log(`[LOAD] Target: ${parsedConfig.buildMinutes}min build, ${parsedConfig.multiplier}x T2R ratio`);
+  generateSyntheticLoad(parsedConfig.buildMinutes, parsedConfig.multiplier);
+}
 
 console.log('[CONFIG] Final config:', JSON.stringify(config, null, 2));
 
