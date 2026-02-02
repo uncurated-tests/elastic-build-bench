@@ -430,12 +430,6 @@ export default async function Home() {
                 <thead>
                   <tr className="bg-zinc-100 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700">
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Target Compilation
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                      Target Trigger2Ready
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                       Machine
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-900 dark:text-zinc-100">
@@ -463,17 +457,6 @@ export default async function Home() {
                         index % 2 === 0 ? 'bg-white dark:bg-zinc-900' : 'bg-zinc-50 dark:bg-zinc-900/50'
                       } hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors`}
                     >
-                      <td className="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-400">
-                        {record.config.BuildTimeOnStandard}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-400">
-                        {(() => {
-                          const targetCompilationMin = parseTime(record.config.BuildTimeOnStandard);
-                          const fieldRatio = getFieldRatio(targetCompilationMin);
-                          const targetT2RMin = targetCompilationMin * fieldRatio;
-                          return `${targetT2RMin.toFixed(1)}min`;
-                        })()}
-                      </td>
                       <td className="px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 font-medium">
                         <span className="inline-flex items-center gap-1.5">
                           {record.config.MachineType === 'Standard' && 'Standard - $0.014/min'}
