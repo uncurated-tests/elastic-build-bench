@@ -13,12 +13,15 @@ interface TimingData {
     MachineType: string;
   };
   timestamps: {
+    deploymentTriggered?: string | null;
+    installComplete?: string | null;
     buildStarted: string | null;
     dependenciesReady: string | null;
     compilationFinished: string | null;
     deploymentComplete: string | null;
   };
   durations: {
+    installPhaseMs?: number | null;
     dependencyPhaseMs: number | null;
     compilationPhaseMs: number | null;
     deploymentPhaseMs: number | null;
@@ -69,10 +72,12 @@ async function recordDeploymentCompletion(runId: string, deploymentTime?: string
   }
 
   // Calculate total time including deployment
-  if (timingData.timestamps.buildStarted) {
+  // Use deploymentTriggered if available, otherwise fall back to buildStarted
+  const t2rStartTime = timingData.timestamps.deploymentTriggered || timingData.timestamps.buildStarted;
+  if (t2rStartTime) {
     timingData.durations.totalWithDeploymentMs = 
       new Date(deploymentComplete).getTime() - 
-      new Date(timingData.timestamps.buildStarted).getTime();
+      new Date(t2rStartTime).getTime();
   }
 
   // Upload updated timing data

@@ -19,12 +19,15 @@ interface TimingRecord {
     MachineType: string;
   };
   timestamps: {
+    deploymentTriggered?: string | null;
+    installComplete?: string | null;
     buildStarted: string | null;
     dependenciesReady: string | null;
     compilationFinished: string | null;
     deploymentComplete: string | null;
   };
   durations: {
+    installPhaseMs?: number | null;
     dependencyPhaseMs: number | null;
     compilationPhaseMs: number | null;
     deploymentPhaseMs: number | null;

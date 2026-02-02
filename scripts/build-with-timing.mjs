@@ -19,6 +19,10 @@ import { cpus } from 'os';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, '..');
 
+// Estimated install duration in milliseconds based on dependency count
+// With ~80 heavy dependencies, install takes approximately 30-60 seconds
+const ESTIMATED_INSTALL_DURATION_MS = 45000; // 45 seconds average
+
 // Read install completion timestamp if available
 function getInstallCompleteTimestamp() {
   const installCompleteFile = join(projectRoot, 'src', 'generated', 'install-complete.json');
@@ -32,6 +36,16 @@ function getInstallCompleteTimestamp() {
     }
   }
   return null;
+}
+
+// Estimate when the deployment was triggered based on install completion time
+function estimateDeploymentTriggeredTime(installCompleteTimestamp) {
+  if (!installCompleteTimestamp) return null;
+  
+  // Deployment trigger = install complete - estimated install duration
+  const installCompleteMs = new Date(installCompleteTimestamp).getTime();
+  const estimatedTriggerMs = installCompleteMs - ESTIMATED_INSTALL_DURATION_MS;
+  return new Date(estimatedTriggerMs).toISOString();
 }
 
 // Get deployment start time from Vercel API if available
@@ -423,8 +437,9 @@ function getVercelProjectName() {
 
 const vercelProjectName = getVercelProjectName();
 
-// Get install completion timestamp
+// Get install completion timestamp and estimate deployment trigger time
 const installCompleteTimestamp = getInstallCompleteTimestamp();
+const estimatedDeploymentTriggered = estimateDeploymentTriggeredTime(installCompleteTimestamp);
 
 // Timing data structure
 const timingData = {
@@ -444,8 +459,8 @@ const timingData = {
     cpuModel: cpus()[0]?.model || 'unknown',
   },
   timestamps: {
-    // deploymentTriggered: when the deployment was triggered (from Vercel API if available)
-    deploymentTriggered: null,
+    // deploymentTriggered: when the deployment was triggered (estimated from install complete - install duration)
+    deploymentTriggered: estimatedDeploymentTriggered,
     // installComplete: when npm install finished (from postinstall script)
     installComplete: installCompleteTimestamp,
     // buildStarted: when this build script started (compilation phase)
@@ -594,11 +609,15 @@ async function main() {
   console.log(`[TIMING] Config:`, JSON.stringify(config, null, 2));
   console.log('='.repeat(60));
 
-  // Try to get deployment start time from Vercel API
+  // Try to get deployment start time from Vercel API, fallback to estimate
   const deploymentStartTime = await getDeploymentStartTime();
   if (deploymentStartTime) {
     timingData.timestamps.deploymentTriggered = deploymentStartTime;
-    console.log(`[TIMING] Deployment triggered at: ${deploymentStartTime}`);
+    console.log(`[TIMING] Deployment triggered at (from API): ${deploymentStartTime}`);
+  } else if (estimatedDeploymentTriggered) {
+    console.log(`[TIMING] Deployment triggered at (estimated): ${estimatedDeploymentTriggered}`);
+    console.log(`[TIMING]   Based on install complete: ${installCompleteTimestamp}`);
+    console.log(`[TIMING]   Minus estimated install time: ${ESTIMATED_INSTALL_DURATION_MS}ms`);
   }
 
   // Phase 1: Build Script Started (compilation phase begins)
