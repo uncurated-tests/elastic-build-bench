@@ -4,6 +4,10 @@
 
 This project benchmarks Vercel build times across different machine types (Standard, Enhanced, Turbo) using synthetic React component loads. Each branch represents a specific build time target.
 
+## Auto-Push Requirement
+
+**Always commit and push changes** after completing modifications (unless explicitly told not to). This keeps deployments and benchmarks up to date.
+
 ## Important: Deployment Promotion
 
 **After completing any work that results in a successful deployment, agents MUST promote the most recent deployment to production.**
