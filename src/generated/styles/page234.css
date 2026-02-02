@@ -1,0 +1,17 @@
+/* Page 234 styles */
+.page-234 {
+  --page-index: 234;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-234-header {
+  font-size: calc(1rem + 4px);
+  color: hsl(18, 70%, 50%);
+}
+
+.page-234-content {
+  padding: 3rem;
+  border-radius: 6px;
+}

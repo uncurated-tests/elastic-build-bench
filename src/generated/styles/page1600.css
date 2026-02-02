@@ -1,0 +1,17 @@
+/* Page 1600 styles */
+.page-1600 {
+  --page-index: 1600;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-1600-header {
+  font-size: calc(1rem + 0px);
+  color: hsl(160, 70%, 50%);
+}
+
+.page-1600-content {
+  padding: 1rem;
+  border-radius: 4px;
+}

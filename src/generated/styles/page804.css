@@ -1,0 +1,17 @@
+/* Page 804 styles */
+.page-804 {
+  --page-index: 804;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-804-header {
+  font-size: calc(1rem + 4px);
+  color: hsl(228, 70%, 50%);
+}
+
+.page-804-content {
+  padding: 1rem;
+  border-radius: 8px;
+}
