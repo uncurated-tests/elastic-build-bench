@@ -957,9 +957,15 @@ export default async function Home() {
 
         <div className="mt-8 text-sm text-zinc-500 dark:text-zinc-500">
           <p>Last updated: {new Date().toISOString()}</p>
-          <p className="mt-1">
+          <p className="mt-1 space-x-4">
             <a href="/api/record-deploy" className="text-blue-600 dark:text-blue-400 hover:underline">
               View raw timing data
+            </a>
+            <a href="/gallery" className="text-blue-600 dark:text-blue-400 hover:underline">
+              Image Gallery (ISR demo)
+            </a>
+            <a href="/api/edge" className="text-blue-600 dark:text-blue-400 hover:underline">
+              Edge API
             </a>
           </p>
         </div>
